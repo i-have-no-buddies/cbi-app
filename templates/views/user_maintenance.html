@@ -1,0 +1,131 @@
+{{extend './layout.html'}} {{block 'content'}}
+<div class="row">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+          <label>Search</label>
+          <input
+            type="search"
+            class="form-control"
+            id="search"
+            onsearch="search(1);"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+          <label>Option</label>
+          <a href="/user-maintenance/add" class="btn bg-info btn-block">
+            <i class="fas fa-user-plus"></i>
+            Add User
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          {{each users.docs}}
+          <div
+            class="col-12 col-md-4 col-sm-6 d-flex align-items-stretch flex-column"
+          >
+            <div class="card bg-light d-flex flex-fill">
+              <div class="card-header text-muted border-bottom-0">
+                {{$value.type}}
+              </div>
+              <div class="card-body pt-0">
+                <div class="row">
+                  <div class="col-7">
+                    <h2 class="lead">
+                      <b>{{$value.first_name}} {{$value.last_name}}</b>
+                    </h2>
+                    <p class="text-muted text-sm">
+                      <b>About: </b> Web Designer / UX / Graphic Artist / Coffee
+                      Lover
+                    </p>
+                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                      <li class="small">
+                        <span class="fa-li"
+                          ><i class="fas fa-lg fa-phone"></i
+                        ></span>
+                        Phone #: {{if $value.phone_number}}
+                        <a href="tel:{{$value.phone_number}}"
+                          >{{$value.phone_number}}</a
+                        >
+                        {{/if}}
+                      </li>
+                      <li class="small">
+                        <span class="fa-li"
+                          ><i class="fas fa-lg fa-envelope"></i
+                        ></span>
+                        Email:
+                        <a href="mailto:{{$value.email}}">{{$value.email}}</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-5 text-center">
+                    <img
+                      src="assets/dist/img/default-150x150.png"
+                      alt="user-avatar"
+                      class="img-circle img-fluid"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="text-right">
+                  <a href="#" class="btn btn-sm bg-teal mt-2">
+                    <i class="fas fa-comments"></i>
+                  </a>
+                  <a
+                    href="/user-maintenance/edit/{{$value._id.toString()}}"
+                    class="btn btn-sm bg-info mt-2"
+                  >
+                    <i class="fas fa-user"></i> View Profile
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+        <div class="card-footer">
+          <nav aria-label="Contacts Page Navigation">
+            <ul
+              class="pagination justify-content-center m-0"
+              id="pagination"
+            ></ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{/block}} {{block 'javascript'}}
+<script src="/app/global.js"></script>
+<script>
+  const page = parseInt('{{users.page}}');
+  const totalPages = parseInt('{{users.totalPages}}');
+  const totalDocs = parseInt('{{users.totalDocs}}');
+  document.getElementById('search').value = decodeHTML(
+    '{{search | escapeBackslash}}'
+  );
+
+  function search(page) {
+    let url = window.location.href.split('?')[0];
+    let search = $('#search').val();
+    url += `?page=${page}`;
+    if (search) url += `&search=${search}`;
+    window.location.href = url;
+  }
+
+  $(document).ready(function () {
+    $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
+  });
+</script>
+{{/block}}

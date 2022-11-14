@@ -1,0 +1,49 @@
+account.activedirectory.windowsazure.com
+Nog79886
+hmprvqghjrxdkqcz
+
+# folder structure
+- public // css, js, images, uploads
+  - assets // anything related to tempates and design and js packages
+  - app // app related js
+- src // server, config, model, controller, router, middleware and etc...
+  - config
+  - middleware
+  - controller
+  - model
+  - router
+- templates // partials and views
+  - views
+    - partials
+- tmp // 
+
+# login process
+- email
+- password
+- status
+
+# users
+- super admin
+- admin
+*upload leads
+*update leads
+*add user
+*remove user
+*update user
+*update user manager
+- manager
+*leads
+*allocate leads
+- ifa
+*leads
+- bdm
+*leads
+
+# modules
+- user maintenance
+*add, update, remove user
+- leads
+*list of data to update
+
+!!! filter all by status
+!!! give bdm access to different filter base on owner and status or source

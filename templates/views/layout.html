@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{include './partials/head.html'}}
+  </head>
+  <body
+    class="hold-transition sidebar-mini layout-fixed sidebar-collapse layout-fixed-footer text-sm"
+  >
+    <div class="wrapper">
+      {{include './partials/navbar.html'}} {{include './partials/sidebar.html'}}
+      <div class="content-wrapper">
+        {{include './partials/breadcrum.html'}}
+        <section class="content">
+          <div class="container-fluid">{{block 'content'}}{{/block}}</div>
+        </section>
+      </div>
+      {{include './partials/footer.html'}}
+      <!-- Control Sidebar -->
+      <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+      </aside>
+      <!-- /.control-sidebar -->
+    </div>
+    {{include './partials/scripts.html'}} {{block 'javascript'}}{{/block}}
+  </body>
+</html>
