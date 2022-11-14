@@ -1,5 +1,5 @@
 require('../config/mongodb');
-const { User, USER_TYPES, USER_STATUS } = require('../model/User');
+const { User, USER_TYPE, USER_STATUS } = require('../model/User');
 const { randUser, rand } = require('@ngneat/falso');
 
 async function seed() {
@@ -10,7 +10,7 @@ async function seed() {
       last_name: 'Luna',
       email: 'ejer.luna@holbornassets.com',
       password: '123456',
-      type: USER_TYPES.SUPER_ADMIN,
+      type: USER_TYPE.SUPER_ADMIN,
       status: USER_STATUS.ACTIVE,
     },
   ];
@@ -21,7 +21,7 @@ async function seed() {
       last_name: user.lastName,
       email: user.email,
       password: '123456',
-      type: rand(Object.values(USER_TYPES)),
+      type: rand(Object.values(USER_TYPE)),
       status: rand(Object.values(USER_STATUS)),
     });
   }

@@ -1,12 +1,13 @@
-const { User, USER_TYPES, USER_STATUS } = require('../model/User');
+const { User, USER_TYPE, USER_STATUS } = require('../model/User');
 const PER_PAGE = 9;
 
 exports.index = async (req, res) => {
   try {
     const page = req.query.page || 1;
     const search = {};
-    if (req.query.search)
+    if (req.query.search) {
       search['tags.tag'] = req.query.search.toLowerCase().trim();
+    }
     const users = await User.paginate(search, {
       lean: true,
       page,
@@ -24,9 +25,9 @@ exports.index = async (req, res) => {
 
 exports.add = (req, res) => {
   try {
-    return res.render('user_maintenance_add', { USER_TYPES });
+    return res.render('user_maintenance_add', { USER_TYPE });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.render('500');
   }
 };
@@ -44,7 +45,7 @@ exports.create = async (req, res) => {
     if (!first_name || !last_name || !email || !password || !type) {
       return res.render('user_maintenance_add', {
         body: req.body,
-        USER_TYPES,
+        USER_TYPE,
       });
     }
     const user = new User({
@@ -69,7 +70,7 @@ exports.edit = async (req, res) => {
     user.password = '';
     return res.render('user_maintenance_edit', {
       user,
-      USER_TYPES,
+      USER_TYPE,
       USER_STATUS,
     });
   } catch (error) {
@@ -93,7 +94,7 @@ exports.update = async (req, res) => {
     if (!id || !first_name || !last_name || !email || !type || !status) {
       return res.render('user_maintenance_edit', {
         user: req.body,
-        USER_TYPES,
+        USER_TYPE,
         USER_STATUS,
       });
     }

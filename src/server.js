@@ -20,13 +20,18 @@ const APP_SECRET = process.env.APP_SECRET;
 require('./config/mongodb');
 
 /**
+ * helmet
+ */
+app.use(helmet({ contentSecurityPolicy: false }));
+
+/**
  * static file
  */
 app.use(
   '/',
   express.static(path.join(__dirname, '..\\public\\'), {
     bufferSize: 65536,
-    maxAge: 86400,
+    maxAge: 1000 * 60 * 60 * 24,
   })
 );
 
@@ -34,8 +39,8 @@ app.use(
  * view engine
  */
 app.engine('html', art);
-app.set('views', path.join(__dirname, '..\\templates\\views'));
 app.set('view engine', 'html');
+app.set('views', path.join(__dirname, '..\\templates\\views'));
 
 /**
  * session
@@ -59,7 +64,6 @@ app.use(
  * middleware
  */
 app.use(compression());
-app.use(helmet({ contentSecurityPolicy: false }));
 app.use(minify());
 app.use(express.urlencoded({ extended: false }));
 
@@ -71,7 +75,6 @@ userMaintenanceRouter(app);
 app.use((req, res) => {
   return res.render('404');
 });
-
 
 /**
  * start server

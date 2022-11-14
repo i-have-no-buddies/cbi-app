@@ -117,6 +117,7 @@
   );
 
   function search(page) {
+    console.log(page);
     let url = window.location.href.split('?')[0];
     let search = $('#search').val();
     url += `?page=${page}`;

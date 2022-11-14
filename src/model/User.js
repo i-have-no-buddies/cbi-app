@@ -3,7 +3,7 @@ const bcryptjs = require('bcryptjs');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const { ngramsAlgo } = require('../utils/helper');
 
-const USER_TYPES = {
+const USER_TYPE = {
   SUPER_ADMIN: 'SUPER ADMIN',
   ADMIN: 'ADMIN',
   MANAGER: 'MANAGER',
@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema({
   },
   phone_number: {
     type: String,
+    trim: true,
   },
   email: {
     type: String,
@@ -84,7 +85,7 @@ userSchema.pre('save', async function () {
         'tag'
       ),
       {
-        tag: user.email,
+        tag: user.email.toLowerCase(),
       },
       { tag: user.type.toLowerCase() },
       { tag: user.status.toLowerCase() },
@@ -103,7 +104,7 @@ userSchema.pre('insertMany', async (next, docs) => {
         'tag'
       ),
       {
-        tag: doc.email,
+        tag: doc.email.toLowerCase(),
       },
       { tag: doc.type.toLowerCase() },
       { tag: doc.status.toLowerCase() },
@@ -117,6 +118,6 @@ userSchema.index({ 'tags.tag': 1, _id: 1 });
 
 module.exports = {
   User: mongoose.model('User', userSchema),
-  USER_TYPES,
+  USER_TYPE,
   USER_STATUS,
 };

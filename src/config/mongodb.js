@@ -1,7 +1,9 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
-const dbName = 'cbi_app';
+const APP_HOST = process.env.APP_HOST;
+const DB_NAME = process.env.DB_NAME;
 
-mongoose.connect(`mongodb://127.0.0.1:27017/${dbName}`);
+mongoose.connect(`mongodb://${APP_HOST}:27017/${DB_NAME}`);
 
 mongoose.connection.on('connected', () => console.log('mongodb connected'));
 mongoose.connection.on('error', () => console.log('mongodb error'));
