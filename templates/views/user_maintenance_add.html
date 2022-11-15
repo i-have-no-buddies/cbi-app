@@ -24,6 +24,11 @@
           name="last_name" 
           value="{{if user}}{{user.last_name}}{{/if}}" 
         />
+        {{if errors}}
+          {{if errors.last_name}}
+            <small class="form-text text-danger">{{errors.last_name}}</small>
+          {{/if}}
+        {{/if}}
       </div>
       <div class="form-group">
         <label>Phone Number</label>
