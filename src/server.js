@@ -1,28 +1,30 @@
-require('dotenv').config();
-const path = require('path');
-const express = require('express');
-const app = express();
-const compression = require('compression');
-const helmet = require('helmet');
-const minify = require('express-minify');
-const art = require('./config/art');
-const cookieParser = require('cookie-parser');
-const cookieSession = require('cookie-session');
-const loginRouter = require('./router/loginRouter');
-const userMaintenanceRouter = require('./router/userMaintenanceRouter');
-const APP_HOST = process.env.APP_HOST;
-const APP_PORT = process.env.APP_PORT;
-const APP_SECRET = process.env.APP_SECRET;
+require('dotenv').config()
+const path = require('path')
+const express = require('express')
+const app = express()
+const compression = require('compression')
+const helmet = require('helmet')
+const minify = require('express-minify')
+const art = require('./config/art')
+const cookieParser = require('cookie-parser')
+const cookieSession = require('cookie-session')
+const loginRouter = require('./router/loginRouter')
+const userMaintenanceRouter = require('./router/userMaintenanceRouter')
+const uploadLeadRouter = require('./router/uploadLeadRouter')
+const APP_HOST = process.env.APP_HOST
+const APP_PORT = process.env.APP_PORT
+const APP_SECRET = process.env.APP_SECRET
+const flash = require('connect-flash')
 
 /**
  * database connection
  */
-require('./config/mongodb');
+require('./config/mongodb')
 
 /**
  * helmet
  */
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({ contentSecurityPolicy: false }))
 
 /**
  * static file
@@ -32,20 +34,20 @@ app.use(
   express.static(path.join(__dirname, '..\\public\\'), {
     bufferSize: 65536,
     maxAge: 1000 * 60 * 60 * 24,
-  })
-);
+  }),
+)
 
 /**
  * view engine
  */
-app.engine('html', art);
-app.set('view engine', 'html');
-app.set('views', path.join(__dirname, '..\\templates\\views'));
+app.engine('html', art)
+app.set('view engine', 'html')
+app.set('views', path.join(__dirname, '..\\templates\\views'))
 
 /**
  * session
  */
-app.use(cookieParser(APP_SECRET));
+app.use(cookieParser(APP_SECRET))
 app.use(
   cookieSession({
     secret: APP_SECRET,
@@ -57,28 +59,34 @@ app.use(
       secure: true,
     },
     resave: false,
-  })
-);
+  }),
+)
+
+/**
+ * connect flash
+ */
+app.use(flash())
 
 /**
  * middleware
  */
-app.use(compression());
-app.use(minify());
-app.use(express.urlencoded({ extended: false }));
+app.use(compression())
+app.use(minify())
+app.use(express.urlencoded({ extended: false }))
 
 /**
  * routes
  */
-loginRouter(app);
-userMaintenanceRouter(app);
+loginRouter(app)
+userMaintenanceRouter(app)
+uploadLeadRouter(app)
 app.use((req, res) => {
-  return res.render('404');
-});
+  return res.render('404')
+})
 
 /**
  * start server
  */
 app.listen(APP_PORT, APP_HOST, () => {
-  console.log(`server is running on port ${APP_PORT}`);
-});
+  console.log(`server is running on port ${APP_PORT}`)
+})
