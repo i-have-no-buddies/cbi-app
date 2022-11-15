@@ -9,6 +9,7 @@
             type="search"
             class="form-control"
             id="search"
+            placeholder="first name, last name, email, type, status"
             onsearch="search(1);"
           />
         </div>
@@ -79,8 +80,10 @@
               </div>
               <div class="card-footer">
                 <div class="text-right">
-                  <a href="#" class="btn btn-sm bg-teal mt-2">
-                    <i class="fas fa-comments"></i>
+                  <a 
+                    href="#" 
+                    class="btn btn-sm {{if $value.status == 'INACTIVE'}}bg-maroon{{else}}bg-teal{{/if}} mt-2">
+                    <i class="fas fa-tag"></i> {{$value.status}}
                   </a>
                   <a
                     href="/user-maintenance/edit/{{$value._id.toString()}}"

@@ -34,26 +34,8 @@ exports.add = (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const {
-      first_name,
-      last_name,
-      email,
-      phone_number = null,
-      password,
-      type,
-    } = req.body;
-    if (!first_name || !last_name || !email || !password || !type) {
-      return res.render('user_maintenance_add', {
-        body: req.body,
-        USER_TYPE,
-      });
-    }
     const user = new User({
-      first_name,
-      last_name,
-      email,
-      phone_number,
-      password,
+      ...req.body,
     });
     await user.save();
     return res.redirect('/user-maintenance');
@@ -91,13 +73,6 @@ exports.update = async (req, res) => {
       type,
       status,
     } = req.body;
-    if (!id || !first_name || !last_name || !email || !type || !status) {
-      return res.render('user_maintenance_edit', {
-        user: req.body,
-        USER_TYPE,
-        USER_STATUS,
-      });
-    }
     const user = await User.findById(id);
     user.first_name = first_name;
     user.last_name = last_name;

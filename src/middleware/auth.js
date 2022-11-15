@@ -1,6 +1,6 @@
 exports.authenticated = (req, res, next) => {
   try {
-    // console.log(req.route.path);
+    console.log(req.route.path);
     if (!req.session.AUTH) return res.redirect('/login');
     res.locals.AUTH = req.session.AUTH;
     next();

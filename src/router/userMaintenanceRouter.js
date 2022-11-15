@@ -1,5 +1,6 @@
 const userMaintenanceController = require('../controller/userMaintenanceController');
 const auth = require('../middleware/auth');
+const { validateUserAdd, validateUserEdit } = require('../middleware/validator/validateUser')
 
 module.exports = (app) => {
   app.get(
@@ -15,6 +16,7 @@ module.exports = (app) => {
   app.post(
     '/user-maintenance/create',
     auth.authenticated,
+    validateUserAdd,
     userMaintenanceController.create
   );
   app.get(
