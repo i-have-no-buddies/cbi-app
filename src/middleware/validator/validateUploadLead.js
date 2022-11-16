@@ -1,9 +1,9 @@
 const { check, checkSchema, validationResult } = require('express-validator')
-const { errorFormater } = require('../../utils/helper.js')
+const { errorFormater, readHeader } = require('../../utils/helper.js')
 const multer = require('multer')
 const moment = require('moment')
+const { FILE_HEADERS } = require('../../model/Upload')
 var fs = require('fs')
-let valid_files = ['xlsx', 'csv', 'xls']
 
 const multerStorage = multer.diskStorage({
   destination: async function (req, file, cb) {
@@ -16,14 +16,13 @@ const multerStorage = multer.diskStorage({
     cb(null, file_name)
   },
 })
-
 const multerFilter = (req, file, cb) => {
   let file_type = file.mimetype.split('/')[1]
-  if (valid_files.includes(file_type)) cb(null, true)
+  if (file_type === 'csv') cb(null, true)
   else cb(null, false)
 }
-
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter })
+
 exports.validateUploadLead = [
   upload.single('file_input'),
   check('upload_name')
@@ -41,20 +40,39 @@ exports.validateUploadLead = [
           //this will show return true if file is uploaded
           return !!req.file
         },
-        errorMessage: 'File is Invalid',
+        errorMessage: 'File is Invalid (Please upload csv file).',
       },
     },
   }),
-  function (req, res, next) {
+  async function (req, res, next) {
     const errors = validationResult(req)
+    let file_location = `./public/uploads/${req.file?.filename}`
+    var error_results
+
     if (!errors.isEmpty()) {
+      error_results = errorFormater(errors)
+    } else {
+      //validate file content
+      let missing = ''
+      let header_row = await readHeader(file_location)
+      for (value of FILE_HEADERS) {
+        if (!header_row.includes(value)) missing += `${value}, `
+      }
+      if (missing != '') {
+        error_results = {
+          file_input: missing.slice(0, -2) + ' in header does not exist.',
+        }
+      }
+    }
+
+    if (error_results) {
       //with error undo upload
-      if (req.file) fs.unlinkSync(`./public/uploads/${req.file.filename}`)
-      let error_results = errorFormater(errors)
-      req.flash('body', req.body)
+      if (req.file) fs.unlinkSync(file_location)
       req.flash('error', error_results)
+      req.flash('body', req.body)
       return res.redirect('/upload-leads')
     }
+
     next()
   },
 ]

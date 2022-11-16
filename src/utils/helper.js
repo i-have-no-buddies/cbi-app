@@ -1,3 +1,6 @@
+const csv = require('@fast-csv/parse')
+var fs = require('fs')
+
 const ngramsAlgo = (str, field) => {
   try {
     let result_tags = []
@@ -29,7 +32,18 @@ const errorFormater = (errors) => {
   return temp_result
 }
 
+const readHeader = async (file_location) => {
+  return new Promise((resolve, reject) => {
+    const stream = fs.createReadStream(file_location)
+    csv
+      .parseStream(stream, { maxRows: 1 })
+      .on('error', (error) => console.error(error))
+      .on('data', (header_row) => resolve(header_row))
+  })
+}
+
 module.exports = {
   ngramsAlgo,
   errorFormater,
+  readHeader,
 }

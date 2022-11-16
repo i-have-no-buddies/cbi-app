@@ -1,3 +1,6 @@
+const { Upload, FILE_HEADERS } = require('../model/Upload')
+const fs = require('fs')
+const csv = require('@fast-csv/parse')
 const navigation = 'upload_lead'
 
 exports.index = async (req, res) => {
@@ -18,7 +21,15 @@ exports.index = async (req, res) => {
 
 exports.upload = (req, res) => {
   try {
-    res.redirect('/user-maintenance')
+    const stream = fs.createReadStream(`./public/uploads/${req.file.filename}`)
+
+    csv
+      .parseStream(stream, { headers: true, ignoreEmpty: true })
+      .on('error', (error) => console.error(error))
+      .on('data', (row) => console.log(row))
+      .on('end', (rowCount) => console.log(`Parsed ${rowCount} rows`))
+
+    res.redirect('/upload-leads')
   } catch (error) {
     console.error(error)
     return res.render('500')
