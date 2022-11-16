@@ -19,10 +19,11 @@ const FILE_HEADERS = [
 
 const UPLOAD_STATUS = {
   ACTIVE: 'ACTIVE',
+  PENDING: 'PENDING',
   INACTIVE: 'INACTIVE',
 }
 
-const uploadSchema = new mongoose.Schema({
+const leadBatchSchema = new mongoose.Schema({
   upload_name: {
     type: String,
     trim: true,
@@ -33,7 +34,15 @@ const uploadSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: UPLOAD_STATUS.ACTIVE,
+    default: UPLOAD_STATUS.PENDING,
+  },
+  uploaded: {
+    type: Number,
+    default: 0,
+  },
+  allocated: {
+    type: Number,
+    default: 0,
   },
   created_by: {
     type: mongoose.Schema.Types.ObjectId,
@@ -55,12 +64,12 @@ const uploadSchema = new mongoose.Schema({
   },
 })
 
-uploadSchema.plugin(mongoosePaginate)
+leadBatchSchema.plugin(mongoosePaginate)
 
-uploadSchema.index({ 'tags.tag': 1, _id: 1 })
+leadBatchSchema.index({ 'tags.tag': 1, _id: 1 })
 
 module.exports = {
-  Upload: mongoose.model('upload', uploadSchema),
+  LeadBatch: mongoose.model('LeadBatch', leadBatchSchema),
   FILE_HEADERS,
   UPLOAD_STATUS,
 }

@@ -2,7 +2,7 @@ const { check, checkSchema, validationResult } = require('express-validator')
 const { errorFormater, readHeader } = require('../../utils/helper.js')
 const multer = require('multer')
 const moment = require('moment')
-const { FILE_HEADERS } = require('../../model/Upload')
+const { FILE_HEADERS } = require('../../model/LeadBatch')
 var fs = require('fs')
 
 const multerStorage = multer.diskStorage({
@@ -70,7 +70,7 @@ exports.validateUploadLead = [
       if (req.file) fs.unlinkSync(file_location)
       req.flash('error', error_results)
       req.flash('body', req.body)
-      return res.redirect('/upload-leads')
+      return res.redirect('/lead-management')
     }
 
     next()

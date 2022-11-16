@@ -57,15 +57,15 @@
             </p>
           </a>
         </li>
-        {{/if}} {{if AUTH.access.includes('upload_leads')}}
+        {{/if}} {{if AUTH.access.includes('lead_management')}}
         <li class="nav-item">
           <a
-            href="/upload-leads"
-            class="nav-link {{navigation | activeNav 'upload_leads'}}"
+            href="/lead-management"
+            class="nav-link {{navigation | activeNav 'lead_management'}}"
           >
             <i class="nav-icon fas fa-folder-open"></i>
             <p>
-              Upload Leads
+              Lead Management
               <!-- <span class="right badge badge-danger">New</span> -->
             </p>
           </a>
