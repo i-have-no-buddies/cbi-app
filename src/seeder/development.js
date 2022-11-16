@@ -13,6 +13,14 @@ async function seed() {
       type: USER_TYPE.SUPER_ADMIN,
       status: USER_STATUS.ACTIVE,
     },
+    {
+      first_name: 'Marvin',
+      last_name: 'Villegas',
+      email: 'marvin.villegas@holbornassets.com',
+      password: '123456',
+      type: USER_TYPE.SUPER_ADMIN,
+      status: USER_STATUS.ACTIVE,
+    },
   ];
   for (let i = 1; i <= 100; i++) {
     let user = randUser();

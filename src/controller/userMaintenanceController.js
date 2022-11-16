@@ -63,28 +63,12 @@ exports.edit = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const {
-      id,
-      first_name,
-      last_name,
-      email,
-      phone_number = null,
-      password,
-      type,
-      status,
-    } = req.body;
-    const user = await User.findById(id);
-    user.first_name = first_name;
-    user.last_name = last_name;
-    user.email = email;
-    if (phone_number) {
-      user.phone_number = phone_number;
+    const user = await User.findById(req.body._id);
+    for (const property in req.body) {
+      if (property !== '_id') {
+        user[property] = req.body[property];
+      }
     }
-    if (password) {
-      user.password = password;
-    }
-    user.type = type;
-    user.status = status;
     await user.save();
     return res.redirect('/user-maintenance');
   } catch (error) {

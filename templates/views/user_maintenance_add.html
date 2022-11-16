@@ -46,6 +46,11 @@
           class="form-control {{if errors}}{{if errors.email}}is-invalid{{/if}}{{/if}}" 
           name="email" value="{{if user}}{{user.email}}{{/if}}" 
         />
+        {{if errors}}
+          {{if errors.email}}
+            <small class="form-text text-danger">{{errors.email}}</small>
+          {{/if}}
+        {{/if}}
       </div>
       <div class="form-group">
         <label>Password</label>
@@ -55,6 +60,11 @@
           name="password" 
           value="{{if user}}{{user.password}}{{/if}}" 
         />
+        {{if errors}}
+          {{if errors.password}}
+            <small class="form-text text-danger">{{errors.password}}</small>
+          {{/if}}
+        {{/if}}
       </div>
       <div class="form-group">
         <label>User Type</label>
@@ -67,6 +77,11 @@
           >{{$value}}</option>
           {{/each}}
         </select>
+        {{if errors}}
+          {{if errors.type}}
+            <small class="form-text text-danger">{{errors.type}}</small>
+          {{/if}}
+        {{/if}}
       </div>
       <div class="form-group">
         <button 

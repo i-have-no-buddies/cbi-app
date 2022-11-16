@@ -27,6 +27,7 @@ module.exports = (app) => {
   app.post(
     '/user-maintenance/update',
     auth.authenticated,
+    validateUserEdit,
     userMaintenanceController.update
   );
 };

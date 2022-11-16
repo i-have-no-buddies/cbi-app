@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const loginRouter = require('./router/loginRouter');
 const userMaintenanceRouter = require('./router/userMaintenanceRouter');
+const userOnlineRouter = require('./router/userOnlineRouter');
 const APP_HOST = process.env.APP_HOST;
 const APP_PORT = process.env.APP_PORT;
 const APP_SECRET = process.env.APP_SECRET;
@@ -68,10 +69,39 @@ app.use(minify());
 app.use(express.urlencoded({ extended: false }));
 
 /**
+ * user online map
+ */
+const userOnlineMap = new Map();
+// run cleanup every 5 seconds
+const cleanupFrequency = 5 * 1000;
+// clean out users who haven't been here in the 30 seconds
+const cleanupTarget = 30 * 1000;
+app.use((req, res, next) => {
+  if (req.session.AUTH) {
+    userOnlineMap.set(
+      `${req.session.AUTH.first_name} ${req.session.AUTH.last_name}|${req.session.AUTH.email}`,
+      Date.now()
+    );
+    res.locals.ONLINE = Array.from(userOnlineMap.keys());
+  }
+  next();
+});
+setInterval(() => {
+  let now = Date.now();
+  for (let [id, lastAccess] of userOnlineMap.entries()) {
+    if (now - lastAccess > cleanupTarget) {
+      // delete users who haven't been here in 30 seconds
+      userOnlineMap.delete(id);
+    }
+  }
+}, cleanupFrequency);
+
+/**
  * routes
  */
 loginRouter(app);
 userMaintenanceRouter(app);
+userOnlineRouter(app);
 app.use((req, res) => {
   return res.render('404');
 });

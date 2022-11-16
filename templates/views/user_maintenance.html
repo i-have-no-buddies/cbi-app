@@ -37,7 +37,7 @@
           >
             <div class="card bg-light d-flex flex-fill">
               <div class="card-header text-muted border-bottom-0">
-                {{$value.type}}
+                {{$value.type}} - {{if ONLINE.includes($value._id.toString())}}Online{{/if}}
               </div>
               <div class="card-body pt-0">
                 <div class="row">

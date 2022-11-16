@@ -63,7 +63,6 @@ exports.validateUserAdd = [
       for (let i = 0; i < errors.array().length; i++) {
         error_results[errors.errors[i].param] = errors.errors[i].msg;
       }
-      console.log(error_results);
       return res.render('user_maintenance_add', {
         USER_TYPE,
         user: req.body,
@@ -99,8 +98,8 @@ exports.validateUserEdit = [
     .isEmail()
     .withMessage('Email is invalid.')
     .bail()
-    .custom((email) => {
-      return User.findOne({ email }).then((user) => {
+    .custom((email, { req }) => {
+      return User.findOne({ email, _id: { $ne: req.body._id } }).then((user) => {
         if (user) {
           return Promise.reject('Email is already taken.');
         }
@@ -109,8 +108,7 @@ exports.validateUserEdit = [
     .bail(),
   check('password')
     .trim()
-    .notEmpty()
-    .withMessage('Password is required.')
+    .optional({ checkFalsy: true })
     .bail()
     .isLength({ min: 10 })
     .withMessage('Password must be minimum of 10 characters.')
@@ -145,12 +143,16 @@ exports.validateUserEdit = [
     .bail(),
   function (req, res, next) {
     const errors = validationResult(req);
-    if (!error.isEmpty()) {
+    if (!errors.isEmpty()) {
+      let error_results = {};
+      for (let i = 0; i < errors.array().length; i++) {
+        error_results[errors.errors[i].param] = errors.errors[i].msg;
+      }
       return res.render('user_maintenance_edit', {
         USER_TYPE,
         USER_STATUS,
         user: req.body,
-        errors: errors.array(),
+        errors: error_results,
       });
     }
     next();

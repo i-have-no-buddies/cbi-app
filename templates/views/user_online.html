@@ -1,0 +1,27 @@
+{{extend './layout.html'}} {{block 'content'}}
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Table</h3>
+  </div>
+  <div class="card-body p-0">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Expires</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{each ONLINE}}
+        <tr>
+          <td>{{$value.split('|')[0]}}</td>
+          <td>{{$value.split('|')[1]}}</td>
+          <td></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{/block}}
