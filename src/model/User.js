@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const bcryptjs = require('bcryptjs');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const { ngramsAlgo } = require('../utils/helper');
+const mongoose = require('mongoose')
+const bcryptjs = require('bcryptjs')
+const mongoosePaginate = require('mongoose-paginate-v2')
+const { ngramsAlgo } = require('../utils/helper')
 
 const USER_TYPE = {
   SUPER_ADMIN: 'SUPER ADMIN',
@@ -9,12 +9,21 @@ const USER_TYPE = {
   MANAGER: 'MANAGER',
   IFA: 'IFA',
   BDM: 'BDM',
-};
+}
 
 const USER_STATUS = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-};
+}
+
+//for view purposes
+const USER_ACCESS = {
+  SUPER_ADMIN: ['user_maintenance', 'upload_leads'],
+  ADMIN: ['user_maintenance', 'upload_leads'],
+  MANAGER: ['user_maintenance'],
+  IFA: ['user_maintenance'],
+  BDM: ['user_maintenance'],
+}
 
 const userSchema = new mongoose.Schema({
   first_name: {
@@ -63,12 +72,12 @@ const userSchema = new mongoose.Schema({
       },
     ],
   },
-});
+})
 
 userSchema.pre('save', async function () {
-  const user = this;
+  const user = this
   if (user.isModified('password')) {
-    user.password = await bcryptjs.hash(user.password, 8);
+    user.password = await bcryptjs.hash(user.password, 8)
   }
   if (
     user.isModified('first_name') ||
@@ -79,45 +88,46 @@ userSchema.pre('save', async function () {
   ) {
     user.tags = [
       ...ngramsAlgo(
-        `${user.first_name.toLowerCase().trim()} ${user.last_name
+        `${user.first_name
           .toLowerCase()
-          .trim()}`,
-        'tag'
+          .trim()} ${user.last_name.toLowerCase().trim()}`,
+        'tag',
       ),
       {
         tag: user.email.toLowerCase(),
       },
       { tag: user.type.toLowerCase() },
       { tag: user.status.toLowerCase() },
-    ];
+    ]
   }
-});
+})
 
 userSchema.pre('insertMany', async (next, docs) => {
   for (const doc of docs) {
-    doc.password = await bcryptjs.hash(doc.password, 8);
+    doc.password = await bcryptjs.hash(doc.password, 8)
     doc.tags = [
       ...ngramsAlgo(
-        `${doc.first_name.toLowerCase().trim()} ${doc.last_name
+        `${doc.first_name
           .toLowerCase()
-          .trim()}`,
-        'tag'
+          .trim()} ${doc.last_name.toLowerCase().trim()}`,
+        'tag',
       ),
       {
         tag: doc.email.toLowerCase(),
       },
       { tag: doc.type.toLowerCase() },
       { tag: doc.status.toLowerCase() },
-    ];
+    ]
   }
-});
+})
 
-userSchema.plugin(mongoosePaginate);
+userSchema.plugin(mongoosePaginate)
 
-userSchema.index({ 'tags.tag': 1, _id: 1 });
+userSchema.index({ 'tags.tag': 1, _id: 1 })
 
 module.exports = {
   User: mongoose.model('User', userSchema),
   USER_TYPE,
   USER_STATUS,
-};
+  USER_ACCESS,
+}
