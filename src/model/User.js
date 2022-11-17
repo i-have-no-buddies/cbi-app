@@ -18,8 +18,8 @@ const USER_STATUS = {
 
 //for view purposes
 const USER_ACCESS = {
-  SUPER_ADMIN: ['user_maintenance', 'upload_leads'],
-  ADMIN: ['user_maintenance', 'upload_leads'],
+  SUPER_ADMIN: ['user_maintenance', 'lead_management'],
+  ADMIN: ['user_maintenance', 'lead_management'],
   MANAGER: ['user_maintenance'],
   IFA: ['user_maintenance'],
   BDM: ['user_maintenance'],

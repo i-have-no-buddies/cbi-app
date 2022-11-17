@@ -1,7 +1,7 @@
 const art = require('express-art-template')
 const moment = require('moment-timezone');
 
-art.template.defaults.imports.dateFormat = (date) => {
+art.template.defaults.imports.formatDate = (date) => {
   if (date) {
     return moment(date).tz('Asia/Dubai').format('YYYY-MM-DD hh:mm A');
   }

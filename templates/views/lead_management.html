@@ -1,0 +1,175 @@
+{{extend './layout.html'}} {{block 'content'}}
+<div class="row">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+          <label>Search</label>
+          <input
+            type="search"
+            class="form-control"
+            id="search"
+            onsearch="search(1);"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <form action="/lead-management/upload" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label>Upload Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="upload_name"
+            name="upload_name"
+            value="{{if body}}{{body.upload_name}}{{/if}}" 
+          />
+          <small id="upload_name_error" class="form-text text-danger"></small>
+        </div>
+        <div class="form-group">
+          <label for="file_input">File input</label>
+          <div class="input-group">
+            <div class="custom-file">
+              <input 
+                type="file" 
+                class="custom-file-input" 
+                id="file_input"
+                name="file_input">
+              <label class="custom-file-label" for="file_input">Choose file</label>
+            </div>
+          </div>
+          <small id="file_input_error" class="form-text text-danger"></small>
+        </div>
+          <div class="form-group">
+            <button class="btn bg-info btn-block">
+              <i class="fas fa-file-upload"></i> Upload
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-9">
+
+
+  <!--made by button to remove one search-->
+  <div class="card card-primary card-outline card-outline-tabs">
+    <div class="card-header p-0 border-bottom-0">
+      <div class="btn-group w-100 mb-2">
+        <a class="btn btn-primary {{if type == 'lead'}}active{{/if}}" href="/lead-management?page=1&type=lead"> Leads </a>
+        <a class="btn btn-primary {{if type == 'batch'}}active{{/if}}" href="/lead-management?page=1&type=batch"> Lead Batches </a>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <div class="row">
+        {{if type == 'lead'}}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Mobile</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{each list.docs}}
+              <tr>
+                <td>{{$value.first_name}}</td>
+                <td>{{$value.last_name}}</td>
+                <td>{{$value.job_title}}</td>
+                <td>{{$value.company}}</td>
+                <td>{{$value.mobile}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        {{else}}
+          {{each list.docs}}
+            <div class="col-md-4 p-2 pl-3 pr-3">
+              <!-- Widget: user widget style 2 -->
+              <div class="card card-widget widget-user-2 shadow">
+                <div class="widget-user-header {{if $value.status == 'ACTIVE'}}bg-success{{else}}bg-warning{{/if}}">
+                  <h3 class="">{{$value.upload_name}}</h3>
+                  <h5 class="">{{$value.created_at | formatDate}}</h5>
+                </div>
+                <div class="card-footer p-0">
+                  <ul class="nav flex-column">
+                    <li class="nav-item">
+                      <a href="#" class="nav-link">
+                        Uploaded <span class="float-right badge bg-primary">{{$value.uploaded}}</span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="#" class="nav-link">
+                        Allocated <span class="float-right badge bg-success">{{$value.allocated}}</span>
+                      </a>
+                    </li>
+                    <!-- <li class="nav-item">
+                      <a href="#" class="nav-link">
+                        Remove <span class="float-right badge bg-danger">12</span>
+                      </a>
+                    </li> -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        {{/if}}
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <nav aria-label="Contacts Page Navigation">
+        <ul
+          class="pagination justify-content-center m-0"
+          id="pagination"
+        ></ul>
+      </nav>
+    </div>
+
+  </div>
+
+
+  </div>
+</div>
+{{/block}} {{block 'javascript'}}
+<script src="/app/global.js"></script>
+<script src="/assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<script>
+  const page = parseInt('{{list.page}}');
+  const totalPages = parseInt('{{list.totalPages}}');
+  const totalDocs = parseInt('{{list.totalDocs}}');
+  document.getElementById('search').value = decodeHTML(
+    '{{search | escapeBackslash}}'
+  );
+  
+  function search(page) {
+    console.log(page);
+    let url = window.location.href.split('?')[0];
+    let search = $('#search').val();
+    url += `?page=${page}&type={{type}}`;
+    if (search) url += `&search=${search}`;
+    window.location.href = url;
+  }
+
+  $(function () {
+    $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
+    bsCustomFileInput.init();
+  });
+
+  function handleError(key, value) {
+    $(`#${key}`).addClass('is-invalid')
+    $(`#${key}_error`).html(value)
+  }
+
+  {{each errors}}
+    handleError(`{{$index}}`,`{{$value}}`)
+  {{/each}}
+  
+</script>
+{{/block}}
