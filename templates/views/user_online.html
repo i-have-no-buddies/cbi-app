@@ -9,7 +9,7 @@
         <tr>
           <th>Name</th>
           <th>Email</th>
-          <th>Expires</th>
+          <th>Last Action</th>
         </tr>
       </thead>
       <tbody>
@@ -17,7 +17,7 @@
         <tr>
           <td>{{$value.split('|')[0]}}</td>
           <td>{{$value.split('|')[1]}}</td>
-          <td></td>
+          <td>{{LAST_ACTION[$index] | dateFormat}}</td>
         </tr>
         {{/each}}
       </tbody>

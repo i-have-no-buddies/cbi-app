@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const flash = require('connect-flash')
 const loginRouter = require('./router/loginRouter');
+const uploadLeadRouter = require('./router/uploadLeadRouter');
 const userMaintenanceRouter = require('./router/userMaintenanceRouter');
 const userOnlineRouter = require('./router/userOnlineRouter');
 const APP_HOST = process.env.APP_HOST;
@@ -51,14 +52,8 @@ app.use(cookieParser(APP_SECRET))
 app.use(
   cookieSession({
     secret: APP_SECRET,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      maxAge: 28800000,
-      sameSite: true,
-      secure: true,
-    },
-    resave: false,
+    httpOnly: true,
+    maxAge: 8 * 60 * 60 * 1000,
   }),
 )
 
@@ -79,9 +74,9 @@ app.use(express.urlencoded({ extended: false }))
  */
 const userOnlineMap = new Map();
 // run cleanup every 5 seconds
-const cleanupFrequency = 5 * 1000;
+const cleanupFrequency = 30 * 1000;
 // clean out users who haven't been here in the 30 seconds
-const cleanupTarget = 30 * 1000;
+const cleanupTarget = 2 * 60 * 1000;
 app.use((req, res, next) => {
   if (req.session.AUTH) {
     userOnlineMap.set(
@@ -89,6 +84,7 @@ app.use((req, res, next) => {
       Date.now()
     );
     res.locals.ONLINE = Array.from(userOnlineMap.keys());
+    res.locals.LAST_ACTION = Array.from(userOnlineMap.values());
   }
   next();
 });

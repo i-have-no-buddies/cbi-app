@@ -63,3 +63,7 @@ Second email / email
 Nationality 
 Description
 *if we can Link Family members to each Lead - Like Spouse and Kids
+
+# bdm
+create a tabs table
+each tab will contain the search filter like { allocated: 'john parker', status: 'first meeting' }
