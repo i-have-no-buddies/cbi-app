@@ -3,24 +3,35 @@ const { Lead } = require('../model/Lead')
 const { ngramsAlgo } = require('../utils/helper')
 const { fork } = require('child_process')
 const navigation = 'upload_lead'
-const PER_PAGE = 9
+const LEAD_PER_PAGE = 10
+const BATCH_PER_PAGE = 9
 
 exports.index = async (req, res) => {
   try {
+    var list
     const page = req.query.page || 1
     const search = {}
     if (req.query.search) {
       search['tags.tag'] = req.query.search.toLowerCase().trim()
     }
 
-    const lead_batch = await LeadBatch.paginate(search, {
-      lean: true,
-      page,
-      limit: PER_PAGE,
-    })
+    if (req.query.type == 'lead') {
+      list = await Lead.paginate(search, {
+        lean: true,
+        page,
+        limit: LEAD_PER_PAGE,
+      })
+    } else {
+      list = await LeadBatch.paginate(search, {
+        lean: true,
+        page,
+        limit: BATCH_PER_PAGE,
+      })
+    }
 
     return res.render('lead_management', {
-      lead_batch,
+      list,
+      type: req.query.type || 'lead',
       search: req.query.search || '',
       body: req.flash('body')[0],
       errors: req.flash('error')[0],
