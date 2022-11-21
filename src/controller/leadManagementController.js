@@ -10,12 +10,13 @@ exports.index = async (req, res) => {
   try {
     var list
     const page = req.query.page || 1
+    const type = req.query.type || 'lead'
     const search = {}
     if (req.query.search) {
       search['tags.tag'] = req.query.search.toLowerCase().trim()
     }
 
-    if (req.query.type == 'lead') {
+    if (type) {
       list = await Lead.paginate(search, {
         lean: true,
         page,
@@ -31,7 +32,7 @@ exports.index = async (req, res) => {
 
     return res.render('lead_management', {
       list,
-      type: req.query.type || 'lead',
+      type: type,
       search: req.query.search || '',
       body: req.flash('body')[0],
       errors: req.flash('error')[0],
