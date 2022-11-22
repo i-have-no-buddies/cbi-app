@@ -6,18 +6,38 @@ const PER_PAGE = 10;
 exports.index = async (req, res) => {
   try {
     const page = req.query.page || 1;
-    const search = {};
-    if (req.query.search) {
-      search['tags.tag'] = req.query.search.toLowerCase().trim();
+    let search = [];
+    if (req.query.name) {
+      search.push({ 'tags.tag': req.query.name.toLowerCase().trim() });
+    }
+    if (req.query.ifa) {
+      search.push({ 'tags.tag': req.query.ifa.toLowerCase().trim() });
+    }
+    if (req.query.bdm) {
+      search.push({ 'tags.tag': req.query.bdm.toLowerCase().trim() });
+    }
+    if (search.length) {
+      search = { $and: search };
+    } else {
+      search = {};
     }
     const settings = await BdmSetting.paginate(search, {
       lean: true,
       page,
       limit: PER_PAGE,
     });
+    const bdms = await User.getActiveBdm().lean();
+    const managers = await User.getActiveManager().lean();
+    const ifas = await User.getActiveIfa().lean();
     return res.render('bdm_settings', {
       settings,
-      search: req.query.search || '',
+      search: {
+        name: req.query.name || '',
+        ifa: req.query.ifa || '',
+        bdm: req.query.bdm || '',
+      },
+      BDM: bdms,
+      IFA: [...managers, ...ifas],
     });
   } catch (error) {
     console.error(error);
