@@ -1,0 +1,79 @@
+{{extend './layout.html'}} {{block 'content'}}
+<div class="card">
+  <div class="card-body">
+    <form action="/bdm-settings/update" method="post">
+      <div class="form-group">
+        <input 
+          type="hidden"
+          class="form-control"
+          name="_id"
+          value="{{if setting}}{{setting._id.toString()}}{{/if}}"
+        />
+      </div>
+      <div class="form-group">
+        <label>Setting Name</label>
+        <input
+          type="text"
+          class="form-control {{if errors}}{{if errors.name}}is-invalid{{/if}}{{/if}}"
+          name="name"
+          value="{{if setting}}{{setting.name}}{{/if}}"
+        />
+      </div>
+      <div class="form-group">
+        <label>IFA</label>
+        <select
+          class="form-control {{if errors}}{{if errors.ifa}}is-invalid{{/if}}{{/if}}"
+          name="ifa"
+        >
+          <option value="">Select IFA</option>
+          {{each IFA}}
+          <option 
+            value="{{$value._id.toString()}}"
+            {{if setting}}{{if setting.ifa == $value._id.toString()}}selected{{/if}}{{/if}}
+          >
+            {{$value.first_name}} {{$value.last_name}}
+          </option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>BDM</label>
+        <select
+          class="form-control {{if errors}}{{if errors.bdm}}is-invalid{{/if}}{{/if}}"
+          name="bdm"
+        >
+          <option value="">Select BDM</option>
+          {{each BDM}}
+          <option 
+            value="{{$value._id.toString()}}"
+            {{if setting}}{{if setting.bdm == $value._id.toString()}}selected{{/if}}{{/if}}
+          >
+            {{$value.first_name}} {{$value.last_name}}
+          </option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select
+          class="form-control {{if errors}}{{if errors.status}}is-invalid{{/if}}{{/if}}"
+          name="status"
+        >
+          <option value="">Select Lead Status</option>
+          {{each LEAD_STATUS}}
+          <option 
+            value="{{$value}}"
+            {{if setting}}{{if setting.status == $value}}selected{{/if}}{{/if}}
+          >
+            {{$value}}
+          </option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-block bg-teal">Update Settings</button>
+      </div>
+    </form>
+  </div>
+</div>
+{{/block}}

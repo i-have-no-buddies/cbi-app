@@ -9,15 +9,17 @@
         <tr>
           <th>Name</th>
           <th>Email</th>
+          <th>Type</th>
           <th>Last Action</th>
         </tr>
       </thead>
       <tbody>
         {{each ONLINE}}
         <tr>
-          <td>{{$value.split('|')[0]}}</td>
+          <td>{{$value.split('|')[0] | titleCase}}</td>
           <td>{{$value.split('|')[1]}}</td>
-          <td>{{LAST_ACTION[$index] | dateFormat}}</td>
+          <td>{{$value.split('|')[2] | titleCase}}</td>
+          <td>{{LAST_ACTION[$index] | formatDate}}</td>
         </tr>
         {{/each}}
       </tbody>

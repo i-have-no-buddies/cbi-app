@@ -1,0 +1,50 @@
+{{extend './layout.html'}}
+<!-- contenet -->
+{{block 'content'}}
+<div class="row">
+  <div class="col-sm-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+          <label>Search</label>
+          <input 
+            type="text"
+            class="form-control"
+            name="search"
+            placeholder="First name, last name, status" 
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-9">
+    <div class="card">
+      <div class="card-body">
+        <ul id="tabs" class="nav nav-tabs">
+          {{each settings}}
+          <li class="nav-item">
+            <a
+              href=""
+              data-target="#nav{{$index}}"
+              data-toggle="tab"
+              class="nav-link small text-uppercase {{if $index == 0}}active{{/if}}"
+              >{{$value.name | strLimitNav}}</a
+            >
+          </li>
+          {{/each}}
+        </ul>
+        <div id="tabsContent" class="tab-content">
+          {{each settings}}
+          <div
+            id="nav{{$index}}"
+            class="tab-pane fade p-3 {{if $index == 0}}active show{{/if}}"
+          >
+            {{$value.name}}
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{/block}}

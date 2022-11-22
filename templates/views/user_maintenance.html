@@ -37,13 +37,13 @@
           >
             <div class="card bg-light d-flex flex-fill">
               <div class="card-header text-muted border-bottom-0">
-                {{$value.type}} - {{if ONLINE.includes($value._id.toString())}}Online{{/if}}
+                {{$value.type | titleCase}}
               </div>
               <div class="card-body pt-0">
                 <div class="row">
                   <div class="col-7">
                     <h2 class="lead">
-                      <b>{{$value.first_name}} {{$value.last_name}}</b>
+                      <b>{{$value.first_name | titleCase}} {{$value.last_name | titleCase}}</b>
                     </h2>
                     <p class="text-muted text-sm">
                       <b>About: </b> Web Designer / UX / Graphic Artist / Coffee
@@ -83,7 +83,7 @@
                   <a 
                     href="#" 
                     class="btn btn-sm {{if $value.status == 'INACTIVE'}}bg-maroon{{else}}bg-teal{{/if}} mt-2">
-                    <i class="fas fa-tag"></i> {{$value.status}}
+                    <i class="fas fa-tag"></i> {{$value.status | titleCase}}
                   </a>
                   <a
                     href="/user-maintenance/edit/{{$value._id.toString()}}"

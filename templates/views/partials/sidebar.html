@@ -35,53 +35,38 @@
       >
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
-        {{if AUTH.access.includes('upload_leads')}}
         <li class="nav-item">
-          <a
-            href="/upload-leads"
-            class="nav-link {{navigation | activeNav 'upload_leads'}}"
-          >
-            <i class="nav-icon fas fa-folder-open"></i>
-            <p>
-              Upload Leads
-              <!-- <span class="right badge badge-danger">New</span> -->
-            </p>
+          <a href="/bdm" class="nav-link">
+            <i class="nav-icon far fa-user-circle"></i>
+            <p>BDM</p>
           </a>
         </li>
-<<<<<<< HEAD
-        {{/if}} {{if AUTH.access.includes('user_maintenance')}}
         <li class="nav-item">
-          <a
-            href="/user-maintenance"
-            class="nav-link {{navigation | activeNav 'user_maintenance'}}"
-=======
-        <li class="nav-item">
-          <a href="/user-online" class="nav-link">
-            <i class="nav-icon far fa-circle text-success"></i>
-            <p>
-              User Online
-            </p>
+          <a href="/bdm-settings" class="nav-link">
+            <i class="nav-icon far fa-sun"></i>
+            <p>BDM Settings</p>
           </a>
         </li>
-        {{/if}} {{if AUTH.access.includes('lead_management')}}
+        {{if AUTH.access.includes('lead_management')}}
         <li class="nav-item">
           <a
             href="/lead-management"
             class="nav-link {{navigation | activeNav 'lead_management'}}"
->>>>>>> 6d076e6e57aad70c0bf9a3d3424a3073a23d9a42
           >
-            <i class="nav-icon fas fa-user"></i>
+            <i class="nav-icon far fa-folder-open"></i>
             <p>
-<<<<<<< HEAD
-              User Maintenance
-=======
               Lead Management
->>>>>>> 6d076e6e57aad70c0bf9a3d3424a3073a23d9a42
               <!-- <span class="right badge badge-danger">New</span> -->
             </p>
           </a>
         </li>
         {{/if}}
+        <li class="nav-item">
+          <a href="/user-maintenance" class="nav-link">
+            <i class="nav-icon far fa-user"></i>
+            <p>User Maintenance</p>
+          </a>
+        </li>
         <li class="nav-item">
           <a href="/user-online" class="nav-link">
             <i class="nav-icon far fa-circle text-success"></i>
@@ -90,7 +75,7 @@
         </li>
         <li class="nav-item">
           <a href="/logout" class="nav-link">
-            <i class="nav-icon fas fa-sign-out-alt"></i>
+            <i class="nav-icon far fa-window-close text-maroon"></i>
             <p>Log Out</p>
           </a>
         </li>

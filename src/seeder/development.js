@@ -1,9 +1,15 @@
 require('../config/mongodb');
 const { User, USER_TYPE, USER_STATUS } = require('../model/User');
+const { Lead } = require('../model/Lead');
+const { LeadBatch } = require('../model/LeadBatch');
+const { BdmSetting } = require('../model/BdmSetting');
 const { randUser, rand } = require('@ngneat/falso');
 
 async function seed() {
   await User.deleteMany({});
+  await Lead.deleteMany({});
+  await LeadBatch.deleteMany({});
+  await BdmSetting.deleteMany({});
   let users = [
     {
       first_name: 'Ejer',

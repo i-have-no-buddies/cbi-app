@@ -1,0 +1,94 @@
+{{extend './layout.html'}} {{block 'content'}}
+<div class="row">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+          <label>Search</label>
+          <input
+            type="search"
+            class="form-control"
+            id="search"
+            placeholder="Setting name, BDM, IFA"
+            onsearch="search(1);"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+          <label>Option</label>
+          <a href="/bdm-settings/add" class="btn bg-info btn-block">
+            <i class="far fa-sun"></i>
+            Add Settings
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="card">
+      <div class="card-body p-0">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>IFA</th>
+              <th>BDM</th>
+              <th>Status</th>
+              <th>Option</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{each settings.docs}}
+            <tr>
+              <td>{{$value.name}}</td>
+              <td>{{$value.ifa_name | titleCase}}</td>
+              <td>{{$value.bdm_name| titleCase}}</td>
+              <td>{{$value.status | titleCase}}</td>
+              <td>
+                <a href="/bdm-settings/edit/{{$value._id.toString()}}" class="btn bg-info"
+                  >Edit</a
+                >
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer">
+        <nav aria-label="Contacts Page Navigation">
+          <ul
+            class="pagination justify-content-center m-0"
+            id="pagination"
+          ></ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+{{/block}} {{block 'javascript'}}
+<script src="/app/global.js"></script>
+<script>
+  const page = parseInt('{{settings.page}}');
+  const totalPages = parseInt('{{settings.totalPages}}');
+  const totalDocs = parseInt('{{settings.totalDocs}}');
+  document.getElementById('search').value = decodeHTML(
+    '{{search | escapeBackslash}}'
+  );
+
+  function search(page) {
+    console.log(page);
+    let url = window.location.href.split('?')[0];
+    let search = $('#search').val();
+    url += `?page=${page}`;
+    if (search) url += `&search=${search}`;
+    window.location.href = url;
+  }
+
+  $(document).ready(function () {
+    $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
+  });
+</script>
+{{/block}}

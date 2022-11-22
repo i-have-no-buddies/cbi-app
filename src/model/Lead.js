@@ -1,11 +1,11 @@
-const mongoose = require('mongoose')
-const mongoosePaginate = require('mongoose-paginate-v2')
-const { ngramsAlgo } = require('../utils/helper')
+const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const { ngramsAlgo } = require('../utils/helper');
 
 const LEAD_STATUS = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-}
+};
 
 const leadSchema = new mongoose.Schema({
   lead_batch_id: {
@@ -86,16 +86,16 @@ const leadSchema = new mongoose.Schema({
       },
     ],
   },
-})
+});
 
 leadSchema.pre('insertMany', async (next, docs) => {
   for (const doc of docs) {
     doc.tags = [
       ...ngramsAlgo(
-        `${doc.first_name
+        `${doc.first_name.toLowerCase().trim()} ${doc.last_name
           .toLowerCase()
-          .trim()} ${doc.last_name.toLowerCase().trim()}`,
-        'tag',
+          .trim()}`,
+        'tag'
       ),
       ...ngramsAlgo(doc.job_title.toLowerCase().trim(), 'tag'),
       ...ngramsAlgo(doc.company.toLowerCase().trim(), 'tag'),
@@ -116,15 +116,15 @@ leadSchema.pre('insertMany', async (next, docs) => {
       },
       { tag: doc.second_email.toLowerCase() },
       { tag: doc.nationality.toLowerCase() },
-    ]
+    ];
   }
-})
+});
 
-leadSchema.plugin(mongoosePaginate)
+leadSchema.plugin(mongoosePaginate);
 
-leadSchema.index({ 'tags.tag': 1, _id: 1 })
+leadSchema.index({ 'tags.tag': 1, _id: 1 });
 
 module.exports = {
   Lead: mongoose.model('Lead', leadSchema),
   LEAD_STATUS,
-}
+};
