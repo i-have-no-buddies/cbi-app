@@ -1,5 +1,5 @@
 const { LeadBatch } = require('../model/LeadBatch')
-const { Lead } = require('../model/Lead')
+const { Lead, LEAD_STATUS } = require('../model/Lead')
 const { ngramsAlgo } = require('../utils/helper')
 const { fork } = require('child_process')
 const navigation = 'upload_lead'
@@ -15,8 +15,14 @@ exports.index = async (req, res) => {
     if (req.query.search) {
       search['tags.tag'] = req.query.search.toLowerCase().trim()
     }
+    if (req.query.batch) {
+      search['lead_batch_id'] = req.query.batch
+    }
+    if (req.query.status) {
+      search['status'] = req.query.status
+    }
 
-    if (type) {
+    if (type == 'lead') {
       list = await Lead.paginate(search, {
         lean: true,
         page,
@@ -34,9 +40,10 @@ exports.index = async (req, res) => {
       list,
       type: type,
       search: req.query.search || '',
-      body: req.flash('body')[0],
-      errors: req.flash('error')[0],
+      LEAD_STATUS,
       navigation,
+      batch: req.query.batch || '',
+      status: req.query.status || '',
     })
   } catch (error) {
     console.error(error)
@@ -44,7 +51,16 @@ exports.index = async (req, res) => {
   }
 }
 
-exports.upload = async (req, res) => {
+exports.upload = (req, res) => {
+  try {
+    return res.render('lead_management_upload')
+  } catch (error) {
+    console.error(error)
+    return res.render('500')
+  }
+}
+
+exports.new_upload = async (req, res) => {
   try {
     var lead_batch = new LeadBatch()
     lead_batch.upload_name = req.body.upload_name

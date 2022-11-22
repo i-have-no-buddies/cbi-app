@@ -123,6 +123,7 @@ leadSchema.pre('insertMany', async (next, docs) => {
 leadSchema.plugin(mongoosePaginate)
 
 leadSchema.index({ 'tags.tag': 1, _id: 1 })
+leadSchema.index({ lead_batch_id: 1, status: 1, 'tags.tag': 1 })
 
 module.exports = {
   Lead: mongoose.model('Lead', leadSchema),
