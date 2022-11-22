@@ -10,10 +10,15 @@ module.exports = (app) => {
     auth.authenticated,
     leadManagementController.index,
   )
-  app.post(
+  app.get(
     '/lead-management/upload',
     auth.authenticated,
-    validateUploadLead,
     leadManagementController.upload,
+  )
+  app.post(
+    '/lead-management/new_upload',
+    auth.authenticated,
+    validateUploadLead,
+    leadManagementController.new_upload,
   )
 }

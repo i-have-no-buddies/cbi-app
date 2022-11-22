@@ -68,9 +68,10 @@ exports.validateUploadLead = [
     if (error_results) {
       //with error undo upload
       if (req.file) fs.unlinkSync(file_location)
-      req.flash('error', error_results)
-      req.flash('body', req.body)
-      return res.redirect('/lead-management')
+      return res.render('lead_management_upload', {
+        body: req.body,
+        errors: error_results,
+      })
     }
 
     next()

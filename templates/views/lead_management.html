@@ -1,8 +1,30 @@
 {{extend './layout.html'}} {{block 'content'}}
+
+<link rel="stylesheet" href="/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css" />
 <div class="row">
   <div class="col-md-3">
+    
     <div class="card">
       <div class="card-body">
+        <div class="form-group">
+          <label>Option</label>
+          <a href="/app/cbi_template.csv" class="btn bg-olive btn-block">
+            <i class="fas fa-file-download"></i>
+            Download Template
+          </a>
+          <a href="/lead-management/upload" class="btn bg-info btn-block">
+            <i class="fas fa-file-upload"></i>
+            Upload File
+          </a>
+        </div>
+      </div>
+    </div>
+    
+
+
+    <div class="card">
+      <div class="card-body">
+        <input type='hidden' id='batch' name='batch'>
         <div class="form-group">
           <label>Search</label>
           <input
@@ -12,134 +34,129 @@
             onsearch="search(1);"
           />
         </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-body">
-        <form action="/lead-management/upload" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-          <label>Upload Name</label>
-          <input
-            type="text"
-            class="form-control"
-            id="upload_name"
-            name="upload_name"
-            value="{{if body}}{{body.upload_name}}{{/if}}" 
-          />
-          <small id="upload_name_error" class="form-text text-danger"></small>
-        </div>
-        <div class="form-group">
-          <label for="file_input">File input</label>
-          <div class="input-group">
-            <div class="custom-file">
-              <input 
-                type="file" 
-                class="custom-file-input" 
-                id="file_input"
-                name="file_input">
-              <label class="custom-file-label" for="file_input">Choose file</label>
-            </div>
-          </div>
-          <small id="file_input_error" class="form-text text-danger"></small>
-        </div>
+
+        {{if (type == 'lead')}}
           <div class="form-group">
-            <button class="btn bg-info btn-block">
-              <i class="fas fa-file-upload"></i> Upload
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-9">
-
-
-  <!--made by button to remove one search-->
-  <div class="card card-primary card-outline card-outline-tabs">
-    <div class="card-header p-0 border-bottom-0">
-      <div class="btn-group w-100 mb-2">
-        <a class="btn btn-primary {{if type == 'lead'}}active{{/if}}" href="/lead-management?page=1&type=lead"> Leads </a>
-        <a class="btn btn-primary {{if type == 'batch'}}active{{/if}}" href="/lead-management?page=1&type=batch"> Lead Batches </a>
-      </div>
-    </div>
-    
-    <div class="card-body">
-      <div class="row">
-        {{if type == 'lead'}}
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Job Title</th>
-                <th>Company</th>
-                <th>Mobile</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{each list.docs}}
-              <tr>
-                <td>{{$value.first_name}}</td>
-                <td>{{$value.last_name}}</td>
-                <td>{{$value.job_title}}</td>
-                <td>{{$value.company}}</td>
-                <td>{{$value.mobile}}</td>
-              </tr>
+            <label>Lead Status</label>
+            <select class="form-control" id="status" name="status" onchange="search(1);">
+              <option value="">Select Status</option>
+              {{each LEAD_STATUS}}
+              <option value="{{$value}}">{{$value}}</option>
               {{/each}}
-            </tbody>
-          </table>
-        {{else}}
-          {{each list.docs}}
-            <div class="col-md-4 p-2 pl-3 pr-3">
-              <!-- Widget: user widget style 2 -->
-              <div class="card card-widget widget-user-2 shadow">
-                <div class="widget-user-header {{if $value.status == 'ACTIVE'}}bg-success{{else}}bg-warning{{/if}}">
-                  <h3 class="">{{$value.upload_name}}</h3>
-                  <h5 class="">{{$value.created_at | formatDate}}</h5>
-                </div>
-                <div class="card-footer p-0">
-                  <ul class="nav flex-column">
-                    <li class="nav-item">
-                      <a href="#" class="nav-link">
-                        Uploaded <span class="float-right badge bg-primary">{{$value.uploaded}}</span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#" class="nav-link">
-                        Allocated <span class="float-right badge bg-success">{{$value.allocated}}</span>
-                      </a>
-                    </li>
-                    <!-- <li class="nav-item">
-                      <a href="#" class="nav-link">
-                        Remove <span class="float-right badge bg-danger">12</span>
-                      </a>
-                    </li> -->
-                  </ul>
-                </div>
-              </div>
-            </div>
-          {{/each}}
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Option</label>
+            {{if batch}}
+            <a href="/lead-management" class="btn bg-maroon btn-block">
+              <i class="fas fa-eraser"></i>
+              Clear Selected Batch
+            </a>
+            {{/if}}
+            <a href="/lead-management" class="btn bg-info btn-block">
+              <i class="fas fa-file-upload"></i>
+              Allocate
+            </a>
+          </div>
         {{/if}}
       </div>
     </div>
-
-    <div class="card-footer">
-      <nav aria-label="Contacts Page Navigation">
-        <ul
-          class="pagination justify-content-center m-0"
-          id="pagination"
-        ></ul>
-      </nav>
-    </div>
-
+    
   </div>
+  <div class="col-md-9">
+    <!--made by button to remove one search-->
+    <div class="card card-primary card-outline card-outline-tabs">
+      <div class="card-header p-0 border-bottom-0">
+        <div class="btn-group w-100 mb-2">
+          <a class="btn btn-info {{if type == 'lead'}}active{{/if}}" href="/lead-management?page=1&type=lead"> Leads </a>
+          <a class="btn btn-info {{if type == 'batch'}}active{{/if}}" href="/lead-management?page=1&type=batch"> Lead Batches </a>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <div class="row">
+          {{if type == 'lead'}}
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th style='width: 1px'></th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Job Title</th>
+                  <th>Company</th>
+                  <th>Mobile</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{each list.docs}}
+                <tr>
+                  <td>
+                    <div class="icheck-info d-inline">
+                      <input type="checkbox" id="checkbox_{{$index}}">
+                      <label for="checkbox_{{$index}}">
+                      </label>
+                    </div>
+                  </td>
+                  <td>{{$value.first_name}}</td>
+                  <td>{{$value.last_name}}</td>
+                  <td>{{$value.job_title}}</td>
+                  <td>{{$value.company}}</td>
+                  <td>{{$value.mobile}}</td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          {{else}}
+            {{each list.docs}}
+              <div class="col-md-4 p-2 pl-3 pr-3">
+                <!-- Widget: user widget style 2 -->
+                <div class="card card-widget widget-user-2 shadow">
+                  <div class="widget-user-header {{if $value.status == 'ACTIVE'}}bg-success{{else}}bg-warning{{/if}}">
+                    <h3 class="">{{$value.upload_name}}</h3>
+                    <h5 class="">{{$value.created_at | formatDate}}</h5>
+                  </div>
+                  <div class="card-footer p-0">
+                    <ul class="nav flex-column">
+                      <li class="nav-item">
+                        <a href="/lead-management?page=1&type=lead&batch={{$value.id}}&status=ACTIVE" class="nav-link">
+                          Uploaded <span class="float-right badge bg-primary">{{$value.uploaded}}</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="/lead-management?page=1&type=lead&batch={{$value.id}}&status=INACTIVE" class="nav-link">
+                          Allocated <span class="float-right badge bg-success">{{$value.allocated}}</span>
+                        </a>
+                      </li>
+                      <!-- <li class="nav-item">
+                        <a href="#" class="nav-link">
+                          Remove <span class="float-right badge bg-danger">12</span>
+                        </a>
+                      </li> -->
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+          {{/if}}
+        </div>
+      </div>
 
+      <div class="card-footer">
+        <nav aria-label="Contacts Page Navigation">
+          <ul
+            class="pagination justify-content-center m-0"
+            id="pagination"
+          ></ul>
+        </nav>
+      </div>
+
+    </div>
 
   </div>
 </div>
 {{/block}} {{block 'javascript'}}
 <script src="/app/global.js"></script>
-<script src="/assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
 <script>
   const page = parseInt('{{list.page}}');
   const totalPages = parseInt('{{list.totalPages}}');
@@ -147,29 +164,27 @@
   document.getElementById('search').value = decodeHTML(
     '{{search | escapeBackslash}}'
   );
+  document.getElementById('batch').value = decodeHTML(
+    '{{batch | escapeBackslash}}'
+  );
+  document.getElementById('status').value = decodeHTML(
+    '{{status | escapeBackslash}}'
+  );
   
+
   function search(page) {
-    console.log(page);
     let url = window.location.href.split('?')[0];
     let search = $('#search').val();
+    let status = $('#status').val();
     url += `?page=${page}&type={{type}}`;
     if (search) url += `&search=${search}`;
+    if (status) url += `&status=${status}`;
     window.location.href = url;
   }
 
   $(function () {
     $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
-    bsCustomFileInput.init();
   });
-
-  function handleError(key, value) {
-    $(`#${key}`).addClass('is-invalid')
-    $(`#${key}_error`).html(value)
-  }
-
-  {{each errors}}
-    handleError(`{{$index}}`,`{{$value}}`)
-  {{/each}}
   
 </script>
 {{/block}}
