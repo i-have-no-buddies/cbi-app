@@ -67,3 +67,41 @@ Description
 # bdm
 create a tabs table
 each tab will contain the search filter like { allocated: 'john parker', status: 'first meeting' }
+
+# questions
+? allocation to manager to ifa (very confusing on tracking stats once we move ifa to another manager)
+? data and stats to track
+? is there re-allocation
+? is there a tranfer lead
+? what would happen is the lead is not interested
+
+# modules
+leads
+- search
+- update personal info
+- update status
+- check lead logs
+calendar
+- check ifa upcoming meetings
+- color coding
+*red - today
+*warning - 2 days to 1 week
+*blue - more that 1 week
+*secondary - overdue
+bdm
+- search
+- update personal info
+- update status
+- check lead logs
+bdm settings
+- add & update settings
+lead management
+- upload
+- update (personal info)
+- allocate & reallocate
+- audit history
+user maintenance
+- add & update user
+- ***add manager to ifa***
+user online
+- check last action of user

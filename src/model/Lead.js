@@ -122,12 +122,8 @@ leadSchema.pre('insertMany', async (next, docs) => {
 
 leadSchema.plugin(mongoosePaginate);
 
-<<<<<<< HEAD
-leadSchema.index({ 'tags.tag': 1, _id: 1 });
-=======
 leadSchema.index({ 'tags.tag': 1, _id: 1 })
 leadSchema.index({ lead_batch_id: 1, status: 1, 'tags.tag': 1 })
->>>>>>> b4fc9d0ee58a7738b9471a2793b0beabe4f2ad51
 
 module.exports = {
   Lead: mongoose.model('Lead', leadSchema),

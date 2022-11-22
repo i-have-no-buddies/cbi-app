@@ -44,3 +44,13 @@ function decodeHTML(str) {
   txt.innerHTML = str;
   return txt.value;
 }
+
+function showPreLoader() {
+  $('.preloader').css('height', window.innerHeight);
+  $('.preloader').children().show();
+}
+
+function hidePreLoader() {
+  $('.preloader').css('height', 0);
+  $('.preloader').children().hide();
+}

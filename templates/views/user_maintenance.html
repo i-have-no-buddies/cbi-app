@@ -8,10 +8,26 @@
           <input
             type="search"
             class="form-control"
-            id="search"
-            placeholder="first name, last name, email, type, status"
+            id="name"
+            placeholder="Name, first name, last name"
             onsearch="search(1);"
           />
+        </div>
+        <div class="form-group">
+          <select class="form-control" id="type" onchange="search(1)">
+            <option value="">Select type</option>
+            {{each USER_TYPE}}
+            <option value="{{$value}}">{{$value}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="form-group">
+          <select class="form-control" id="status" onchange="search(1)">
+            <option value="">Select status</option>
+            {{each USER_STATUS}}
+            <option value="{{$value}}">{{$value}}</option>
+            {{/each}}
+          </select>
         </div>
       </div>
     </div>
@@ -43,7 +59,10 @@
                 <div class="row">
                   <div class="col-7">
                     <h2 class="lead">
-                      <b>{{$value.first_name | titleCase}} {{$value.last_name | titleCase}}</b>
+                      <b
+                        >{{$value.first_name | titleCase}} {{$value.last_name |
+                        titleCase}}</b
+                      >
                     </h2>
                     <p class="text-muted text-sm">
                       <b>About: </b> Web Designer / UX / Graphic Artist / Coffee
@@ -80,9 +99,10 @@
               </div>
               <div class="card-footer">
                 <div class="text-right">
-                  <a 
-                    href="#" 
-                    class="btn btn-sm {{if $value.status == 'INACTIVE'}}bg-maroon{{else}}bg-teal{{/if}} mt-2">
+                  <a
+                    href="#"
+                    class="btn btn-sm {{if $value.status == 'INACTIVE'}}bg-maroon{{else}}bg-teal{{/if}} mt-2"
+                  >
                     <i class="fas fa-tag"></i> {{$value.status | titleCase}}
                   </a>
                   <a
@@ -115,16 +135,26 @@
   const page = parseInt('{{users.page}}');
   const totalPages = parseInt('{{users.totalPages}}');
   const totalDocs = parseInt('{{users.totalDocs}}');
-  document.getElementById('search').value = decodeHTML(
-    '{{search | escapeBackslash}}'
+  document.getElementById('name').value = decodeHTML(
+    '{{search.name | escapeBackslash}}'
+  );
+  document.getElementById('type').value = decodeHTML(
+    '{{search.type | escapeBackslash}}'
+  );
+  document.getElementById('status').value = decodeHTML(
+    '{{search.status | escapeBackslash}}'
   );
 
   function search(page) {
     console.log(page);
     let url = window.location.href.split('?')[0];
-    let search = $('#search').val();
+    let name = $('#name').val();
+    let type = $('#type').val();
+    let status = $('#status').val();
     url += `?page=${page}`;
-    if (search) url += `&search=${search}`;
+    if (name) url += `&name=${name}`;
+    if (type) url += `&type=${type}`;
+    if (status) url += `&status=${status}`;
     window.location.href = url;
   }
 
