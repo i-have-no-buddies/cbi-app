@@ -1,25 +1,39 @@
-const { LeadBatch } = require('../model/LeadBatch')
-const { Lead, LEAD_STATUS } = require('../model/Lead')
-const { ngramsAlgo } = require('../utils/helper')
-const { fork } = require('child_process')
-const navigation = 'upload_lead'
-const LEAD_PER_PAGE = 10
-const BATCH_PER_PAGE = 9
+const { LeadBatch } = require('../model/LeadBatch');
+const { Lead, LEAD_STATUS } = require('../model/Lead');
+const { ngramsAlgo } = require('../utils/helper');
+const { fork } = require('child_process');
+const navigation = 'upload_lead';
+const LEAD_PER_PAGE = 10;
+const BATCH_PER_PAGE = 9;
 
 exports.index = async (req, res) => {
   try {
     var list
-    const page = req.query.page || 1
-    const type = req.query.type || 'lead'
-    const search = {}
+    const page = req.query.page || 1;
+    const type = req.query.type || 'lead';
+    var search = {};
+    let tag_search = [];
     if (req.query.search) {
-      search['tags.tag'] = req.query.search.toLowerCase().trim()
+      tag_search.push({ 'tags.tag': req.query.search.toLowerCase().trim() });
     }
+    if (req.query.job) {
+      tag_search.push({ 'tags.tag': req.query.job.toLowerCase().trim() });
+    }
+    if (req.query.company) {
+      tag_search.push({ 'tags.tag': req.query.company.toLowerCase().trim() });
+    }
+    if (tag_search.length) {
+      search = { $and: tag_search };
+    } else {
+      search = {};
+    }
+
+    //separated because batches not enluded on tags
     if (req.query.batch) {
-      search['lead_batch_id'] = req.query.batch
+      search['lead_batch_id'] = req.query.batch;
     }
     if (req.query.status) {
-      search['status'] = req.query.status
+      search['status'] = req.query.status;
     }
 
     if (type == 'lead') {
@@ -27,57 +41,94 @@ exports.index = async (req, res) => {
         lean: true,
         page,
         limit: LEAD_PER_PAGE,
-      })
+      });
     } else {
       list = await LeadBatch.paginate(search, {
         lean: true,
         page,
         limit: BATCH_PER_PAGE,
-      })
+      });
     }
 
     return res.render('lead_management', {
       list,
       type: type,
-      search: req.query.search || '',
-      LEAD_STATUS,
+      search: {
+        search: req.query.search || '',
+        job: req.query.job || '',
+        company: req.query.company || '',
+        batch: req.query.batch || '',
+        status: req.query.status || '',
+      },
       navigation,
-      batch: req.query.batch || '',
-      status: req.query.status || '',
-    })
+      LEAD_STATUS,
+    });
   } catch (error) {
-    console.error(error)
-    return res.render(500)
+    console.error(error);
+    return res.render(500);
   }
 }
 
 exports.upload = (req, res) => {
   try {
-    return res.render('lead_management_upload')
+    return res.render('lead_management_upload');
   } catch (error) {
-    console.error(error)
-    return res.render('500')
+    console.error(error);
+    return res.render('500');
   }
 }
 
 exports.new_upload = async (req, res) => {
   try {
-    var lead_batch = new LeadBatch()
-    lead_batch.upload_name = req.body.upload_name
-    lead_batch.file_location = req.file.filename
-    lead_batch.created_by = req.session.AUTH._id
+    var lead_batch = new LeadBatch();
+    lead_batch.upload_name = req.body.upload_name;
+    lead_batch.file_location = req.file.filename;
+    lead_batch.created_by = req.session.AUTH._id;
     lead_batch.tags = ngramsAlgo(
       req.body.upload_name.toLowerCase().trim(),
       'tag',
-    )
-    await lead_batch.save()
+    );
+    await lead_batch.save();
 
-    const childProcess = fork('./src/childProcess/uploadLeads.js')
-    childProcess.send({ upload: lead_batch, user_id: req.session.AUTH._id })
+    //or make it a function here?
+    const childProcess = fork('./src/childProcess/uploadLeads.js');
+    childProcess.send({ upload: lead_batch, user_id: req.session.AUTH._id });
 
-    res.redirect('/lead-management')
+    res.redirect('/lead-management');
   } catch (error) {
-    console.error(error)
-    return res.render('500')
+    console.error(error);
+    return res.render('500');
   }
 }
+
+
+exports.edit = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const lead = await Lead.findById(id).lean();
+    return res.render('lead_management_edit', {
+      lead,
+      LEAD_STATUS,
+      navigation,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.render('500');
+  }
+};
+
+exports.update = async (req, res) => {
+  try {
+    const lead = await Lead.findById(req.body._id);
+    for (const property in req.body) {
+      if (property !== '_id') {
+        lead[property] = req.body[property];
+      }
+    }
+    await lead.save();
+    return res.redirect('/lead-management');
+  } catch (error) {
+    console.error(error);
+    return res.render('500');
+  }
+};
