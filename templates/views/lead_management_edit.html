@@ -196,11 +196,9 @@
     $(`#${key}`).addClass('is-invalid')
     $(`#${key}_error`).html(value)
   }
-
   {{each errors}}
     handleError(`{{$index}}`,`{{$value}}`)
   {{/each}}
-  
 </script>
 {{/block}}
 

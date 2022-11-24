@@ -24,9 +24,8 @@ exports.validateBdmSettingAdd = [
       });
       if (!ifaExists) {
         throw new Error('IFA invalid.');
-      } else {
-        return true;
       }
+      return true;
     })
     .bail(),
   check('bdm')
@@ -41,9 +40,8 @@ exports.validateBdmSettingAdd = [
       });
       if (!bdmExists) {
         throw new Error('BDM invalid.');
-      } else {
-        return true;
       }
+      return true;
     })
     .bail(),
   check('status')
@@ -55,9 +53,8 @@ exports.validateBdmSettingAdd = [
       let arrLeadStatus = Object.values(LEAD_STATUS);
       if (!arrLeadStatus.includes(status)) {
         throw new Error('Status invalid.');
-      } else {
-        return true;
       }
+      return true;
     })
     .bail(),
   async function (req, res, next) {
@@ -120,9 +117,8 @@ exports.validateBdmSettingEdit = [
       });
       if (!bdmExists) {
         throw new Error('BDM invalid.');
-      } else {
-        return true;
       }
+      return true;
     })
     .bail(),
   check('status')
@@ -134,9 +130,8 @@ exports.validateBdmSettingEdit = [
       let arrLeadStatus = Object.values(LEAD_STATUS);
       if (!arrLeadStatus.includes(status)) {
         throw new Error('Status invalid.');
-      } else {
-        return true;
       }
+      return true;
     })
     .bail(),
   async function (req, res, next) {

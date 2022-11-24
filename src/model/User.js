@@ -3,6 +3,8 @@ const bcryptjs = require('bcryptjs');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const { ngramsAlgo } = require('../utils/helper');
 
+const PHONE_REGEX = /^\d{7,20}$/;
+
 const USER_TYPE = {
   SUPER_ADMIN: 'SUPER ADMIN',
   ADMIN: 'ADMIN',
@@ -149,6 +151,7 @@ userSchema.index({ type: 1, status: 1 });
 
 module.exports = {
   User: mongoose.model('User', userSchema),
+  PHONE_REGEX,
   USER_TYPE,
   USER_STATUS,
   USER_ACCESS,

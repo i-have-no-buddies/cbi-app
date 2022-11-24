@@ -1,4 +1,7 @@
-{{extend './layout.html'}} {{block 'content'}}
+<!-- layout -->
+{{extend './layout.html'}} 
+<!-- content -->
+{{block 'content'}}
 <div class="card">
   <div class="card-body">
     <form action="/user-maintenance/create" method="post">
@@ -6,29 +9,21 @@
         <label>First Name</label>
         <input 
           type="text" 
-          class="form-control {{if errors}}{{if errors.first_name}}is-invalid{{/if}}{{/if}}" 
+          class="form-control" 
           name="first_name" 
           value="{{if user}}{{user.first_name}}{{/if}}" 
         />
-        {{if errors}}
-          {{if errors.first_name}}
-            <small class="form-text text-danger">{{errors.first_name}}</small>
-          {{/if}}
-        {{/if}}
+        <small class="form-text text-danger" id="first_name_error"></small>
       </div>
       <div class="form-group">
         <label>Last Name</label>
         <input 
           type="text" 
-          class="form-control {{if errors}}{{if errors.last_name}}is-invalid{{/if}}{{/if}}" 
+          class="form-control" 
           name="last_name" 
           value="{{if user}}{{user.last_name}}{{/if}}" 
         />
-        {{if errors}}
-          {{if errors.last_name}}
-            <small class="form-text text-danger">{{errors.last_name}}</small>
-          {{/if}}
-        {{/if}}
+        <small class="form-text text-danger" id="last_name_error"></small>
       </div>
       <div class="form-group">
         <label>Phone Number</label>
@@ -38,37 +33,30 @@
           name="phone_number" 
           value="{{if user}}{{user.phone_number}}{{/if}}" 
         />
+        <small class="form-text text-danger" id="phone_number_error"></small>
       </div>
       <div class="form-group">
         <label>Email</label>
         <input 
           type="email" 
-          class="form-control {{if errors}}{{if errors.email}}is-invalid{{/if}}{{/if}}" 
+          class="form-control" 
           name="email" value="{{if user}}{{user.email}}{{/if}}" 
         />
-        {{if errors}}
-          {{if errors.email}}
-            <small class="form-text text-danger">{{errors.email}}</small>
-          {{/if}}
-        {{/if}}
+        <small class="form-text text-danger" id="email_error"></small>
       </div>
       <div class="form-group">
         <label>Password</label>
         <input 
           type="password" 
-          class="form-control {{if errors}}{{if errors.password}}is-invalid{{/if}}{{/if}}" 
+          class="form-control" 
           name="password" 
           value="{{if user}}{{user.password}}{{/if}}" 
         />
-        {{if errors}}
-          {{if errors.password}}
-            <small class="form-text text-danger">{{errors.password}}</small>
-          {{/if}}
-        {{/if}}
+        <small class="form-text text-danger" id="password_error"></small>
       </div>
       <div class="form-group">
         <label>User Type</label>
-        <select class="form-control {{if errors}}{{if errors.type}}is-invalid{{/if}}{{/if}}" name="type">
+        <select class="form-control" name="type">
           <option value="">Select type</option>
           {{each USER_TYPE}}
           <option 
@@ -77,11 +65,7 @@
           >{{$value}}</option>
           {{/each}}
         </select>
-        {{if errors}}
-          {{if errors.type}}
-            <small class="form-text text-danger">{{errors.type}}</small>
-          {{/if}}
-        {{/if}}
+        <small class="form-text text-danger" id="type_error"></small>
       </div>
       <div class="form-group">
         <button 
@@ -92,4 +76,17 @@
     </form>
   </div>
 </div>
+{{/block}}
+<!-- javascript -->
+{{block 'javascript'}}
+<script>
+  function handleError(key, value) {
+    $(`[name="${key}"]`).addClass('is-invalid')
+    $(`#${key}_error`).html(value)
+  }
+
+  {{each errors}}
+    handleError(`{{$index}}`,`{{$value}}`)
+  {{/each}}
+</script>
 {{/block}}

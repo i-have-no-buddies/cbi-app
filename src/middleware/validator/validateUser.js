@@ -1,4 +1,9 @@
-const { User, USER_TYPE, USER_STATUS } = require('../../model/User');
+const {
+  User,
+  PHONE_REGEX,
+  USER_TYPE,
+  USER_STATUS,
+} = require('../../model/User');
 const { check, validationResult } = require('express-validator');
 
 exports.validateUserAdd = [
@@ -17,6 +22,19 @@ exports.validateUserAdd = [
     .bail()
     .isLength({ min: 2 })
     .withMessage('Last name must be minimum of 2 characters.')
+    .bail(),
+  check('phone_number')
+    .optional({ checkFalsy: true })
+    .bail()
+    .trim()
+    .custom((phone_number) => {
+      if (!phone_number.match(PHONE_REGEX)) {
+        throw new Error(
+          'Phone should be numbers only with minimum length of 7 and maximum length of 20'
+        );
+      }
+      return true;
+    })
     .bail(),
   check('email')
     .trim()
@@ -51,9 +69,8 @@ exports.validateUserAdd = [
       let arrUserType = Object.values(USER_TYPE);
       if (!arrUserType.includes(type)) {
         throw new Error('Type invalid.');
-      } else {
-        return true;
       }
+      return true;
     })
     .bail(),
   function (req, res, next) {
@@ -90,6 +107,19 @@ exports.validateUserEdit = [
     .isLength({ min: 2 })
     .withMessage('Last name must be minimum of 2 characters.')
     .bail(),
+  check('phone_number')
+    .optional({ checkFalsy: true })
+    .bail()
+    .trim()
+    .custom((phone_number) => {
+      if (!phone_number.match(PHONE_REGEX)) {
+        throw new Error(
+          'Phone should be numbers only with minimum length of 7 and maximum length of 20'
+        );
+      }
+      return true;
+    })
+    .bail(),
   check('email')
     .trim()
     .notEmpty()
@@ -99,11 +129,13 @@ exports.validateUserEdit = [
     .withMessage('Email is invalid.')
     .bail()
     .custom((email, { req }) => {
-      return User.findOne({ email, _id: { $ne: req.body._id } }).then((user) => {
-        if (user) {
-          return Promise.reject('Email is already taken.');
+      return User.findOne({ email, _id: { $ne: req.body._id } }).then(
+        (user) => {
+          if (user) {
+            return Promise.reject('Email is already taken.');
+          }
         }
-      });
+      );
     })
     .bail(),
   check('password')
@@ -122,9 +154,8 @@ exports.validateUserEdit = [
       let arrUserType = Object.values(USER_TYPE);
       if (!arrUserType.includes(type)) {
         throw new Error('Type invalid.');
-      } else {
-        return true;
       }
+      return true;
     })
     .bail(),
   check('status')
@@ -136,9 +167,8 @@ exports.validateUserEdit = [
       let arrUserStatus = Object.values(USER_STATUS);
       if (!arrUserStatus.includes(status)) {
         throw new Error('Status invalid.');
-      } else {
-        return true;
       }
+      return true;
     })
     .bail(),
   function (req, res, next) {

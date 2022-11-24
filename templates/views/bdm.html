@@ -7,11 +7,11 @@
       <div class="card-body">
         <div class="form-group">
           <label>Search</label>
-          <input 
+          <input
             type="text"
             class="form-control"
             name="search"
-            placeholder="First name, last name, status" 
+            placeholder="First name, last name, status"
           />
         </div>
       </div>
@@ -39,7 +39,26 @@
             id="nav{{$index}}"
             class="tab-pane fade p-3 {{if $index == 0}}active show{{/if}}"
           >
-            {{$value.name}}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{each leads}}
+                <tr>
+                  <td>{{$value.first_name | titleCase}}</td>
+                  <td>{{$value.last_name | titleCase}}</td>
+                  <td>{{$value.email}}</td>
+                  <td>{{$value.status | titleCase}}</td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
           </div>
           {{/each}}
         </div>
