@@ -101,6 +101,29 @@ exports.new_upload = async (req, res) => {
   }
 }
 
+exports.add = (req, res) => {
+  try {
+    return res.render('lead_management_add', { navigation });
+  } catch (error) {
+    console.error(error);
+    return res.render('500');
+  }
+};
+
+exports.create = async (req, res) => {
+  try {
+    const lead = new Lead({
+      ...req.body,
+      created_by: req.session.AUTH._id
+    });
+    await lead.save();
+    return res.redirect('/lead-management');
+  } catch (error) {
+    console.error(error);
+    return res.render('500');
+  }
+};
+
 
 exports.edit = async (req, res) => {
   try {

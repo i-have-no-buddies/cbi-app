@@ -3,8 +3,8 @@ const {
   validateUploadLead,
 } = require('../middleware/validator/validateUploadLead');
 const {
-  validateLeadEdit,
-} = require('../middleware/validator/validateLead');
+  validateLeadEdit, validateLeadAdd
+} = require('../middleware/validator/validateLeadManagement');
 
 const auth = require('../middleware/auth');
 
@@ -24,6 +24,17 @@ module.exports = (app) => {
     auth.authenticated,
     validateUploadLead,
     leadManagementController.new_upload,
+  );
+  app.get(
+    '/lead-management/add',
+    auth.authenticated,
+    leadManagementController.add
+  );
+  app.post(
+    '/lead-management/create',
+    auth.authenticated,
+    validateLeadAdd,
+    leadManagementController.create
   );
   app.get(
     '/lead-management/edit/:id',

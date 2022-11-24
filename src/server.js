@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const flash = require('connect-flash');
 const loginRouter = require('./router/loginRouter');
+const leadRouter = require('./router/leadRouter');
+const calendarRouter = require('./router/calendarRouter');
 const bdmRouter = require('./router/bdmRouter');
 const bdmSettingsRouter = require('./router/bdmSettingsRouter');
 const leadManagementRouter = require('./router/leadManagementRouter');
@@ -18,6 +20,7 @@ const userOnlineRouter = require('./router/userOnlineRouter');
 const APP_HOST = process.env.APP_HOST;
 const APP_PORT = process.env.APP_PORT;
 const APP_SECRET = process.env.APP_SECRET;
+
 
 /**
  * database connection
@@ -104,6 +107,8 @@ setInterval(() => {
  * routes
  */
 loginRouter(app);
+leadRouter(app);
+calendarRouter(app);
 bdmRouter(app);
 bdmSettingsRouter(app);
 leadManagementRouter(app);

@@ -3,32 +3,23 @@
 <link rel="stylesheet" href="/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css" />
 <div class="row">
   <div class="col-md-3">
-    
-    <div class="card">
-      <div class="card-body">
-        <div class="form-group">
-          <label>Option</label>
-          <a href="/app/cbi_template.csv" class="btn bg-olive btn-block">
-            <i class="fas fa-file-download"></i>
-            Download Template
-          </a>
-          <a href="/lead-management/upload" class="btn bg-info btn-block">
-            <i class="fas fa-file-upload"></i>
-            Upload File
-          </a>
-        </div>
-      </div>
-    </div>
-    
-
 
     <div class="card">
       <div class="card-body">
 
         {{if (type == 'lead')}}
           <input type='hidden' id='batch' name='batch'>
+          
           <div class="form-group">
-            <label>Search</label>
+            <label>Search</label>  
+            {{if search.batch}}
+            <a href="/lead-management" class="btn bg-maroon btn-block form-control">
+              <i class="fas fa-eraser"></i>
+              Clear Selected Batch
+            </a>
+            {{/if}}
+          </div>
+          <div class="form-group">
             <input
               type="search"
               class="form-control"
@@ -69,19 +60,6 @@
             </select>
           </div>
           
-          <div class="form-group">
-            <label>Option</label>
-            {{if search.batch}}
-            <a href="/lead-management" class="btn bg-maroon btn-block">
-              <i class="fas fa-eraser"></i>
-              Clear Selected Batch
-            </a>
-            {{/if}}
-            <a href="/lead-management" class="btn bg-info btn-block">
-              <i class="fas fa-file-upload"></i>
-              Allocate
-            </a>
-          </div>
         {{else}}
           <div class="form-group">
             <label>Upload Name</label>
@@ -95,17 +73,60 @@
         {{/if}}
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group">
+          <label>Option</label>
+            <a href="/lead-management/upload" class="btn bg-info btn-block">
+              <i class="fas fa-file-upload"></i>
+              Upload File
+            </a>
+            <a href="/lead-management/add" class="btn bg-info btn-block">
+              <i class="fas fa-user-plus"></i>
+              Add Lead
+            </a>
+            {{if (type == 'lead')}}
+              <a href="/lead-management" class="btn bg-info btn-block">
+                <i class="fas fa-user-check"></i>
+                Allocate
+              </a>
+            {{/if}}
+        </div>
+      </div>
+    </div>
     
   </div>
   <div class="col-md-9">
     <!--made by button to remove one search-->
     <div class="card card-primary card-outline card-outline-tabs">
-      <div class="card-header p-0 border-bottom-0">
+      <!--div class="card-header p-0 border-bottom-0">
         <div class="btn-group w-100 mb-2">
           <a class="btn btn-info {{if type == 'lead'}}active{{/if}}" href="/lead-management?page=1&type=lead"> Leads </a>
           <a class="btn btn-info {{if type == 'batch'}}active{{/if}}" href="/lead-management?page=1&type=batch"> Lead Batches </a>
         </div>
-      </div>
+      </div-->
+
+      <ul id="tabs" class="nav nav-tabs">
+        <li class="nav-item">
+          <a
+            href=""
+            onclick="window.location = '/lead-management?page=1&type=lead'"
+            data-toggle="tab"
+            class="nav-link small text-uppercase {{if type == 'lead'}}active{{/if}}"
+            >Leads</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            href=""
+            onclick="window.location = '/lead-management?page=1&type=batch'"
+            data-toggle="tab"
+            class="nav-link small text-uppercase {{if type == 'batch'}}active{{/if}}"
+            >Batches</a
+          >
+        </li>
+      </ul>
       
       <div class="card-body">
         <div class="row">
@@ -149,7 +170,7 @@
               <div class="col-md-4 p-2 pl-3 pr-3">
                 <!-- Widget: user widget style 2 -->
                 <div class="card card-widget widget-user-2 shadow">
-                  <div class="widget-user-header {{if $value.status == 'ACTIVE'}}bg-success{{else}}bg-warning{{/if}}">
+                  <div class="widget-user-header {{if $value.status == 'ACTIVE'}}bg-teal{{else}}bg-warning{{/if}}">
                     <h3 class="">{{$value.upload_name}}</h3>
                     <h5 class="">{{$value.created_at | formatDate}}</h5>
                   </div>
@@ -157,12 +178,12 @@
                     <ul class="nav flex-column">
                       <li class="nav-item">
                         <a href="/lead-management?page=1&type=lead&batch={{$value.id}}&status=ACTIVE" class="nav-link">
-                          Uploaded <span class="float-right badge bg-primary">{{$value.uploaded}}</span>
+                          ACTIVE <span class="float-right badge bg-teal">{{$value.uploaded}}</span>
                         </a>
                       </li>
                       <li class="nav-item">
                         <a href="/lead-management?page=1&type=lead&batch={{$value.id}}&status=INACTIVE" class="nav-link">
-                          Allocated <span class="float-right badge bg-success">{{$value.allocated}}</span>
+                          INACTIVE <span class="float-right badge bg-maroon">{{$value.allocated}}</span>
                         </a>
                       </li>
                       <!-- <li class="nav-item">

@@ -88,6 +88,38 @@ const leadSchema = new mongoose.Schema({
   },
 });
 
+
+leadSchema.pre('save', async function () {
+  const doc = this;
+  doc.tags = [
+    ...ngramsAlgo(
+      `${doc.first_name.toLowerCase().trim()} ${doc.last_name
+        .toLowerCase()
+        .trim()}`,
+      'tag'
+    ),
+    ...ngramsAlgo(doc.job_title.toLowerCase().trim(), 'tag'),
+    ...ngramsAlgo(doc.company.toLowerCase().trim(), 'tag'),
+    {
+      tag: doc.gender.toLowerCase(),
+    },
+    {
+      tag: doc.business_no.toLowerCase(),
+    },
+    {
+      tag: doc.mobile.toLowerCase(),
+    },
+    {
+      tag: doc.second_mobile.toLowerCase(),
+    },
+    {
+      tag: doc.email.toLowerCase(),
+    },
+    { tag: doc.second_email.toLowerCase() },
+    { tag: doc.nationality.toLowerCase() },
+  ];
+});
+
 leadSchema.pre('insertMany', async (next, docs) => {
   for (const doc of docs) {
     doc.tags = [
