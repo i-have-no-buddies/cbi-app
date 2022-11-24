@@ -2,7 +2,6 @@ const { LeadBatch } = require('../model/LeadBatch');
 const { Lead, LEAD_STATUS } = require('../model/Lead');
 const { ngramsAlgo } = require('../utils/helper');
 const { fork } = require('child_process');
-const navigation = 'upload_lead';
 const LEAD_PER_PAGE = 10;
 const BATCH_PER_PAGE = 9;
 
@@ -60,7 +59,6 @@ exports.index = async (req, res) => {
         batch: req.query.batch || '',
         status: req.query.status || '',
       },
-      navigation,
       LEAD_STATUS,
     });
   } catch (error) {
@@ -103,7 +101,7 @@ exports.new_upload = async (req, res) => {
 
 exports.add = (req, res) => {
   try {
-    return res.render('lead_management_add', { navigation });
+    return res.render('lead_management_add');
   } catch (error) {
     console.error(error);
     return res.render('500');
@@ -132,7 +130,6 @@ exports.edit = async (req, res) => {
     return res.render('lead_management_edit', {
       lead,
       LEAD_STATUS,
-      navigation,
     });
   } catch (error) {
     console.error(error);

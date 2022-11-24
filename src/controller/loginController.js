@@ -1,5 +1,5 @@
 const bcryptjs = require('bcryptjs')
-const { User, USER_STATUS, USER_ACCESS } = require('../model/User')
+const { User, USER_STATUS } = require('../model/User')
 
 exports.index = (req, res) => {
   try {
@@ -26,8 +26,7 @@ exports.login = async (req, res) => {
     if (!isPasswordMatched) {
       return res.redirect('/login')
     }
-    //can be dynamic if added to db for nav view
-    user.access = USER_ACCESS[user.type.replace(' ', '_')]
+    
     req.session.AUTH = user
 
     return res.redirect('/user-maintenance')

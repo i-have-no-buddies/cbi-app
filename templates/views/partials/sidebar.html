@@ -59,20 +59,13 @@
             <p>BDM Settings</p>
           </a>
         </li>
-        {{if AUTH.access.includes('lead_management')}}
         <li class="nav-item">
-          <a
-            href="/lead-management"
-            class="nav-link {{navigation | activeNav 'lead_management'}}"
-          >
+          <a href="/lead-management" class="nav-link">
             <i class="nav-icon far fa-folder-open"></i>
-            <p>
-              Lead Management
-              <!-- <span class="right badge badge-danger">New</span> -->
+            <p>Lead Management
             </p>
           </a>
         </li>
-        {{/if}}
         <li class="nav-item">
           <a href="/user-maintenance" class="nav-link">
             <i class="nav-icon far fa-user"></i>

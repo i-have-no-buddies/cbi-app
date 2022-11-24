@@ -16,15 +16,6 @@ const USER_STATUS = {
   INACTIVE: 'INACTIVE',
 };
 
-//for view purposes
-const USER_ACCESS = {
-  SUPER_ADMIN: ['user_maintenance', 'lead_management'],
-  ADMIN: ['user_maintenance', 'lead_management'],
-  MANAGER: ['user_maintenance'],
-  IFA: ['user_maintenance'],
-  BDM: ['user_maintenance'],
-};
-
 const userSchema = new mongoose.Schema({
   first_name: {
     type: String,
@@ -151,5 +142,4 @@ module.exports = {
   User: mongoose.model('User', userSchema),
   USER_TYPE,
   USER_STATUS,
-  USER_ACCESS,
 };
