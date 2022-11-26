@@ -1,0 +1,272 @@
+{{extend './layout.html'}} {{block 'content'}}
+<div class="row">
+  <div class="col-md-4">
+    <div class="card ">
+      <form id="lead_form" action="/lead/update" method="post">
+        <div class="card-body">
+          <div class="form-group" style="margin-bottom:0px">
+            <input 
+              type="hidden" 
+              class="form-control" 
+              name="_id" 
+              value="{{if lead}}{{lead._id.toString()}}{{/if}}" 
+            />
+          </div>
+          <div class="form-group">
+            <label>First Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="first_name" 
+              name="first_name" 
+              value="{{if lead}}{{lead.first_name}}{{/if}}" 
+            />
+            <small id="first_name_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="last_name" 
+              name="last_name" 
+              value="{{if lead}}{{lead.last_name}}{{/if}}" 
+            />
+            <small id="last_name_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Job Title</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="job_title" 
+              name="job_title" 
+              value="{{if lead}}{{lead.job_title}}{{/if}}" 
+            />
+            <small id="job_title_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Company</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="company" 
+              name="company" 
+              value="{{if lead}}{{lead.company}}{{/if}}" 
+            />
+            <small id="company_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Profile Link</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="profile_link" 
+              name="profile_link" 
+              value="{{if lead}}{{lead.profile_link}}{{/if}}" 
+            />
+            <small id="profile_link_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Gender</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="gender" 
+              name="gender" 
+              value="{{if lead}}{{lead.gender}}{{/if}}" 
+            />
+            <small id="gender_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Business Number</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="business_no" 
+              name="business_no" 
+              value="{{if lead}}{{lead.business_no}}{{/if}}" 
+            />
+            <small id="business_no_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Mobile</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="mobile" 
+              name="mobile" 
+              value="{{if lead}}{{lead.mobile}}{{/if}}" 
+            />
+            <small id="mobile_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Second Mobile</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="second_mobile" 
+              name="second_mobile" 
+              value="{{if lead}}{{lead.second_mobile}}{{/if}}" 
+            />
+            <small id="second_mobile_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="email" 
+              name="email" 
+              value="{{if lead}}{{lead.email}}{{/if}}" 
+            />
+            <small id="email_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Second Email</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="second_email" 
+              name="second_email" 
+              value="{{if lead}}{{lead.second_email}}{{/if}}" 
+            />
+            <small id="second_email_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Nationality</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="nationality" 
+              name="nationality" 
+              value="{{if lead}}{{lead.nationality}}{{/if}}" 
+            />
+            <small id="nationality_error" class="form-text text-danger"></small>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea class="form-control" 
+              rows="3" 
+              placeholder="Enter ..." 
+              style="min-height: 81px;"
+              id="description" 
+              name="description" 
+            >{{if lead}}{{lead.description}}{{/if}}</textarea>
+            <small id="description_error" class="form-text text-danger"></small>
+          </div>
+        </div>
+        <input type="hidden" name="date" id='hidden_date'/>
+        <input type="hidden" name="time" id='hidden_time'/>
+        <input type="hidden" name="note" id='hidden_note'/>
+        <input type="hidden" name="status" id='hidden_status'/>
+      </form>
+        <div class="card-footer">
+          <div class="form-group">
+            <button 
+              onclick='submitUpdate()'
+              class="btn bg-teal btn-block"
+            >Update Lead</button>
+          </div>
+        </div>
+    </div>
+  </div>
+  
+  <div class="col-md-8">
+    <div class="card">
+      <!--uncertaion yet-->
+      <div class="card-body">
+          <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="form-group">
+                <label>Date</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="date"  
+                  value="{{if lead}}{{lead.date}}{{/if}}" 
+                />
+                <small id="date_error" class="form-text text-danger"></small>
+              </div>
+              <label>Note</label>
+              <textarea class="form-control" 
+                rows="3" 
+                placeholder="Note ..." 
+                style="min-height: 81px;"
+                id="note" 
+              >{{if lead}}{{lead.note}}{{/if}}</textarea>
+              <small id="note_error" class="form-text text-danger"></small>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Time</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="time" 
+                value="{{if lead}}{{lead.time}}{{/if}}" 
+              />
+              <small id="time_error" class="form-text text-danger"></small>
+            </div>
+            <div class="form-group">
+              <label>Lead Status</label>
+              <select class="form-control" id="status">
+                {{each LEAD_STATUS}}
+                <option 
+                  value="{{$value}}"
+                  {{if lead}}{{if lead.status == $value}}selected{{/if}}{{/if}}
+                >{{$value}}</option>
+                {{/each}}
+              </select>
+              <small id="status_error" class="form-text text-danger"></small>
+            </div>
+            <div class="form-group">
+              <button 
+                onclick='submitStatusUpdate()'
+                class="btn bg-teal btn-block"
+              >Update Status</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        LOGS
+      </div>
+    </div>
+  </div>
+</div>
+{{/block}}{{block 'javascript'}}
+<script>
+  function handleError(key, value) {
+    $(`#${key}`).addClass('is-invalid')
+    $(`#${key}_error`).html(value)
+  }
+
+  {{each errors}}
+    handleError(`{{$index}}`,`{{$value}}`)
+  {{/each}}
+
+  function submitUpdate() {
+    appendAction()
+    document.getElementById("lead_form").submit();
+  }
+  function submitStatusUpdate() {
+    appendAction()
+    document.getElementById("lead_form").action = "/lead/update-status";
+    document.getElementById("lead_form").submit()
+  }
+
+  function appendAction(){
+    document.getElementById('hidden_date').value = document.getElementById('date').value;
+    document.getElementById('hidden_time').value = document.getElementById('time').value;
+    document.getElementById('hidden_note').value = document.getElementById('note').value;
+    document.getElementById('hidden_status').value = document.getElementById('status').value;
+  }
+  
+</script>
+{{/block}}
+

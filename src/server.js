@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const flash = require('connect-flash');
 const loginRouter = require('./router/loginRouter');
+const leadRouter = require('./router/leadRouter');
+const calendarRouter = require('./router/calendarRouter');
 const bdmRouter = require('./router/bdmRouter');
 const bdmSettingsRouter = require('./router/bdmSettingsRouter');
 const leadManagementRouter = require('./router/leadManagementRouter');
@@ -79,17 +81,17 @@ const userOnlineMap = new Map();
 const cleanupFrequency = 30 * 1000;
 // clean out users who haven't been here in the 30 seconds
 const cleanupTarget = 2 * 60 * 1000;
-app.use((req, res, next) => {
+function setOnlineUser(req, res, next) {
   if (req.session.AUTH) {
     userOnlineMap.set(
       `${req.session.AUTH.first_name} ${req.session.AUTH.last_name}|${req.session.AUTH.email}|${req.session.AUTH.type}`,
-      Date.now()
+      [Date.now(), req.route.path]
     );
     res.locals.ONLINE = Array.from(userOnlineMap.keys());
     res.locals.LAST_ACTION = Array.from(userOnlineMap.values());
   }
   next();
-});
+}
 setInterval(() => {
   let now = Date.now();
   for (let [id, lastAccess] of userOnlineMap.entries()) {
@@ -104,11 +106,13 @@ setInterval(() => {
  * routes
  */
 loginRouter(app);
+leadRouter(app);
+calendarRouter(app);
 bdmRouter(app);
 bdmSettingsRouter(app);
 leadManagementRouter(app);
 userMaintenanceRouter(app);
-userOnlineRouter(app);
+userOnlineRouter(app, setOnlineUser);
 app.use((req, res) => {
   return res.render('404');
 });

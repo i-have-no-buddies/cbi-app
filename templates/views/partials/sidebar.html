@@ -1,5 +1,4 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-  <!-- Brand Logo -->
   <a href="/" class="brand-link text-sm">
     <img
       src="/assets/dist/img/AdminLTELogo.png"
@@ -9,10 +8,7 @@
     />
     <span class="brand-text font-weight-light">CBI App</span>
   </a>
-
-  <!-- Sidebar -->
   <div class="sidebar">
-    <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
         <img
@@ -25,7 +21,6 @@
         <a href="#" class="d-block">{{AUTH.first_name}} {{AUTH.last_name}}</a>
       </div>
     </div>
-    <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul
         class="nav nav-pills nav-sidebar flex-column"
@@ -33,8 +28,18 @@
         role="menu"
         data-accordion="false"
       >
-        <!-- Add icons to the links using the .nav-icon class
-             with font-awesome or any other icon font library -->
+        <li class="nav-item">
+          <a href="/lead" class="nav-link">
+            <i class="nav-icon far fa-id-card text-success"></i>
+            <p>Lead</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/calendar" class="nav-link">
+            <i class="nav-icon far fa-calendar text-success"></i>
+            <p>Calendar</p>
+          </a>
+        </li>
         <li class="nav-item">
           <a href="/bdm" class="nav-link">
             <i class="nav-icon far fa-user-circle text-info"></i>
@@ -47,20 +52,12 @@
             <p>BDM Settings</p>
           </a>
         </li>
-        {{if AUTH.access.includes('lead_management')}}
         <li class="nav-item">
-          <a
-            href="/lead-management"
-            class="nav-link {{navigation | activeNav 'lead_management'}}"
-          >
+          <a href="/lead-management" class="nav-link">
             <i class="nav-icon far fa-folder-open text-indigo"></i>
-            <p>
-              Lead Management
-              <!-- <span class="right badge badge-danger">New</span> -->
-            </p>
+            <p>Lead Management</p>
           </a>
         </li>
-        {{/if}}
         <li class="nav-item">
           <a href="/user-maintenance" class="nav-link">
             <i class="nav-icon far fa-user text-indigo"></i>
@@ -81,7 +78,5 @@
         </li>
       </ul>
     </nav>
-    <!-- /.sidebar-menu -->
   </div>
-  <!-- /.sidebar -->
 </aside>

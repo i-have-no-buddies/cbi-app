@@ -1,7 +1,9 @@
+<!-- layout -->
 {{extend './layout.html'}}
-<!-- contenet -->
+<!-- content -->
 {{block 'content'}}
 <div class="row">
+  {{if setting}}
   <div class="col-sm-3">
     <div class="card">
       <div class="card-body">
@@ -19,15 +21,22 @@
   </div>
   <div class="col-sm-9">
     <div class="card">
-      <div class="card-body">
+      <div class="card-body p-0">
         <ul id="tabs" class="nav nav-tabs">
           {{each settings}}
           <li class="nav-item">
             <a
               href=""
-              data-target="#nav{{$index}}"
+              onclick="navigate('/bdm?setting={{$value._id.toString()}}&page=1')"
               data-toggle="tab"
-              class="nav-link small text-uppercase {{if $index == 0}}active{{/if}}"
+              class="nav-link small text-uppercase {{if $value._id.toString() == CURRENT_BDM_SETTING}}active{{/if}}"
+              id="tabSettings{{$index}}"
+              data-ot="{{$value.name}}"
+              data-ot-delay="0"
+              data-ot-tip-joint="bottom"
+              data-ot-hide-delay="0"
+              data-ot-target="#tabSettings{{$index}}"
+              data-ot-fixed="true"
               >{{$value.name | strLimitNav}}</a
             >
           </li>
@@ -36,8 +45,7 @@
         <div id="tabsContent" class="tab-content">
           {{each settings}}
           <div
-            id="nav{{$index}}"
-            class="tab-pane fade p-3 {{if $index == 0}}active show{{/if}}"
+            class="tab-pane fade pt-3 {{if $value._id.toString() == CURRENT_BDM_SETTING}}active show{{/if}}"
           >
             <table class="table">
               <thead>
@@ -49,7 +57,7 @@
                 </tr>
               </thead>
               <tbody>
-                {{each leads}}
+                {{each leads.docs}}
                 <tr>
                   <td>{{$value.first_name | titleCase}}</td>
                   <td>{{$value.last_name | titleCase}}</td>
@@ -63,7 +71,40 @@
           {{/each}}
         </div>
       </div>
+      <div class="card-footer">
+        <nav aria-label="Contacts Page Navigation">
+          <ul
+            class="pagination justify-content-center m-0"
+            id="pagination"
+          ></ul>
+        </nav>
+      </div>
     </div>
   </div>
+  {{/if}}
 </div>
+{{/block}}
+<!-- javascript -->
+{{block 'javascript'}}
+<script src="/app/global.js"></script>
+<script>
+  const page = parseInt('{{leads.page}}');
+  const totalPages = parseInt('{{leads.totalPages}}');
+  const totalDocs = parseInt('{{leads.totalDocs}}');
+
+  function navigate(url) {
+    window.location.href = url;
+  }
+
+  function search(page) {
+    console.log(page);
+    let url = window.location.href.split('?')[0];
+    url += `?page=${page}`;
+    window.location.href = url;
+  }
+
+  $(document).ready(function () {
+    $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
+  });
+</script>
 {{/block}}

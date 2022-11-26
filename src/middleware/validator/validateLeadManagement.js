@@ -87,7 +87,7 @@ exports.validateLeadAdd = [
       let error_results;
       if (!errors.isEmpty()) {
         error_results = errorFormater(errors);
-        return res.render('lead_add', {
+        return res.render('lead_management_add', {
           lead: req.body,
           errors: error_results,
         });
@@ -176,22 +176,6 @@ exports.validateLeadEdit = [
         .notEmpty()
         .withMessage('Description is required.')
         .bail(),
-    function (req, res, next) {
-      const errors = validationResult(req);
-      let error_results;
-      if (!errors.isEmpty()) {
-        error_results = errorFormater(errors);
-        return res.render('lead_edit', {
-          LEAD_STATUS,
-          lead: req.body,
-          errors: error_results,
-        });
-      }
-      next();
-    },
-];
-
-exports.validateLeadStatusEdit = [
     check('status')
       .trim()
       .notEmpty()
@@ -206,27 +190,12 @@ exports.validateLeadStatusEdit = [
         }
       })
       .bail(),
-    check('note')
-        .trim()
-        .notEmpty()
-        .withMessage('Note is required.')
-        .bail(),
-    check('date')
-        .trim()
-        .notEmpty()
-        .withMessage('Date is required.')
-        .bail(),
-    check('time')
-        .trim()
-        .notEmpty()
-        .withMessage('Time is required.')
-        .bail(),
     function (req, res, next) {
       const errors = validationResult(req);
       let error_results;
       if (!errors.isEmpty()) {
         error_results = errorFormater(errors);
-        return res.render('lead_edit', {
+        return res.render('lead_management_edit', {
           LEAD_STATUS,
           lead: req.body,
           errors: error_results,

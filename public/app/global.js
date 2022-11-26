@@ -10,7 +10,7 @@ function pagination(page, totalPages, totalDocs, func) {
   let paginationHtml = '';
   if (parseInt(page) > 1) {
     paginationHtml += '<li class="page-item">';
-    paginationHtml += `<button class="page-link" onclick="${func}(${
+    paginationHtml += `<button class="page-link text-dark" onclick="${func}(${
       parseInt(page) - 1
     })" aria-label="Previous">`;
     paginationHtml += '<span aria-hidden="true">&lsaquo;</span>';
@@ -20,16 +20,16 @@ function pagination(page, totalPages, totalDocs, func) {
   for (let i = start_page; i <= end_page; i++) {
     if (i == page) {
       paginationHtml += `<li class="page-item">`;
-      paginationHtml += `<button class="page-link bg-primary text-white">${i}</a>`;
+      paginationHtml += `<button class="page-link bg-teal text-white">${i}</a>`;
     } else {
       paginationHtml += `<li class="page-item">`;
-      paginationHtml += `<button class="page-link" onclick="${func}(${i})">${i}</a>`;
+      paginationHtml += `<button class="page-link text-dark" onclick="${func}(${i})">${i}</a>`;
     }
     paginationHtml += '</li>';
   }
   if (parseInt(page) < totalPages) {
     paginationHtml += '<li class="page-item">';
-    paginationHtml += `<button class="page-link" onclick="${func}(${
+    paginationHtml += `<button class="page-link text-dark" onclick="${func}(${
       parseInt(page) + 1
     })" aria-label="Next">`;
     paginationHtml += '<span aria-hidden="true">&rsaquo;</span>';

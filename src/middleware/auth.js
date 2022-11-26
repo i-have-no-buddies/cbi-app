@@ -1,4 +1,8 @@
 const PAGES = {
+  '/lead': 'Lead',
+  '/lead/edit/:id': 'Lead',
+  '/lead/update': 'Lead',
+  '/calendar': 'Calendar',
   '/bdm': 'BDM',
   '/bdm-settings': 'BDM Settings',
   '/bdm-settings/add': 'BDM Settings',
@@ -6,6 +10,9 @@ const PAGES = {
   '/lead-management': 'Lead Management',
   '/lead-management/upload': 'Lead Management',
   '/lead-management/edit/:id': 'Lead Management',
+  '/lead-management/update': 'Lead Management',
+  '/lead-management/add': 'Lead Management',
+  '/lead-management/create': 'Lead Management',
   '/user-maintenance': 'User Maintenance',
   '/user-maintenance/add': 'User Maintenance',
   '/user-maintenance/create': 'User Maintenance',
@@ -18,6 +25,7 @@ exports.authenticated = (req, res, next) => {
     if (!req.session.AUTH) return res.redirect('/login');
     res.locals.AUTH = req.session.AUTH;
     res.locals.CURRENT_PAGE = PAGES[req.route.path];
+    res.locals.CURRENT_DATE = new Date();
     next();
   } catch (error) {
     console.error(error);

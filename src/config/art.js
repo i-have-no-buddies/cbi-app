@@ -1,9 +1,13 @@
 const art = require('express-art-template');
 const moment = require('moment-timezone');
+const { USER_TYPE, USER_STATUS } = require('../model/User');
 
-art.template.defaults.imports.formatDate = (date) => {
+art.template.defaults.imports.formatDate = (
+  date,
+  format = 'YYYY-MM-DD hh:mm A'
+) => {
   if (date) {
-    return moment(date).tz('Asia/Dubai').format('YYYY-MM-DD hh:mm A');
+    return `<span class="text-info">${moment(date).tz('Asia/Dubai').format(format)}</span>`;
   }
   return date;
 };
@@ -40,6 +44,35 @@ art.template.defaults.imports.strLimitNav = (str) => {
     return `${str.substring(0, 10)}...`;
   }
   return str;
+};
+
+art.template.defaults.imports.userTypeBadge = (type) => {
+  if (type === USER_TYPE.SUPER_ADMIN) {
+    return `<span class="badge bg-purple">${type}</span>`;
+  }
+  if (type === USER_TYPE.ADMIN) {
+    return `<span class="badge bg-info">${type}</span>`;
+  }
+  if (type === USER_TYPE.MANAGER) {
+    return `<span class="badge bg-success">${type}</span>`;
+  }
+  if (type === USER_TYPE.IFA) {
+    return `<span class="badge bg-success">${type}</span>`;
+  }
+  if (type === USER_TYPE.BDM) {
+    return `<span class="badge bg-teal">${type}</span>`;
+  }
+  return `<span>${type}</span>`;
+};
+
+art.template.defaults.imports.userStatusBadge = (status) => {
+  if (status === USER_STATUS.ACTIVE) {
+    return `<span class="badge bg-teal">${status}</span>`;
+  }
+  if (status === USER_STATUS.INACTIVE) {
+    return `<span class="badge bg-maroon">${status}</span>`;
+  }
+  return `<span>${status}</span>`;
 };
 
 module.exports = art;
