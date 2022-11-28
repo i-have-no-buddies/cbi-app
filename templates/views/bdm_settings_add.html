@@ -1,21 +1,23 @@
 {{extend './layout.html'}} {{block 'content'}}
 <div class="card">
   <div class="card-body">
-    <form action="/bdm-settings/create" method="post">
+    <form action="/bdm-settings/create" method="post" id="formBdmSettingsCreate">
       <div class="form-group">
         <label>Setting Name</label>
         <input
           type="text"
-          class="form-control {{if errors}}{{if errors.name}}is-invalid{{/if}}{{/if}}"
+          class="form-control"
           name="name"
           value="{{if body}}{{body.name}}{{/if}}"
         />
+        <small class="form-text text-danger" id="name_error"></small>
       </div>
       <div class="form-group">
         <label>IFA</label>
         <select
-          class="form-control {{if errors}}{{if errors.ifa}}is-invalid{{/if}}{{/if}}"
+          class="form-control select2bs4"
           name="ifa"
+          style="width: 100%"
         >
           <option value="">Select IFA</option>
           {{each IFA}}
@@ -27,12 +29,14 @@
           </option>
           {{/each}}
         </select>
+        <small class="form-text text-danger" id="ifa_error"></small>
       </div>
       <div class="form-group">
         <label>BDM</label>
         <select
-          class="form-control {{if errors}}{{if errors.bdm}}is-invalid{{/if}}{{/if}}"
+          class="form-control select2bs4"
           name="bdm"
+          style="width: 100%"
         >
           <option value="">Select BDM</option>
           {{each BDM}}
@@ -44,12 +48,14 @@
           </option>
           {{/each}}
         </select>
+        <small class="form-text text-danger" id="bdm_error"></small>
       </div>
       <div class="form-group">
         <label>Status</label>
         <select
-          class="form-control {{if errors}}{{if errors.status}}is-invalid{{/if}}{{/if}}"
+          class="form-control select2bs4"
           name="status"
+          style="width: 100%"
         >
           <option value="">Select Lead Status</option>
           {{each LEAD_STATUS}}
@@ -61,11 +67,50 @@
           </option>
           {{/each}}
         </select>
+        <small class="form-text text-danger" id="status_error"></small>
       </div>
       <div class="form-group">
-        <button class="btn btn-block bg-teal">Add Settings</button>
+        <button 
+          type="button" 
+          class="btn btn-block bg-teal" 
+          id="btnBdmSettingsCreate"
+        ><i class="fas fa-plus"></i> Add Settings</button>
       </div>
     </form>
   </div>
 </div>
+{{/block}}
+<!-- javascript -->
+{{block 'javascript'}}
+<script>
+  function handleError(key, value) {
+    $(`[name="${key}"]`).addClass('is-invalid');
+    $(`#${key}_error`).html(value);
+  }
+
+  $(document).ready(function() {
+    $('.select2bs4').select2({
+      theme: 'bootstrap4',
+    });
+    $('#btnBdmSettingsCreate').on('click', function() {
+      Swal.fire({
+        icon: 'question',
+        title: 'Do you really want to update the BDM settings?',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-save"></i> Update',
+        confirmButtonColor: '#20c997',
+        cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+        cancelButtonColor: '#d81b60',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#formBdmSettingsCreate').submit();
+        }
+      });
+    });
+  });
+
+  {{each errors}}
+    handleError(`{{$index}}`,`{{$value}}`)
+  {{/each}}
+</script>
 {{/block}}

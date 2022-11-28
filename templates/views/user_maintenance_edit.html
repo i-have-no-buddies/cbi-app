@@ -3,7 +3,7 @@
 <!-- content -->
 {{block 'content'}}
 <div class="card">
-  <form action="/user-maintenance/update" method="post">
+  <form action="/user-maintenance/update" method="post" id="formUserUpdate">
     <div class="card-body">
       <div class="form-group">
         <input 
@@ -90,8 +90,9 @@
     <div class="card-footer">
       <div class="form-group">
         <button 
-          type="submit" 
+          type="button" 
           class="btn bg-teal btn-block font-weight-bold"
+          id="btnUserUpdate"
         ><i class="fas fa-save"></i> Update User</button>
       </div>
     </div>
@@ -102,10 +103,28 @@
 {{block 'javascript'}}
 <script>
   function handleError(key, value) {
-    $(`[name="${key}"]`).addClass('is-invalid')
-    $(`#${key}_error`).html(value)
+    $(`[name="${key}"]`).addClass('is-invalid');
+    $(`#${key}_error`).html(value);
   }
-  
+
+  $(document).ready(function() {
+    $('#btnUserUpdate').on('click', function() {
+      Swal.fire({
+        icon: 'question',
+        title: 'Do you really want to update the user?',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-save"></i> Update',
+        confirmButtonColor: '#20c997',
+        cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+        cancelButtonColor: '#d81b60',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#formUserUpdate').submit();
+        }
+      });
+    });
+  });
+
   {{each errors}}
     handleError(`{{$index}}`,`{{$value}}`)
   {{/each}}
