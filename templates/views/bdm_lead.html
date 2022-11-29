@@ -27,7 +27,7 @@
           <li class="nav-item">
             <a
               href=""
-              onclick="navigate('/bdm?setting={{$value._id.toString()}}&page=1')"
+              onclick="navigate('/bdm-lead?setting={{$value._id.toString()}}&page=1')"
               data-toggle="tab"
               class="nav-link small text-uppercase {{if $value._id.toString() == CURRENT_BDM_SETTING}}active{{/if}}"
               id="tabSettings{{$index}}"
@@ -51,8 +51,8 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
+                    <th>Name</th>
+                    <th>Mobile</th>
                     <th>Email</th>
                     <th>Status</th>
                   </tr>
@@ -60,8 +60,13 @@
                 <tbody>
                   {{each leads.docs}}
                   <tr>
-                    <td>{{$value.first_name | titleCase}}</td>
-                    <td>{{$value.last_name | titleCase}}</td>
+                    <td>
+                      <a href="/bdm-lead/{{$value._id.toString()}}">
+                      {{$value.first_name | titleCase}}
+                      {{$value.last_name | titleCase}}
+                      </a>
+                    </td>
+                    <td>{{$value.mobile}}</td>
                     <td>{{$value.email}}</td>
                     <td>{{$value.status | titleCase}}</td>
                   </tr>
@@ -99,9 +104,9 @@
   }
 
   function search(page) {
-    console.log(page);
     let url = window.location.href.split('?')[0];
-    url += `?page=${page}`;
+    let setting = '{{CURRENT_BDM_SETTING}}';
+    url += `?setting=${setting}&page=${page}`;
     window.location.href = url;
   }
 

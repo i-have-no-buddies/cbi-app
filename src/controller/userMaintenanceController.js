@@ -64,7 +64,7 @@ exports.create = async (req, res) => {
 
 exports.edit = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.params._id;
     const user = await User.findById(id).lean();
     user.password = '';
     return res.render('user_maintenance_edit', {
@@ -80,7 +80,10 @@ exports.edit = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const user = await User.findById(req.body._id);
+    const user = await User.findById(req.params._id);
+    if (!req.body.password) {
+      delete req.body.password;
+    }
     for (const property in req.body) {
       if (property !== '_id') {
         user[property] = req.body[property];

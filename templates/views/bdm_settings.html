@@ -93,17 +93,25 @@
                 <td>{{$value.bdm_name| titleCase}}</td>
                 <td>{{$value.status | titleCase}}</td>
                 <td>
-                  <a
-                    href="/bdm-settings/edit/{{$value._id.toString()}}"
-                    class="btn bg-teal btn-sm"
-                    >
-                    <i class="fas fa-edit"></i> Edit</a
+                  <form
+                    action="/bdm-settings/delete/{{$value._id.toString()}}"
+                    method="post"
+                    id="formBdmSettingsDelete{{$index}}"
                   >
-                  <a
-                    class="btn bg-maroon btn-sm"
+                    <a
+                      href="/bdm-settings/edit/{{$value._id.toString()}}"
+                      class="btn bg-teal btn-sm"
                     >
-                    <i class="fas fa-times"></i> Delete</a
-                  >
+                      <i class="fas fa-edit"></i> Edit</a
+                    >
+                    <button
+                      type="button"
+                      class="btn bg-maroon btn-sm"
+                      onclick="deleteBdmSettings('#formBdmSettingsDelete{{$index}}');"
+                    >
+                      <i class="fas fa-times"></i> Delete
+                    </button>
+                  </form>
                 </td>
               </tr>
               {{/each}}
@@ -148,6 +156,22 @@
     if (ifa) url += `&ifa=${ifa}`;
     if (bdm) url += `&bdm=${bdm}`;
     window.location.href = url;
+  }
+
+  function deleteBdmSettings(form) {
+    Swal.fire({
+      icon: 'question',
+      title: 'Do you really want to delete the BDM Settings?',
+      showCancelButton: true,
+      confirmButtonText: '<i class="fas fa-save"></i> Delete',
+      confirmButtonColor: '#20c997',
+      cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+      cancelButtonColor: '#d81b60',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $(form).submit();
+      }
+    });
   }
 
   $(document).ready(function () {

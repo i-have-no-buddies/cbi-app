@@ -1,15 +1,7 @@
 {{extend './layout.html'}} {{block 'content'}}
 <div class="card">
   <div class="card-body">
-    <form action="/bdm-settings/update" method="post" id="formBdmSettingsUpdate">
-      <div class="form-group">
-        <input 
-          type="hidden"
-          class="form-control"
-          name="_id"
-          value="{{if setting}}{{setting._id.toString()}}{{/if}}"
-        />
-      </div>
+    <form action="/bdm-settings/update/{{setting._id.toString()}}" method="post" id="formBdmSettingsUpdate">
       <div class="form-group">
         <label>Setting Name</label>
         <input

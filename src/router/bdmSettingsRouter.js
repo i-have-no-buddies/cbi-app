@@ -15,14 +15,19 @@ module.exports = (app) => {
     bdmSettingsController.create
   );
   app.get(
-    '/bdm-settings/edit/:id',
+    '/bdm-settings/edit/:_id',
     auth.authenticated,
     bdmSettingsController.edit
   );
   app.post(
-    '/bdm-settings/update',
+    '/bdm-settings/update/:_id',
     auth.authenticated,
     validateBdmSettingEdit,
     bdmSettingsController.update
+  );
+  app.post(
+    '/bdm-settings/delete/:_id',
+    auth.authenticated,
+    bdmSettingsController.delete
   );
 };

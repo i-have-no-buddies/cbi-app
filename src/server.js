@@ -12,7 +12,7 @@ const flash = require('connect-flash');
 const loginRouter = require('./router/loginRouter');
 const leadRouter = require('./router/leadRouter');
 const calendarRouter = require('./router/calendarRouter');
-const bdmRouter = require('./router/bdmRouter');
+const bdmLeadRouter = require('./router/bdmLeadRouter');
 const bdmSettingsRouter = require('./router/bdmSettingsRouter');
 const leadManagementRouter = require('./router/leadManagementRouter');
 const userMaintenanceRouter = require('./router/userMaintenanceRouter');
@@ -108,7 +108,7 @@ setInterval(() => {
 loginRouter(app);
 leadRouter(app);
 calendarRouter(app);
-bdmRouter(app);
+bdmLeadRouter(app);
 bdmSettingsRouter(app);
 leadManagementRouter(app);
 userMaintenanceRouter(app);

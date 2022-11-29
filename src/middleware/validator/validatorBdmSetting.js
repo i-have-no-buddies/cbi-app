@@ -144,6 +144,7 @@ exports.validateBdmSettingEdit = [
       const bdms = await User.getActiveBdm().lean();
       const managers = await User.getActiveManager().lean();
       const ifas = await User.getActiveIfa().lean();
+      req.body._id = req.params._id;
       return res.render('bdm_settings_edit', {
         BDM: bdms,
         IFA: [...managers, ...ifas],

@@ -74,7 +74,7 @@ exports.create = async (req, res) => {
 
 exports.edit = async (req, res) => {
   try {
-    const setting = await BdmSetting.findOne({ _id: req.params.id }).lean();
+    const setting = await BdmSetting.findOne({ _id: req.params._id }).lean();
     const bdms = await User.getActiveBdm().lean();
     const managers = await User.getActiveManager().lean();
     const ifas = await User.getActiveIfa().lean();
@@ -92,7 +92,7 @@ exports.edit = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const setting = await BdmSetting.findById(req.body._id);
+    const setting = await BdmSetting.findById(req.params._id);
     for (const property in req.body) {
       if (property !== '_id') {
         setting[property] = req.body[property];
@@ -105,3 +105,13 @@ exports.update = async (req, res) => {
     return res.render('500');
   }
 };
+
+exports.delete = async (req, res) => {
+  try {
+    await BdmSetting.deleteOne({ _id: req.params._id });
+    return res.redirect('/bdm-settings');
+  } catch (error) {
+    console.error(error);
+    return res.render('500');
+  }
+}

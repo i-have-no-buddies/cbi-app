@@ -129,7 +129,7 @@ exports.validateUserEdit = [
     .withMessage('Email is invalid.')
     .bail()
     .custom((email, { req }) => {
-      return User.findOne({ email, _id: { $ne: req.body._id } }).then(
+      return User.findOne({ email, _id: { $ne: req.params._id } }).then(
         (user) => {
           if (user) {
             return Promise.reject('Email is already taken.');
@@ -139,9 +139,9 @@ exports.validateUserEdit = [
     })
     .bail(),
   check('password')
-    .trim()
     .optional({ checkFalsy: true })
     .bail()
+    .trim()
     .isLength({ min: 10 })
     .withMessage('Password must be minimum of 10 characters.')
     .bail(),
@@ -178,6 +178,7 @@ exports.validateUserEdit = [
       for (let i = 0; i < errors.array().length; i++) {
         error_results[errors.errors[i].param] = errors.errors[i].msg;
       }
+      req.body._id = req.params._id;
       return res.render('user_maintenance_edit', {
         USER_TYPE,
         USER_STATUS,

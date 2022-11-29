@@ -1,0 +1,15 @@
+<!-- layout -->
+{{extend './layout.html'}}
+<!-- content -->
+{{block 'content'}}
+<div class="row">
+  <div class="card">
+    <div class="card-body">
+      {{lead.first_name}}<br>
+      {{lead.last_name}}<br>
+      {{lead.email}}<br>
+      {{lead.status}}<br>
+    </div>
+  </div>
+</div>
+{{/block}}

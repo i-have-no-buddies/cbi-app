@@ -20,12 +20,12 @@ module.exports = (app) => {
     userMaintenanceController.create
   );
   app.get(
-    '/user-maintenance/edit/:id',
+    '/user-maintenance/edit/:_id',
     auth.authenticated,
     userMaintenanceController.edit
   );
   app.post(
-    '/user-maintenance/update',
+    '/user-maintenance/update/:_id',
     auth.authenticated,
     validateUserEdit,
     userMaintenanceController.update

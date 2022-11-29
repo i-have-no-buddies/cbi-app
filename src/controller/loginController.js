@@ -18,7 +18,7 @@ exports.login = async (req, res) => {
     const user = await User.findOne({
       email,
       status: USER_STATUS.ACTIVE,
-    }).lean()
+    }).lean();
     if (!user) {
       return res.redirect('/login')
     }
@@ -26,9 +26,7 @@ exports.login = async (req, res) => {
     if (!isPasswordMatched) {
       return res.redirect('/login')
     }
-    
     req.session.AUTH = user
-
     return res.redirect('/user-maintenance')
   } catch (error) {
     console.error(error)
