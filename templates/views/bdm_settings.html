@@ -78,9 +78,10 @@
           <table class="table table-striped">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>IFA</th>
-                <th>BDM</th>
+                <th><i class="far fa-calendar"></i> Date</th>
+                <th><i class="far fa-file"></i> Name</th>
+                <th><i class="far fa-user"></i> IFA</th>
+                <th><i class="far fa-user"></i> BDM</th>
                 <th>Status</th>
                 <th>Option</th>
               </tr>
@@ -88,9 +89,22 @@
             <tbody>
               {{each settings.docs}}
               <tr>
-                <td>{{$value.name}}</td>
-                <td>{{$value.ifa_name | titleCase}}</td>
-                <td>{{$value.bdm_name| titleCase}}</td>
+                <td>
+                  <i class="far fa-calendar"></i>
+                  {{@$value.created_at | formatDate 'YYYY-MM-DD'}}
+                </td>
+                <td>
+                  <i class="far fa-file"></i>
+                  {{$value.name}}
+                </td>
+                <td>
+                  <i class="far fa-user"></i>
+                  {{$value.ifa_name | titleCase}}
+                </td>
+                <td>
+                  <i class="far fa-user"></i>
+                  {{$value.bdm_name| titleCase}}
+                </td>
                 <td>{{$value.status | titleCase}}</td>
                 <td>
                   <form

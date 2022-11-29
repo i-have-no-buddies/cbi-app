@@ -29,7 +29,7 @@
               href=""
               onclick="navigate('/bdm-lead?setting={{$value._id.toString()}}&page=1')"
               data-toggle="tab"
-              class="nav-link small text-uppercase {{if $value._id.toString() == CURRENT_BDM_SETTING}}active{{/if}}"
+              class="nav-link small text-uppercase text-info {{if $value._id.toString() == CURRENT_BDM_SETTING}}active{{/if}}"
               id="tabSettings{{$index}}"
               data-ot="{{$value.name}}"
               data-ot-delay="0"
@@ -51,9 +51,14 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Mobile</th>
-                    <th>Email</th>
+                    <th><i class="far fa-calendar"></i> Date</th>
+                    <th><i class="far fa-user"></i> Name</th>
+                    <th>
+                      <i class="fas fa-mobile-alt"></i> Mobile
+                    </th>
+                    <th>
+                      <i class="far fa-envelope"></i> Email
+                    </th>
                     <th>Status</th>
                   </tr>
                 </thead>
@@ -61,13 +66,34 @@
                   {{each leads.docs}}
                   <tr>
                     <td>
-                      <a href="/bdm-lead/{{$value._id.toString()}}">
-                      {{$value.first_name | titleCase}}
-                      {{$value.last_name | titleCase}}
+                      <i class="far fa-calendar"></i>
+                      {{@$value.created_at | formatDate 'YYYY-MM-DD'}}
+                    </td>
+                    <td>
+                      <i class="far fa-user"></i>
+                      <a
+                        href="/bdm-lead/{{$value._id.toString()}}"
+                        class="text-info"
+                        id="lead{{$index}}"
+                        data-ot="Click to view details"
+                        data-ot-delay="0"
+                        data-ot-tip-joint="bottom"
+                        data-ot-hide-delay="0"
+                        data-ot-target="#lead{{$index}}"
+                        data-ot-fixed="true"
+                      >
+                        {{$value.first_name | titleCase}} {{$value.last_name |
+                        titleCase}}
                       </a>
                     </td>
-                    <td>{{$value.mobile}}</td>
-                    <td>{{$value.email}}</td>
+                    <td>
+                      <i class="fas fa-mobile-alt"></i>
+                      <a href="tel:{{$value.mobile}}"> {{$value.mobile}} </a>
+                    </td>
+                    <td>
+                      <i class="far fa-envelope"></i>
+                      <a href="mailto:{{$value.email}}"> {{$value.email}} </a>
+                    </td>
                     <td>{{$value.status | titleCase}}</td>
                   </tr>
                   {{/each}}

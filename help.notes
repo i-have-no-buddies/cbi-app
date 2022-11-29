@@ -75,6 +75,8 @@ each tab will contain the search filter like { allocated: 'john parker', status:
 ? is there a tranfer lead
 ? what would happen is the lead is not interested
 ? what are the filterable field (issue of reindexing and generation of tags)
+? required fields in leads
+? searchable fields (admin, bdm, ifa)
 
 # modules
 leads

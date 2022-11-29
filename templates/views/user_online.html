@@ -12,7 +12,7 @@
           <th><i class="far fa-user"></i> Name</th>
           <th><i class="far fa-envelope"></i> Email</th>
           <th><i class="far fa-id-card"></i> Type</th>
-          <th>Last Action</th>
+          <th><i class="far fa-calendar"></i> Last Action</th>
           <th><i class="fas fa-route"></i> Route</th>
         </tr>
       </thead>
@@ -25,17 +25,22 @@
           </td>
           <td>
             <i class="far fa-envelope"></i>
-            {{$value.split('|')[1]}}
+            <a 
+              href="mailto:{{$value.split('|')[1]}}"
+              class="text-info"
+            >
+              {{$value.split('|')[1]}}
+            </a>
           </td>
-          <td>
-            <i class="far fa-id-card"></i>
-            {{$value.split('|')[2] | titleCase}}
-          </td>
+          <td>{{@$value.split('|')[2] | userTypeBadge}}</td>
           <td>
             <i class="far fa-calendar"></i>
             {{@ LAST_ACTION[$index][0] | formatDate 'YYYY-MM-DD hh:mm:ss A'}}
           </td>
-          <td>{{LAST_ACTION[$index][1]}}</td>
+          <td>
+            <i class="fas fa-route"></i>
+            {{LAST_ACTION[$index][1]}}
+          </td>
         </tr>
         {{/each}}
       </tbody>
