@@ -114,4 +114,4 @@ exports.delete = async (req, res) => {
     console.error(error);
     return res.render('500');
   }
-}
+};

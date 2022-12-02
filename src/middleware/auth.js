@@ -4,7 +4,7 @@ const PAGES = {
   '/lead/update': 'Lead',
   '/calendar': 'Calendar',
   '/bdm-lead': 'BDM Lead',
-  '/bdm-lead/:id': 'BDM Lead',
+  '/bdm-lead/:_id': 'BDM Lead',
   '/bdm-settings': 'BDM Settings',
   '/bdm-settings/add': 'BDM Settings',
   '/bdm-settings/create': 'BDM Settings',
@@ -17,7 +17,7 @@ const PAGES = {
   '/user-maintenance': 'User Maintenance',
   '/user-maintenance/add': 'User Maintenance',
   '/user-maintenance/create': 'User Maintenance',
-  '/user-maintenance/edit/:id': 'User Maintenance',
+  '/user-maintenance/edit/:_id': 'User Maintenance',
   '/user-online': 'User Online',
 };
 

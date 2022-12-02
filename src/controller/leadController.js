@@ -4,7 +4,7 @@ const LEAD_PER_PAGE = 10;
 
 exports.index = async (req, res) => {
   try {
-    var list
+    var list;
     const page = req.query.page || 1;
     var search = {};
     let tag_search = [];
@@ -22,7 +22,7 @@ exports.index = async (req, res) => {
     } else {
       search = {};
     }
-  
+
     list = await Lead.paginate(search, {
       lean: true,
       page,
@@ -43,8 +43,7 @@ exports.index = async (req, res) => {
     console.error(error);
     return res.render(500);
   }
-}
-
+};
 
 // exports.add = (req, res) => {
 //   try {
@@ -69,7 +68,6 @@ exports.index = async (req, res) => {
 //   }
 // };
 
-
 exports.edit = async (req, res) => {
   try {
     const id = req.params.id;
@@ -88,7 +86,7 @@ exports.update = async (req, res) => {
   try {
     const lead = await Lead.findById(req.body._id);
     for (const property in req.body) {
-      //not date,time,note,status  
+      //not date,time,note,status
       if (property !== '_id') {
         lead[property] = req.body[property];
       }

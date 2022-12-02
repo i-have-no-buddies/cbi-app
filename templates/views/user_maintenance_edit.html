@@ -9,7 +9,7 @@
         <label>First Name</label>
         <input 
           type="text" 
-          class="form-control" 
+          class="form-control form-control-sm" 
           name="first_name" 
           value="{{if user}}{{user.first_name}}{{/if}}" 
         />
@@ -19,7 +19,7 @@
         <label>Last Name</label>
         <input 
           type="text" 
-          class="form-control" 
+          class="form-control form-control-sm" 
           name="last_name" 
           value="{{if user}}{{user.last_name}}{{/if}}" 
         />
@@ -29,7 +29,7 @@
         <label>Phone Number</label>
         <input 
           type="text" 
-          class="form-control" 
+          class="form-control form-control-sm" 
           name="phone_number" 
           value="{{if user}}{{user.phone_number}}{{/if}}" 
         />
@@ -38,7 +38,7 @@
         <label>Email</label>
         <input 
           type="email" 
-          class="form-control" 
+          class="form-control form-control-sm" 
           name="email" 
           value="{{if user}}{{user.email}}{{/if}}" 
         />
@@ -48,7 +48,7 @@
         <label>Password</label>
         <input 
           type="password" 
-          class="form-control" 
+          class="form-control form-control-sm" 
           name="password" 
           value="{{if user}}{{user.password}}{{/if}}"
         />
@@ -56,7 +56,7 @@
       </div>
       <div class="form-group">
         <label>User Type</label>
-        <select class="form-control" name="type">
+        <select class="form-control form-control-sm" name="type">
           {{each USER_TYPE}}
           <option 
             value="{{$value}}"
@@ -68,7 +68,7 @@
       </div>
       <div class="form-group">
         <label>User Status</label>
-        <select class="form-control" name="status">
+        <select class="form-control form-control-sm" name="status">
           {{each USER_STATUS}}
           <option 
             value="{{$value}}"

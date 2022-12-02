@@ -6,12 +6,16 @@
   {{if setting}}
   <div class="col-sm-3">
     <div class="card">
+      <div class="card-header">
+        <h3 class="card-title font-weight-bold">
+          <i class="fas fa-search"></i> Search
+        </h3>
+      </div>
       <div class="card-body">
         <div class="form-group">
-          <label>Search</label>
           <input
             type="text"
-            class="form-control"
+            class="form-control form-control-sm"
             name="search"
             placeholder="First name, last name, status"
           />
@@ -53,12 +57,8 @@
                   <tr>
                     <th><i class="far fa-calendar"></i> Date</th>
                     <th><i class="far fa-user"></i> Name</th>
-                    <th>
-                      <i class="fas fa-mobile-alt"></i> Mobile
-                    </th>
-                    <th>
-                      <i class="far fa-envelope"></i> Email
-                    </th>
+                    <th><i class="fas fa-mobile-alt"></i> Mobile</th>
+                    <th><i class="far fa-envelope"></i> Email</th>
                     <th>Status</th>
                   </tr>
                 </thead>

@@ -7,7 +7,7 @@ const BATCH_PER_PAGE = 9;
 
 exports.index = async (req, res) => {
   try {
-    var list
+    var list;
     const page = req.query.page || 1;
     const type = req.query.type || 'lead';
     var search = {};
@@ -65,7 +65,7 @@ exports.index = async (req, res) => {
     console.error(error);
     return res.render(500);
   }
-}
+};
 
 exports.upload = (req, res) => {
   try {
@@ -74,7 +74,7 @@ exports.upload = (req, res) => {
     console.error(error);
     return res.render('500');
   }
-}
+};
 
 exports.new_upload = async (req, res) => {
   try {
@@ -84,7 +84,7 @@ exports.new_upload = async (req, res) => {
     lead_batch.created_by = req.session.AUTH._id;
     lead_batch.tags = ngramsAlgo(
       req.body.upload_name.toLowerCase().trim(),
-      'tag',
+      'tag'
     );
     await lead_batch.save();
 
@@ -97,7 +97,7 @@ exports.new_upload = async (req, res) => {
     console.error(error);
     return res.render('500');
   }
-}
+};
 
 exports.add = (req, res) => {
   try {
@@ -112,7 +112,7 @@ exports.create = async (req, res) => {
   try {
     const lead = new Lead({
       ...req.body,
-      created_by: req.session.AUTH._id
+      created_by: req.session.AUTH._id,
     });
     await lead.save();
     return res.redirect('/lead-management');
@@ -121,7 +121,6 @@ exports.create = async (req, res) => {
     return res.render('500');
   }
 };
-
 
 exports.edit = async (req, res) => {
   try {
