@@ -28,7 +28,7 @@
               type="search"
               class="form-control"
               placeholder="Name, first name, last name"
-              id="search"
+              id="name"
               onsearch="search(1);"
             />
           </div>
@@ -37,7 +37,7 @@
               type="search"
               class="form-control"
               placeholder="Job Title"
-              id="job"
+              id="job_title"
               onsearch="search(1);"
             />
           </div>
@@ -70,7 +70,7 @@
             <input
               type="search"
               class="form-control"
-              id="search"
+              id="name"
               onsearch="search(1);"
             />
           </div>  
@@ -234,11 +234,11 @@
   const page = parseInt('{{list.page}}');
   const totalPages = parseInt('{{list.totalPages}}');
   const totalDocs = parseInt('{{list.totalDocs}}');
-  document.getElementById('search').value = decodeHTML(
-    '{{search.search | escapeBackslash}}'
+  document.getElementById('name').value = decodeHTML(
+    '{{search.name | escapeBackslash}}'
   );
-  document.getElementById('job').value = decodeHTML(
-    '{{search.job | escapeBackslash}}'
+  document.getElementById('job_title').value = decodeHTML(
+    '{{search.job_title | escapeBackslash}}'
   );
   document.getElementById('batch').value = decodeHTML(
     '{{search.batch | escapeBackslash}}'
@@ -253,13 +253,13 @@
 
   function search(page) {
     let url = window.location.href.split('?')[0];
-    let search = $('#search').val();
-    let job = $('#job').val();
+    let name = $('#name').val();
+    let job_title = $('#job_title').val();
     let status = $('#status').val();
     let company = $('#company').val();
     url += `?page=${page}&type={{type}}`;
-    if (search) url += `&search=${search}`;
-    if (job) url += `&job=${job}`;
+    if (name) url += `&name=${name}`;
+    if (job_title) url += `&job_title=${job_title}`;
     if (company) url += `&company=${company}`;
     if (status) url += `&status=${status}`;
     window.location.href = url;
