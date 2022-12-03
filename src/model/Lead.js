@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const { ngramsAlgo } = require('../utils/helper');
+const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
+const { ngramsAlgov2 } = require('../utils/helper')
 
 const LEAD_STATUS = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-};
+}
 
 const leadSchema = new mongoose.Schema({
   lead_batch_id: {
@@ -86,77 +86,51 @@ const leadSchema = new mongoose.Schema({
       },
     ],
   },
-});
+})
 
 leadSchema.pre('save', async function () {
-  const doc = this;
+  const doc = this
+  let name = `${doc.first_name.trim()} ${doc.last_name.trim()}`
   doc.tags = [
-    ...ngramsAlgo(
-      `${doc.first_name.toLowerCase().trim()} ${doc.last_name
-        .toLowerCase()
-        .trim()}`,
-      'tag'
-    ),
-    ...ngramsAlgo(doc.job_title.toLowerCase().trim(), 'tag'),
-    ...ngramsAlgo(doc.company.toLowerCase().trim(), 'tag'),
-    {
-      tag: doc.gender.toLowerCase(),
-    },
-    {
-      tag: doc.business_no.toLowerCase(),
-    },
-    {
-      tag: doc.mobile.toLowerCase(),
-    },
-    {
-      tag: doc.second_mobile.toLowerCase(),
-    },
-    {
-      tag: doc.email.toLowerCase(),
-    },
-    { tag: doc.second_email.toLowerCase() },
-    { tag: doc.nationality.toLowerCase() },
-  ];
-});
+    ...ngramsAlgov2(name.toLowerCase(), 'name'),
+    ...ngramsAlgov2(doc.job_title.toLowerCase().trim(), 'job_title'),
+    ...ngramsAlgov2(doc.company.toLowerCase().trim(), 'company'),
+    // ...ngramsAlgov2(doc.gender.toLowerCase().trim(), 'gender'),
+    // ...ngramsAlgov2(doc.business_no.toLowerCase().trim(), 'business_no'),
+    ...ngramsAlgov2(doc.mobile.toLowerCase().trim(), 'mobile'),
+    //...ngramsAlgov2(doc.second_mobile.toLowerCase().trim(), 'second_mobile'),
+    ...ngramsAlgov2(doc.email.toLowerCase().trim(), 'email'),
+    // ...ngramsAlgov2(doc.second_email.toLowerCase().trim(), 'second_email'),
+    // ...ngramsAlgov2(doc.nationality.toLowerCase().trim(), 'nationality'),
+    ...ngramsAlgov2(doc.status.toLowerCase().trim(), 'status'),
+  ]
+})
 
 leadSchema.pre('insertMany', async (next, docs) => {
   for (const doc of docs) {
+    let name = `${doc.first_name.trim()} ${doc.last_name.trim()}`
     doc.tags = [
-      ...ngramsAlgo(
-        `${doc.first_name.toLowerCase().trim()} ${doc.last_name
-          .toLowerCase()
-          .trim()}`,
-        'tag'
-      ),
-      ...ngramsAlgo(doc.job_title.toLowerCase().trim(), 'tag'),
-      ...ngramsAlgo(doc.company.toLowerCase().trim(), 'tag'),
-      // {
-      //   tag: doc.gender.toLowerCase(),
-      // },
-      // {
-      //   tag: doc.business_no.toLowerCase(),
-      // },
-      {
-        tag: doc.mobile.toLowerCase(),
-      },
-      // {
-      //   tag: doc.second_mobile.toLowerCase(),
-      // },
-      {
-        tag: doc.email.toLowerCase(),
-      },
-      // { tag: doc.second_email.toLowerCase() },
-      // { tag: doc.nationality.toLowerCase() },
-    ];
+      ...ngramsAlgov2(name.toLowerCase(), 'name'),
+      ...ngramsAlgov2(doc.job_title.toLowerCase().trim(), 'job_title'),
+      ...ngramsAlgov2(doc.company.toLowerCase().trim(), 'company'),
+      // ...ngramsAlgov2(doc.gender.toLowerCase().trim(), 'gender'),
+      // ...ngramsAlgov2(doc.business_no.toLowerCase().trim(), 'business_no'),
+      ...ngramsAlgov2(doc.mobile.toLowerCase().trim(), 'mobile'),
+      //...ngramsAlgov2(doc.second_mobile.toLowerCase().trim(), 'second_mobile'),
+      ...ngramsAlgov2(doc.email.toLowerCase().trim(), 'email'),
+      // ...ngramsAlgov2(doc.second_email.toLowerCase().trim(), 'second_email'),
+      // ...ngramsAlgov2(doc.nationality.toLowerCase().trim(), 'nationality'),
+      ...ngramsAlgov2(doc.status.toLowerCase().trim(), 'status'),
+    ]
   }
-});
+})
 
-leadSchema.plugin(mongoosePaginate);
+leadSchema.plugin(mongoosePaginate)
 
-leadSchema.index({ 'tags.tag': 1, _id: 1 });
-leadSchema.index({ lead_batch_id: 1, status: 1, 'tags.tag': 1 });
+leadSchema.index({ 'tags.tag': 1, _id: 1 })
+leadSchema.index({ lead_batch_id: 1, 'tags.tag': 1 })
 
 module.exports = {
   Lead: mongoose.model('Lead', leadSchema),
   LEAD_STATUS,
-};
+}
