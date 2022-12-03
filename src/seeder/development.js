@@ -21,7 +21,7 @@ async function seed() {
     {
       first_name: 'Ejer',
       last_name: 'Luna',
-      email: 'ejer.luna@holbornassets.com',
+      email: 'ejer@email.com',
       password: '123456',
       type: USER_TYPE.SUPER_ADMIN,
       status: USER_STATUS.ACTIVE,
@@ -29,7 +29,7 @@ async function seed() {
     {
       first_name: 'Marvin',
       last_name: 'Villegas',
-      email: 'marvin.villegas@holbornassets.com',
+      email: 'marvin@email.com',
       password: '123456',
       type: USER_TYPE.SUPER_ADMIN,
       status: USER_STATUS.ACTIVE,

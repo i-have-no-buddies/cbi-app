@@ -12,11 +12,11 @@ art.template.defaults.imports.formatDate = (
   return date;
 };
 
-art.template.defaults.imports.escapeBackslash = (value) => {
-  if (value) {
-    return value.replace(/\\/g, '');
+art.template.defaults.imports.escapeBackslash = (str) => {
+  if (str) {
+    return str.replace(/\\/g, '');
   }
-  return value;
+  return str;
 };
 
 art.template.defaults.imports.activeNav = (navigation, value) => {
@@ -73,6 +73,14 @@ art.template.defaults.imports.userStatusBadge = (status) => {
     return `<span class="badge bg-maroon">${status}</span>`;
   }
   return `<span>${status}</span>`;
+};
+
+art.template.defaults.imports.strReplace = (str, replace) => {
+  if (str) {
+    const regexExp = new RegExp(`${replace}`, 'g');
+    return str.replace(regexExp, ' ');
+  }
+  return str;
 };
 
 module.exports = art;
