@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
   phone_number: {
     type: String,
     trim: true,
+    default: '',
   },
   email: {
     type: String,

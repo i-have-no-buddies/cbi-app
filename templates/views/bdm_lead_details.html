@@ -11,57 +11,44 @@
         </h3>
       </div>
       <div class="card-body">
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-append">
-              <span class="input-group-text text-sm">First Name</span>
+        {{each lead}}
+          {{if $index === 'status'}}
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-append">
+                  <span class="input-group-text text-sm">{{$index}}</span>
+                </div>
+                <select class="form-control form-control-sm select2bs4" name="{{$index}}">
+                  {{each LEAD_STATUS}}
+                  <option 
+                    value="{{$value}}"
+                    {{if user}}{{if user.status == $value}}selected{{/if}}{{/if}}
+                  >{{$value}}</option>
+                  {{/each}}
+                </select>
+                <small class="form-text text-danger" id="{{$index}}_error"></small>
+              </div>
             </div>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              name="first_name"
-              value="{{lead.first_name}}"
-            />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-append">
-              <span class="input-group-text text-sm">Last Name</span>
+          {{else if $index !== '_id'}}
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-append">
+                  <span class="input-group-text text-sm">{{$index | strReplace | strLimit 15}}</span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  name="{{$index}}"
+                  value="{{$value}}"
+                />
+              </div>
             </div>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              name="last_name"
-              value="{{lead.last_name}}"
-            />
-          </div>
-        </div>
+          {{/if}}
+        {{/each}}
         <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-append">
-              <span class="input-group-text text-sm">Email</span>
-            </div>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              name="email"
-              value="{{lead.email}}"
-            />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-append">
-              <span class="input-group-text text-sm">Mobile</span>
-            </div>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              name="mobile"
-              value="{{lead.mobile}}"
-            />
-          </div>
+          <button class="btn bg-teal btn-sm btn-block">
+            <i class="fas fa-save"></i> Update Lead
+          </button>
         </div>
       </div>
     </div>
@@ -85,4 +72,15 @@
     </div>
   </div>
 </div>
+{{/block}}
+<!-- javascript -->
+{{block 'javascript'}}
+<script src="/app/global.js"></script>
+<script>
+  $(document).ready(function () {
+    $('.select2bs4').select2({
+      theme: 'bootstrap4',
+    });
+  });
+</script>
 {{/block}}

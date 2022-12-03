@@ -108,3 +108,20 @@ user maintenance
 - ***add manager to ifa***
 user online
 - check last action of user
+
+# bdm settings logs
+bdm_settings_id
+type: insert, update, delete
+data: bdm settings
+
+# lead info logs
+lead_id
+type: inserte, update, delete
+module: leads, bdm, lead management
+data: leads
+
+# lead status logs
+lead_id
+type: uploaded, allocated, first meeting
+module: leads, bdm, lead management
+data: leads

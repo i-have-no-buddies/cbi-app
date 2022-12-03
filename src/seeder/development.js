@@ -1,8 +1,12 @@
 require('../config/mongodb');
-const { User, USER_TYPE, USER_STATUS } = require('../model/User');
+const { BdmSetting } = require('../model/BdmSetting');
+const { BdmSettingLog } = require('../model/BdmSettingLog');
 const { Lead } = require('../model/Lead');
 const { LeadBatch } = require('../model/LeadBatch');
-const { BdmSetting } = require('../model/BdmSetting');
+const { User, USER_TYPE, USER_STATUS } = require('../model/User');
+const { UserLog } = require('../model/UserLog');
+const { UserLogin } = require('../model/UserLogin');
+
 const {
   randUser,
   rand,
@@ -12,10 +16,13 @@ const {
 } = require('@ngneat/falso');
 
 async function seed() {
-  await User.deleteMany({});
+  await BdmSetting.deleteMany({});
+  await BdmSettingLog.deleteMany({});
   await Lead.deleteMany({});
   await LeadBatch.deleteMany({});
-  await BdmSetting.deleteMany({});
+  await User.deleteMany({});
+  await UserLog.deleteMany({});
+  await UserLogin.deleteMany({});
 
   let users = [
     {

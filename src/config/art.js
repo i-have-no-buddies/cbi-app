@@ -39,9 +39,9 @@ art.template.defaults.imports.titleCase = (str) => {
   return str;
 };
 
-art.template.defaults.imports.strLimitNav = (str) => {
-  if (str.length > 10) {
-    return `${str.substring(0, 10)}...`;
+art.template.defaults.imports.strLimit = (str, limit = 10) => {
+  if (str.length > limit) {
+    return `${str.substring(0, limit)}...`;
   }
   return str;
 };
@@ -75,7 +75,7 @@ art.template.defaults.imports.userStatusBadge = (status) => {
   return `<span>${status}</span>`;
 };
 
-art.template.defaults.imports.strReplace = (str, replace) => {
+art.template.defaults.imports.strReplace = (str, replace = '_') => {
   if (str) {
     const regexExp = new RegExp(`${replace}`, 'g');
     return str.replace(regexExp, ' ');

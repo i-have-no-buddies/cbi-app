@@ -47,7 +47,7 @@ exports.logout = async (req, res) => {
       type: LOGIN_TYPE.LOGOUT,
     });
     await userLogin.save();
-    req.session = null;
+    req.session.destroy();
     return res.redirect('/login');
   } catch (error) {
     console.error(error);

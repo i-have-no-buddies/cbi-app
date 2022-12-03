@@ -6,8 +6,7 @@ const compression = require('compression');
 const helmet = require('helmet');
 const minify = require('express-minify');
 const art = require('./config/art');
-const cookieParser = require('cookie-parser');
-const cookieSession = require('cookie-session');
+const expressSession = require('express-session');
 const flash = require('connect-flash');
 const loginRouter = require('./router/loginRouter');
 const leadRouter = require('./router/leadRouter');
@@ -52,12 +51,20 @@ app.set('views', path.join(__dirname, '..\\templates\\views'));
 /**
  * session
  */
-app.use(cookieParser(APP_SECRET));
+// note: enable trust proxy and cookie secure true
+app.enable('trust proxy');
+const eightHours = 1000 * 60 * 60 * 8;
 app.use(
-  cookieSession({
+  expressSession({
     secret: APP_SECRET,
-    httpOnly: true,
-    maxAge: 8 * 60 * 60 * 1000,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: eightHours,
+      httpOnly: true,
+      sameSite: true,
+      secure: false,
+    },
+    resave: false,
   })
 );
 

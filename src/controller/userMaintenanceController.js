@@ -75,7 +75,6 @@ exports.edit = async (req, res) => {
     const _id = req.params._id;
     const user = await User.findById(_id)
       .select({
-        _id: 1,
         first_name: 1,
         last_name: 1,
         phone_number: 1,

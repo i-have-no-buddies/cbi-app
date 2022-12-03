@@ -13,40 +13,52 @@
       {{each user}}
         {{if $index === 'type'}}
           <div class="form-group">
-            <label>{{$index}}</label>
-            <select class="form-control form-control-sm" name="{{$index}}">
-              {{each USER_TYPE}}
-              <option 
-                value="{{$value}}"
-                {{if user}}{{if user.type == $value}}selected{{/if}}{{/if}}
-              >{{$value}}</option>
-              {{/each}}
-            </select>
-            <small class="form-text text-danger" id="{{$index}}_error"></small>
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text text-sm">{{$index}}</span>
+              </div>
+              <select class="form-control form-control-sm select2bs4" name="{{$index}}">
+                {{each USER_TYPE}}
+                <option 
+                  value="{{$value}}"
+                  {{if user}}{{if user.type == $value}}selected{{/if}}{{/if}}
+                >{{$value}}</option>
+                {{/each}}
+              </select>
+              <small class="form-text text-danger" id="{{$index}}_error"></small>
+            </div>
           </div>
         {{else if $index === 'status'}}
           <div class="form-group">
-            <label>{{$index}}</label>
-            <select class="form-control form-control-sm" name="{{$index}}">
-              {{each USER_STATUS}}
-              <option 
-                value="{{$value}}"
-                {{if user}}{{if user.status == $value}}selected{{/if}}{{/if}}
-              >{{$value}}</option>
-              {{/each}}
-            </select>
-            <small class="form-text text-danger" id="{{$index}}_error"></small>
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text text-sm">{{$index}}</span>
+              </div>
+              <select class="form-control form-control-sm select2bs4" name="{{$index}}">
+                {{each USER_STATUS}}
+                <option 
+                  value="{{$value}}"
+                  {{if user}}{{if user.status == $value}}selected{{/if}}{{/if}}
+                >{{$value}}</option>
+                {{/each}}
+              </select>
+              <small class="form-text text-danger" id="{{$index}}_error"></small>
+            </div>
           </div>
         {{else if $index !== '_id'}}
           <div class="form-group">
-            <label>{{$index | strReplace '_'}}</label>
-            <input 
-              type="text" 
-              class="form-control form-control-sm" 
-              name="{{$index}}" 
-              value="{{if user}}{{user[$index]}}{{/if}}" 
-            />
-            <small class="form-text text-danger" id="{{$index}}_error"></small>
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text text-sm">{{$index | strReplace | strLimit 15}}</span>
+              </div>
+              <input 
+                type="{{if $index !== 'password'}}text{{else}}password{{/if}}" 
+                class="form-control form-control-sm" 
+                name="{{$index}}" 
+                value="{{if user}}{{user[$index]}}{{/if}}" 
+              />
+              <small class="form-text text-danger" id="{{$index}}_error"></small>
+            </div>
           </div>
         {{/if}}
       {{/each}}
@@ -72,6 +84,9 @@
   }
 
   $(document).ready(function() {
+    $('.select2bs4').select2({
+      theme: 'bootstrap4',
+    });
     $('#btnUserUpdate').on('click', function() {
       Swal.fire({
         icon: 'question',

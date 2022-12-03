@@ -1,5 +1,5 @@
 const { BdmSetting } = require('../model/BdmSetting');
-const { Lead } = require('../model/Lead');
+const { Lead, LEAD_STATUS } = require('../model/Lead');
 const PER_PAGE = 10;
 
 exports.index = async (req, res) => {
@@ -36,8 +36,18 @@ exports.index = async (req, res) => {
 
 exports.details = async (req, res) => {
   try {
-    const lead = await Lead.findById(req.params.id).lean();
-    return res.render('bdm_lead_details', { lead });
+    const lead = await Lead.findById(req.params._id)
+      .select({
+        first_name: 1,
+        last_name: 1,
+        email: 1,
+        mobile: 1,
+        company: 1,
+        job_title: 1,
+        status: 1,
+      })
+      .lean();
+    return res.render('bdm_lead_details', { lead, LEAD_STATUS });
   } catch (error) {
     console.error(error);
     return res.render('500');
