@@ -42,7 +42,15 @@ exports.index = async (req, res) => {
 
 exports.add = (req, res) => {
   try {
-    return res.render('user_maintenance_add', { USER_TYPE });
+    const user = {
+      first_name: '',
+      last_name: '',
+      phone_number: '',
+      email: '',
+      password: '',
+      type: '',
+    };
+    return res.render('user_maintenance_add', { user, USER_TYPE });
   } catch (error) {
     console.error(error);
     return res.render('500');
@@ -64,8 +72,19 @@ exports.create = async (req, res) => {
 
 exports.edit = async (req, res) => {
   try {
-    const id = req.params._id;
-    const user = await User.findById(id).lean();
+    const _id = req.params._id;
+    const user = await User.findById(_id)
+      .select({
+        _id: 1,
+        first_name: 1,
+        last_name: 1,
+        phone_number: 1,
+        email: 1,
+        password: 1,
+        type: 1,
+        status: 1,
+      })
+      .lean();
     user.password = '';
     return res.render('user_maintenance_edit', {
       user,
