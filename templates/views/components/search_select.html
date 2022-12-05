@@ -1,0 +1,20 @@
+<div class="form-group">
+  <div class="input-group">
+    <div class="input-group-append">
+      <span class="input-group-text text-sm">{{name | strReplace | strLimit 15}}</span>
+    </div>
+    <select 
+      class="form-control form-control-sm select2bs4" 
+      id="{{name}}" 
+      name="{{name}}"
+      onchange="search();"
+    >
+      {{each options}}
+      <option 
+        value="{{$value}}"
+        {{if value}}{{if value[name] == $value}}selected{{/if}}{{/if}}
+      >{{$value}}</option>
+      {{/each}}
+    </select>
+  </div>
+</div>

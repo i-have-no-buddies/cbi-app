@@ -14,7 +14,6 @@
 
         {{if (type == 'lead')}}
           <input type='hidden' id='batch' name='batch'>
-          
           <div class="form-group">
             {{if search.batch}}
             <a href="/lead-management" class="btn bg-maroon btn-block form-control">
@@ -23,57 +22,13 @@
             </a>
             {{/if}}
           </div>
-          <div class="form-group">
-            <input
-              type="search"
-              class="form-control"
-              placeholder="Name, first name, last name"
-              id="name"
-              onsearch="search(1);"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="search"
-              class="form-control"
-              placeholder="Job Title"
-              id="job_title"
-              onsearch="search(1);"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="search"
-              class="form-control"
-              placeholder="Company"
-              id="company"
-              onsearch="search(1);"
-            />
-          </div>
-          <div class="form-group">
-            <select 
-              class="form-control select2bs4" 
-              id="status" 
-              name="status" 
-              onchange="search(1);"
-            >
-              <option value="">Select status</option>
-              {{each LEAD_STATUS}}
-              <option value="{{$value}}">{{$value}}</option>
-              {{/each}}
-            </select>
-          </div>
-          
+          {{include './components/search_box.html', { name: 'name'} }}
+          {{include './components/search_box.html', { name: 'job_title'} }}
+          {{include './components/search_box.html', { name: 'company'} }}
+          {{include './components/search_select.html', { name: 'status', options: LEAD_STATUS} }}
+      
         {{else}}
-          <div class="form-group">
-            <label>Upload Name</label>
-            <input
-              type="search"
-              class="form-control"
-              id="name"
-              onsearch="search(1);"
-            />
-          </div>  
+          {{include './components/search_box.html', { name: 'name'} }} 
         {{/if}}
       </div>
     </div>
@@ -251,7 +206,7 @@
   );
   
 
-  function search(page) {
+  function search(page = 1) {
     let url = window.location.href.split('?')[0];
     let name = $('#name').val();
     let job_title = $('#job_title').val();

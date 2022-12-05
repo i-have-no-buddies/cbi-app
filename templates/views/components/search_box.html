@@ -1,0 +1,14 @@
+<div class="form-group">
+  <div class="input-group">
+    <div class="input-group-append">
+      <span class="input-group-text text-sm">{{name | strReplace | strLimit 15}}</span>
+    </div>
+    <input 
+      type="search"
+      class="form-control form-control-sm" 
+      id="{{name}}" 
+      name="{{name}}" 
+      onsearch="search();"
+    />
+  </div>
+</div>
