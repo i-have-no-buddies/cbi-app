@@ -1,0 +1,18 @@
+<div class="form-group">
+  <div class="input-group">
+    <div class="input-group-append">
+      <span class="input-group-text text-sm">{{name | strReplace | strLimit 15}}</span>
+    </div>
+    <input 
+      type="{{type}}" 
+      class="form-control form-control-sm" 
+      id="{{name}}" 
+      name="{{name}}" 
+      value="{{if value}}{{value[name]}}{{/if}}" 
+    />
+  </div>
+  <small 
+    class="form-text text-danger"
+    id="{{name}}_error"
+  ></small>
+</div>

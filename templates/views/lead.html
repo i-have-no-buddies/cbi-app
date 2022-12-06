@@ -9,46 +9,9 @@
         </h3>
       </div>
       <div class="card-body">
-        <div class="form-group">
-          <input
-            type="search"
-            class="form-control"
-            placeholder="Name, first name, last name"
-            id="search"
-            onsearch="search(1);"
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="search"
-            class="form-control"
-            placeholder="Job Title"
-            id="job"
-            onsearch="search(1);"
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="search"
-            class="form-control"
-            placeholder="Company"
-            id="company"
-            onsearch="search(1);"
-          />
-        </div>
-        <!--<div class="form-group">
-          <select 
-            class="form-control" 
-            id="status" 
-            name="status" 
-            onchange="search(1);"
-          >
-            <option value="">Select status</option>
-            {{each LEAD_STATUS}}
-            <option value="{{$value}}">{{$value}}</option>
-            {{/each}}
-          </select>
-        </div>-->
+        {{include './components/search_box.html', { name: 'name'} }}
+        {{include './components/search_box.html', { name: 'job_title'} }}
+        {{include './components/search_box.html', { name: 'company'} }}
       </div>
     </div>
     
@@ -129,8 +92,8 @@
   document.getElementById('search').value = decodeHTML(
     '{{search.search | escapeBackslash}}'
   );
-  document.getElementById('job').value = decodeHTML(
-    '{{search.job | escapeBackslash}}'
+  document.getElementById('job_title').value = decodeHTML(
+    '{{search.job_title | escapeBackslash}}'
   );
   document.getElementById('company').value = decodeHTML(
     '{{search.company | escapeBackslash}}'
@@ -140,11 +103,11 @@
   function search(page) {
     let url = window.location.href.split('?')[0];
     let search = $('#search').val();
-    let job = $('#job').val();
+    let job_title = $('#job_title').val();
     let company = $('#company').val();
     url += `?page=${page}`;
     if (search) url += `&search=${search}`;
-    if (job) url += `&job=${job}`;
+    if (job_title) url += `&job_title=${job_title}`;
     if (company) url += `&company=${company}`;
     window.location.href = url;
   }

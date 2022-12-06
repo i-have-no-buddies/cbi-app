@@ -6,6 +6,7 @@ const {
   queryParamReturner,
 } = require('../utils/helper')
 const { fork } = require('child_process')
+const { ObjectId } = require('mongodb')
 const LEAD_PER_PAGE = 10
 const BATCH_PER_PAGE = 9
 
@@ -23,7 +24,7 @@ exports.index = async (req, res) => {
 
     //separated because batches not enluded on tags
     if (req.query.batch) {
-      search['lead_batch_id'] = req.query.batch
+      search['lead_batch_id'] = ObjectId(req.query.batch)
     }
 
     if (type == 'lead') {
