@@ -5,18 +5,25 @@ const {
   validateLeadStatusEdit,
 } = require('../middleware/validator/validateLead');
 
-module.exports = (app) => {
-  app.get('/lead', auth.authenticated, leadController.index);
-  app.get('/lead/edit/:id', auth.authenticated, leadController.edit);
+module.exports = (app, setOnlineUser) => {
+  app.get('/lead', auth.authenticated, setOnlineUser, leadController.index);
+  app.get(
+    '/lead/edit/:id',
+    auth.authenticated,
+    setOnlineUser,
+    leadController.edit
+  );
   app.post(
     '/lead/update',
     auth.authenticated,
+    setOnlineUser,
     validateLeadEdit,
     leadController.update
   );
   app.post(
     '/lead/update-status',
     auth.authenticated,
+    setOnlineUser,
     validateLeadStatusEdit,
     leadController.update_status
   );

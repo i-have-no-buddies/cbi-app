@@ -14,10 +14,12 @@ const PAGES = {
   '/lead-management/update': 'Lead Management',
   '/lead-management/add': 'Lead Management',
   '/lead-management/create': 'Lead Management',
+  '/reports': 'Reports',
   '/user-maintenance': 'User Maintenance',
   '/user-maintenance/add': 'User Maintenance',
   '/user-maintenance/create': 'User Maintenance',
   '/user-maintenance/edit/:_id': 'User Maintenance',
+  '/user-login': 'User Login',
   '/user-online': 'User Online',
 };
 

@@ -19,7 +19,7 @@ const bdmSettingLogSchema = new mongoose.Schema({
   },
 });
 
-bdmSettingSchema.plugin(mongoosePaginate);
+bdmSettingLogSchema.plugin(mongoosePaginate);
 
 module.exports = {
   BdmSettingLog: mongoose.model('BdmSettingLog', bdmSettingLogSchema),

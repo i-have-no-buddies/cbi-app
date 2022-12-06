@@ -1,11 +1,11 @@
-const calendarController = require('../controller/calendarController');
+const userLoginController = require('../controller/userLoginController');
 const auth = require('../middleware/auth');
 
 module.exports = (app, setOnlineUser) => {
   app.get(
-    '/calendar',
+    '/user-login',
     auth.authenticated,
     setOnlineUser,
-    calendarController.index
+    userLoginController.index
   );
 };

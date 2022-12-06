@@ -1,0 +1,140 @@
+<!-- layout -->
+{{extend './layout.html'}}
+<!-- content -->
+{{block 'content'}}
+<div class="row">
+  <div class="col-sm-3">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title font-weight-bold">
+          <i class="fas fa-search"></i> Search
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <i class="fas fa-search"></i>
+              </span>
+            </div>
+            <input
+              type="search"
+              class="form-control form-control-sm"
+              id="name"
+              placeholder="Name, first name, last name"
+              onsearch="search(1);"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <select
+            class="form-control form-control-sm select2bs4"
+            id="type"
+            onchange="search(1)"
+            style="width: 100%"
+          >
+            <option value="">Select type</option>
+            {{each LOGIN_TYPE}}
+            <option value="{{$value}}">{{$value}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-9">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title font-weight-bold">
+          <i class="fas fa-table"></i> Table
+        </h3>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                  <i class="far fa-calendar"></i>
+                  Date
+                </th>
+                <th>
+                  <i class="far fa-user"></i>
+                  Name
+                </th>
+                <th>
+                  <i class="far fa-id-card"></i>
+                  Type
+                </th>
+                <th>
+                  <i class="far fa-id-card"></i>
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {{each user_logins.docs}}
+              <tr>
+                <td>
+                  <i class="far fa-calendar"></i>
+                  {{@ $value.created_at | formatDate 'YYYY-MM-DD hh:mm A'}}
+                </td>
+                <td>
+                  <i class="far fa-user"></i>
+                  {{$value.user.first_name | titleCase}} {{$value.user.last_name
+                  | titleCase}}
+                </td>
+                <td>{{@$value.user.type | userTypeBadge}}</td>
+                <td>{{@$value.type | userLoginBadge}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer">
+          <nav aria-label="Contacts Page Navigation">
+            <ul
+              class="pagination justify-content-center m-0"
+              id="pagination"
+            ></ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{/block}}
+<!-- javascript -->
+{{block 'javascript'}}
+<script src="/app/global.js"></script>
+<script>
+  const page = parseInt('{{user_logins.page}}');
+  const totalPages = parseInt('{{user_logins.totalPages}}');
+  const totalDocs = parseInt('{{user_logins.totalDocs}}');
+  document.getElementById('name').value = decodeHTML(
+    '{{search.name | escapeBackslash}}'
+  );
+  document.getElementById('type').value = decodeHTML(
+    '{{search.type | escapeBackslash}}'
+  );
+
+  function search(page) {
+    console.log(page);
+    let url = window.location.href.split('?')[0];
+    let name = $('#name').val();
+    let type = $('#type').val();
+    url += `?page=${page}`;
+    if (name) url += `&name=${name}`;
+    if (type) url += `&type=${type}`;
+    window.location.href = url;
+  }
+
+  $(document).ready(function () {
+    $('.select2bs4').select2({
+      theme: 'bootstrap4',
+    });
+    $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
+  });
+</script>
+{{/block}}

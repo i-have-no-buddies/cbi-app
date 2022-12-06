@@ -14,7 +14,9 @@ const calendarRouter = require('./router/calendarRouter');
 const bdmLeadRouter = require('./router/bdmLeadRouter');
 const bdmSettingsRouter = require('./router/bdmSettingsRouter');
 const leadManagementRouter = require('./router/leadManagementRouter');
+const reportsRouter = require('./router/reportsRouter');
 const userMaintenanceRouter = require('./router/userMaintenanceRouter');
+const userLogin = require('./router/userLoginRouter');
 const userOnlineRouter = require('./router/userOnlineRouter');
 const APP_HOST = process.env.APP_HOST;
 const APP_PORT = process.env.APP_PORT;
@@ -113,12 +115,14 @@ setInterval(() => {
  * routes
  */
 loginRouter(app);
-leadRouter(app);
-calendarRouter(app);
-bdmLeadRouter(app);
-bdmSettingsRouter(app);
-leadManagementRouter(app);
-userMaintenanceRouter(app);
+leadRouter(app, setOnlineUser);
+calendarRouter(app, setOnlineUser);
+bdmLeadRouter(app, setOnlineUser);
+bdmSettingsRouter(app, setOnlineUser);
+leadManagementRouter(app, setOnlineUser);
+reportsRouter(app, setOnlineUser);
+userMaintenanceRouter(app, setOnlineUser);
+userLogin(app, setOnlineUser);
 userOnlineRouter(app, setOnlineUser);
 app.use((req, res) => {
   return res.render('404');

@@ -1,13 +1,16 @@
 const art = require('express-art-template');
 const moment = require('moment-timezone');
 const { USER_TYPE, USER_STATUS } = require('../model/User');
+const { LOGIN_TYPE } = require('../model/UserLogin');
 
 art.template.defaults.imports.formatDate = (
   date,
   format = 'YYYY-MM-DD hh:mm A'
 ) => {
   if (date) {
-    return `<span class="text-info">${moment(date).tz('Asia/Dubai').format(format)}</span>`;
+    return `<span class="text-info">${moment(date)
+      .tz('Asia/Dubai')
+      .format(format)}</span>`;
   }
   return date;
 };
@@ -73,6 +76,16 @@ art.template.defaults.imports.userStatusBadge = (status) => {
     return `<span class="badge bg-maroon">${status}</span>`;
   }
   return `<span>${status}</span>`;
+};
+
+art.template.defaults.imports.userLoginBadge = (type) => {
+  if (type === LOGIN_TYPE.LOGIN) {
+    return `<span class="badge bg-teal">${type}</span>`;
+  }
+  if (type === LOGIN_TYPE.LOGOUT) {
+    return `<span class="badge bg-gray">${type}</span>`;
+  }
+  return `<span>${type}</span>`;
 };
 
 art.template.defaults.imports.strReplace = (str, replace = '_') => {

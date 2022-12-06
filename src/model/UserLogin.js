@@ -1,30 +1,47 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const { ngramsAlgov2 } = require('../utils/helper');
 
 const LOGIN_TYPE = {
-  LOGIN: 'LOGIN',
-  LOGOUT: 'LOGOUT',
+  LOGIN: 'LOG IN',
+  LOGOUT: 'LOG OUT',
 };
 
 const userLogingSchema = new mongoose.Schema({
-  created_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  },
   created_at: {
     type: Date,
     default: Date.now,
   },
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+  user: {
+    type: Object,
   },
   type: {
-    type: Object,
+    type: String,
+  },
+  tags: {
+    type: [
+      {
+        _id: false,
+        tag: {
+          type: String,
+        },
+      },
+    ],
   },
 });
 
+userLogingSchema.pre('save', async function () {
+  const user_login = this;
+  const name = `${user_login.user.first_name.trim()} ${user_login.user.last_name.trim()}`;
+  user_login.tags = [
+    ...ngramsAlgov2(name.toLowerCase(), 'name'),
+    ...ngramsAlgov2(user_login.type.toLowerCase(), 'type'),
+  ];
+});
+
 userLogingSchema.plugin(mongoosePaginate);
+
+userLogingSchema.index({ 'tags.tag': 1, _id: 1 });
 
 module.exports = {
   UserLogin: mongoose.model('UserLogin', userLogingSchema),

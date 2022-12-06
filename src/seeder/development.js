@@ -1,7 +1,7 @@
 require('../config/mongodb');
 const { BdmSetting } = require('../model/BdmSetting');
 const { BdmSettingLog } = require('../model/BdmSettingLog');
-const { Lead } = require('../model/Lead');
+const { Lead, LEAD_STATUS } = require('../model/Lead');
 const { LeadBatch } = require('../model/LeadBatch');
 const { User, USER_TYPE, USER_STATUS } = require('../model/User');
 const { UserLog } = require('../model/UserLog');
@@ -71,6 +71,7 @@ async function seed() {
         company: randCompanyName(),
         mobile: lead.phone,
         email: lead.email,
+        status: rand(Object.values(LEAD_STATUS)),
       });
     }
     await Lead.insertMany(leads, { ordered: false });

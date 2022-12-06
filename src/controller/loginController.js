@@ -29,7 +29,7 @@ exports.login = async (req, res) => {
     }
     req.session.AUTH = user;
     const userLogin = new UserLogin({
-      created_by: req.session.AUTH._id,
+      user,
       type: LOGIN_TYPE.LOGIN,
     });
     await userLogin.save();
@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     const userLogin = new UserLogin({
-      created_by: req.session.AUTH._id,
+      user: req.session.AUTH,
       type: LOGIN_TYPE.LOGOUT,
     });
     await userLogin.save();

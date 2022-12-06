@@ -125,3 +125,8 @@ lead_id
 type: uploaded, allocated, first meeting
 module: leads, bdm, lead management
 data: leads
+
+? initial required fields upon upload
+? initail required fields upon migration
+x searching by multiple programmes
+x 
