@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const { ngramsAlgo } = require('../utils/helper');
+const { ngramsAlgov2 } = require('../utils/helper');
 const { User } = require('./User');
 
 const bdmSettingSchema = new mongoose.Schema({
@@ -60,9 +60,9 @@ bdmSettingSchema.pre('save', async function () {
       .toLowerCase()
       .trim()}`;
     setting.tags = [
-      ...ngramsAlgo(setting.name.toLowerCase().trim(), 'tag'),
-      ...ngramsAlgo(setting.ifa_name, 'tag'),
-      ...ngramsAlgo(setting.bdm_name, 'tag'),
+      ...ngramsAlgov2(setting.name.toLowerCase().trim(), 'name'),
+      ...ngramsAlgov2(ifa._id.toString(), 'ifa'),
+      ...ngramsAlgov2(bdm._id.toString(), 'bdm'),
     ];
   }
 });

@@ -54,21 +54,21 @@ app.set('views', path.join(__dirname, '..\\templates\\views'));
  * session
  */
 // note: enable trust proxy and cookie secure true
-app.enable('trust proxy');
+const sessionConfig = {};
 const eightHours = 1000 * 60 * 60 * 8;
-app.use(
-  expressSession({
-    secret: APP_SECRET,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: eightHours,
-      httpOnly: true,
-      sameSite: true,
-      secure: false,
-    },
-    resave: false,
-  })
-);
+sessionConfig.secret = APP_SECRET;
+sessionConfig.saveUninitialized = true;
+sessionConfig.cookie = {};
+sessionConfig.cookie.maxAge = eightHours;
+sessionConfig.cookie.httpOnly = true;
+sessionConfig.cookie.sameSite = true;
+sessionConfig.cookie.secure = false;
+sessionConfig.resave = false;
+if (process.env.NODE_ENV === 'production') {
+  app.enable('trust proxy');
+  sessionConfig.cookie.secure = true;
+}
+app.use(expressSession(sessionConfig));
 
 /**
  * connect flash
@@ -78,8 +78,10 @@ app.use(flash());
 /**
  * middleware
  */
-app.use(compression());
-app.use(minify());
+if (process.env.NODE_ENV === 'production') {
+  app.use(compression());
+  app.use(minify());
+}
 app.use(express.urlencoded({ extended: false }));
 
 /**

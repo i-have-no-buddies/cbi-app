@@ -65,11 +65,10 @@ exports.validateBdmSettingAdd = [
         error_results[errors.errors[i].param] = errors.errors[i].msg;
       }
       const bdms = await User.getActiveBdm().lean();
-      const managers = await User.getActiveManager().lean();
       const ifas = await User.getActiveIfa().lean();
       return res.render('bdm_settings_add', {
         BDM: bdms,
-        IFA: [...managers, ...ifas],
+        IFA: ifas,
         LEAD_STATUS,
         body: req.body,
         errors: error_results,
@@ -142,12 +141,11 @@ exports.validateBdmSettingEdit = [
         error_results[errors.errors[i].param] = errors.errors[i].msg;
       }
       const bdms = await User.getActiveBdm().lean();
-      const managers = await User.getActiveManager().lean();
       const ifas = await User.getActiveIfa().lean();
       req.body._id = req.params._id;
       return res.render('bdm_settings_edit', {
         BDM: bdms,
-        IFA: [...managers, ...ifas],
+        IFA: ifas,
         LEAD_STATUS,
         setting: req.body,
         errors: error_results,

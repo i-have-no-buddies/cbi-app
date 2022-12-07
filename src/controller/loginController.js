@@ -1,10 +1,23 @@
 const bcryptjs = require('bcryptjs');
-const { User, USER_STATUS } = require('../model/User');
+const { User, USER_STATUS, USER_TYPE } = require('../model/User');
 const { UserLogin, LOGIN_TYPE } = require('../model/UserLogin');
 
 exports.index = (req, res) => {
   try {
-    if (req.session.AUTH) return res.redirect('/user-maintenance');
+    if (req.session.AUTH) {
+      if (req.session.AUTH.type === USER_TYPE.SUPER_ADMIN) {
+        return res.redirect('/user-maintenance');
+      }
+      if (req.session.AUTH.type === USER_TYPE.ADMIN) {
+        return res.redirect('/lead-management');
+      }
+      if (req.session.AUTH.type === USER_TYPE.IFA) {
+        return res.redirect('/leads');
+      }
+      if (req.session.AUTH.type === USER_TYPE.BDM) {
+        return res.redirect('/bdm-lead');
+      }
+    }
     return res.render('login');
   } catch (error) {
     console.error(error);
@@ -33,7 +46,18 @@ exports.login = async (req, res) => {
       type: LOGIN_TYPE.LOGIN,
     });
     await userLogin.save();
-    return res.redirect('/user-maintenance');
+    if (user.type === USER_TYPE.SUPER_ADMIN) {
+      return res.redirect('/user-maintenance');
+    }
+    if (user.type === USER_TYPE.ADMIN) {
+      return res.redirect('/lead-management');
+    }
+    if (user.type === USER_TYPE.IFA) {
+      return res.redirect('/leads');
+    }
+    if (user.type === USER_TYPE.BDM) {
+      return res.redirect('/bdm-lead');
+    }
   } catch (error) {
     console.error(error);
     return res.render('500');

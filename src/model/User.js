@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const { ngramsAlgo } = require('../utils/helper');
+const { ngramsAlgov2 } = require('../utils/helper');
 
 const PHONE_REGEX = /^\d{7,20}$/;
 
 const USER_TYPE = {
-  SUPER_ADMIN: 'SUPER ADMIN',
+  SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
-  MANAGER: 'MANAGER',
   IFA: 'IFA',
   BDM: 'BDM',
 };
@@ -80,46 +79,25 @@ userSchema.pre('save', async function () {
     user.isModified('type') ||
     user.isModified('status')
   ) {
+    const name = `${user.first_name.trim()} ${user.last_name.trim()}`;
     user.tags = [
-      ...ngramsAlgo(
-        `${user.first_name.toLowerCase().trim()} ${user.last_name
-          .toLowerCase()
-          .trim()}`,
-        'tag'
-      ),
-      {
-        tag: user.email.toLowerCase(),
-      },
-      { tag: user.type.toLowerCase() },
-      { tag: user.status.toLowerCase() },
+      ...ngramsAlgov2(name.toLowerCase(), 'name'),
+      ...ngramsAlgov2(user.type.toLowerCase(), 'type'),
+      ...ngramsAlgov2(user.type.toLowerCase(), 'status'),
     ];
   }
 });
 
 userSchema.pre('insertMany', async (next, docs) => {
   for (const doc of docs) {
+    const name = `${doc.first_name.trim()} ${doc.last_name.trim()}`;
     doc.password = await bcryptjs.hash(doc.password, 8);
     doc.tags = [
-      ...ngramsAlgo(
-        `${doc.first_name.toLowerCase().trim()} ${doc.last_name
-          .toLowerCase()
-          .trim()}`,
-        'tag'
-      ),
-      {
-        tag: doc.email.toLowerCase(),
-      },
-      { tag: doc.type.toLowerCase() },
-      { tag: doc.status.toLowerCase() },
+      ...ngramsAlgov2(name.toLowerCase(), 'name'),
+      ...ngramsAlgov2(doc.type.toLowerCase(), 'type'),
+      ...ngramsAlgov2(doc.type.toLowerCase(), 'status'),
     ];
   }
-});
-
-userSchema.static('getActiveManager', function () {
-  return this.find({
-    type: USER_TYPE.MANAGER,
-    status: USER_STATUS.ACTIVE,
-  }).select('_id first_name last_name type');
 });
 
 userSchema.static('getActiveIfa', function () {

@@ -130,3 +130,50 @@ data: leads
 ? initail required fields upon migration
 x searching by multiple programmes
 x 
+? if the client will purchase another product
+
+lead_id
+leads: [{
+  status
+}]
+
+lead_id
+status_logs: [{
+
+}]
+
+- leads
+status -> first meeting
+
+- update logs
+module
+descript: `john updated simon smith`
+data: {
+  leads or status logs or 
+}
+created_by
+created_at
+
+- lead logs
+created_by
+created_at
+leads
+type: insert, update
+
+- status logs
+*status: client
+*notes
+date
+time
+address
+-outcome
+-created_by
+product
+
+- update logs
+
+!!! throttling
+- login page (60 req per minute)
+- login post request (5 req per minute)
+!!! push app to server with nginx load balancer
+!!! setup development and production environment

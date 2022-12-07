@@ -11,35 +11,12 @@
         </h3>
       </div>
       <div class="card-body">
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-append">
-              <span class="input-group-text">
-                <i class="fas fa-search"></i>
-              </span>
-            </div>
-            <input
-              type="search"
-              class="form-control form-control-sm"
-              id="name"
-              placeholder="Name, first name, last name"
-              onsearch="search(1);"
-            />
-          </div>
-        </div>
-        <div class="form-group">
-          <select
-            class="form-control form-control-sm select2bs4"
-            id="type"
-            onchange="search(1)"
-            style="width: 100%"
-          >
-            <option value="">Select type</option>
-            {{each LOGIN_TYPE}}
-            <option value="{{$value}}">{{$value}}</option>
-            {{/each}}
-          </select>
-        </div>
+        <!-- name -->
+        {{include './components/search_box.html', { name: 'name' } }}
+        <!-- type -->
+        {{include './components/search_select.html', { name: 'type', options:
+        LOGIN_TYPE } }}
+        <!-- status -->
       </div>
     </div>
   </div>
@@ -85,8 +62,8 @@
                   {{$value.user.first_name | titleCase}} {{$value.user.last_name
                   | titleCase}}
                 </td>
-                <td>{{@$value.user.type | userTypeBadge}}</td>
-                <td>{{@$value.type | userLoginBadge}}</td>
+                <td>{{@$value.user.type | userTypeBadge | strReplace}}</td>
+                <td>{{@$value.type | userLoginBadge | strReplace}}</td>
               </tr>
               {{/each}}
             </tbody>
@@ -119,7 +96,7 @@
     '{{search.type | escapeBackslash}}'
   );
 
-  function search(page) {
+  function search(page = 1) {
     console.log(page);
     let url = window.location.href.split('?')[0];
     let name = $('#name').val();

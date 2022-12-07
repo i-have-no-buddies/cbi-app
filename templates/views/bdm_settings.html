@@ -8,45 +8,14 @@
         </h3>
       </div>
       <div class="card-body">
-        <div class="form-group">
-          <input
-            type="search"
-            class="form-control form-control-sm"
-            id="name"
-            placeholder="Name"
-            onsearch="search(1);"
-          />
-        </div>
-        <div class="form-group">
-          <select
-            class="form-control form-control-sm select2bs4"
-            id="ifa"
-            onchange="search(1)"
-            style="width: 100%"
-          >
-            <option value="">Select IFA</option>
-            {{each IFA}}
-            <option value="{{$value.first_name}} {{$value.last_name}}">
-              {{$value.first_name}} {{$value.last_name}}
-            </option>
-            {{/each}}
-          </select>
-        </div>
-        <div class="form-group">
-          <select
-            class="form-control form-control-sm select2bs4"
-            id="bdm"
-            onchange="search(1)"
-            style="width: 100%"
-          >
-            <option value="">Select BDM</option>
-            {{each BDM}}
-            <option value="{{$value.first_name}} {{$value.last_name}}">
-              {{$value.first_name}} {{$value.last_name}}
-            </option>
-            {{/each}}
-          </select>
-        </div>
+        <!-- name -->
+        {{include './components/search_box.html', { name: 'name' } }}
+        <!-- ifa -->
+        {{include './components/search_select_id.html', { name: 'ifa', value:
+        user, options: IFA} }}
+        <!-- bdm -->
+        {{include './components/search_select_id.html', { name: 'bdm', value:
+        user, options: BDM} }}
       </div>
     </div>
     <div class="card">
@@ -161,7 +130,7 @@
     '{{search.bdm | escapeBackslash}}'
   );
 
-  function search(page) {
+  function search(page = 1) {
     let url = window.location.href.split('?')[0];
     let name = $('#name').val();
     let ifa = $('#ifa').val();

@@ -12,14 +12,8 @@
         </h3>
       </div>
       <div class="card-body">
-        <div class="form-group">
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            name="search"
-            placeholder="First name, last name, status"
-          />
-        </div>
+        <!-- name -->
+        {{include './components/search_box.html', { name: 'name' } }}
       </div>
     </div>
   </div>
@@ -129,7 +123,7 @@
     window.location.href = url;
   }
 
-  function search(page) {
+  function search(page = 1) {
     let url = window.location.href.split('?')[0];
     let setting = '{{CURRENT_BDM_SETTING}}';
     url += `?setting=${setting}&page=${page}`;

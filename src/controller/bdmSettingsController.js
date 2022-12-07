@@ -1,43 +1,27 @@
 const { BdmSetting } = require('../model/BdmSetting');
 const { User } = require('../model/User');
 const { LEAD_STATUS } = require('../model/Lead');
+const { tagsSearchFormater, queryParamReturner } = require('../utils/helper');
 const PER_PAGE = 10;
 
 exports.index = async (req, res) => {
   try {
     const page = req.query.page || 1;
-    let search = [];
-    if (req.query.name) {
-      search.push({ 'tags.tag': req.query.name.toLowerCase().trim() });
-    }
-    if (req.query.ifa) {
-      search.push({ 'tags.tag': req.query.ifa.toLowerCase().trim() });
-    }
-    if (req.query.bdm) {
-      search.push({ 'tags.tag': req.query.bdm.toLowerCase().trim() });
-    }
-    if (search.length) {
-      search = { $and: search };
-    } else {
-      search = {};
-    }
+    const search_tags = ['name', 'ifa', 'bdm'];
+    const search = await tagsSearchFormater(search_tags, req.query);
+    const query_params = await queryParamReturner(search_tags, req.query);
     const settings = await BdmSetting.paginate(search, {
       lean: true,
       page,
       limit: PER_PAGE,
     });
     const bdms = await User.getActiveBdm().lean();
-    const managers = await User.getActiveManager().lean();
     const ifas = await User.getActiveIfa().lean();
     return res.render('bdm_settings', {
       settings,
-      search: {
-        name: req.query.name || '',
-        ifa: req.query.ifa || '',
-        bdm: req.query.bdm || '',
-      },
+      search: query_params,
       BDM: bdms,
-      IFA: [...managers, ...ifas],
+      IFA: ifas,
     });
   } catch (error) {
     console.error(error);
@@ -48,11 +32,10 @@ exports.index = async (req, res) => {
 exports.add = async (req, res) => {
   try {
     const bdms = await User.getActiveBdm().lean();
-    const managers = await User.getActiveManager().lean();
     const ifas = await User.getActiveIfa().lean();
     return res.render('bdm_settings_add', {
       BDM: bdms,
-      IFA: [...managers, ...ifas],
+      IFA: ifas,
       LEAD_STATUS,
     });
   } catch (error) {
@@ -76,12 +59,11 @@ exports.edit = async (req, res) => {
   try {
     const setting = await BdmSetting.findOne({ _id: req.params._id }).lean();
     const bdms = await User.getActiveBdm().lean();
-    const managers = await User.getActiveManager().lean();
     const ifas = await User.getActiveIfa().lean();
     return res.render('bdm_settings_edit', {
       setting,
       BDM: bdms,
-      IFA: [...managers, ...ifas],
+      IFA: ifas,
       LEAD_STATUS,
     });
   } catch (error) {

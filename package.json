@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src\\server.js -e js,html",
-    "seeder": "node src\\seeder\\development.js",
+    "dev": "set NODE_ENV=development&&nodemon src\\server.js -e js,html",
+    "seeder": "set NODE_ENV=production&&node src\\seeder\\development.js",
     "test": "jest"
   },
   "keywords": [],

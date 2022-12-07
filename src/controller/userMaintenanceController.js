@@ -1,24 +1,13 @@
 const { User, USER_TYPE, USER_STATUS } = require('../model/User');
+const { tagsSearchFormater, queryParamReturner } = require('../utils/helper');
 const PER_PAGE = 9;
 
 exports.index = async (req, res) => {
   try {
     const page = req.query.page || 1;
-    let search = [];
-    if (req.query.name) {
-      search.push({ 'tags.tag': req.query.name.toLowerCase().trim() });
-    }
-    if (req.query.type) {
-      search.push({ 'tags.tag': req.query.type.toLowerCase().trim() });
-    }
-    if (req.query.status) {
-      search.push({ 'tags.tag': req.query.status.toLowerCase().trim() });
-    }
-    if (search.length) {
-      search = { $and: search };
-    } else {
-      search = {};
-    }
+    const search_tags = ['name', 'type', 'status'];
+    const search = await tagsSearchFormater(search_tags, req.query);
+    const query_params = await queryParamReturner(search_tags, req.query);
     const users = await User.paginate(search, {
       lean: true,
       page,
@@ -26,11 +15,7 @@ exports.index = async (req, res) => {
     });
     return res.render('user_maintenance', {
       users,
-      search: {
-        name: req.query.name || '',
-        type: req.query.type || '',
-        status: req.query.status || '',
-      },
+      search: query_params,
       USER_TYPE,
       USER_STATUS,
     });

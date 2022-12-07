@@ -3,8 +3,8 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const { ngramsAlgov2 } = require('../utils/helper');
 
 const LOGIN_TYPE = {
-  LOGIN: 'LOG IN',
-  LOGOUT: 'LOG OUT',
+  LOGIN: 'LOG_IN',
+  LOGOUT: 'LOG_OUT',
 };
 
 const userLogingSchema = new mongoose.Schema({

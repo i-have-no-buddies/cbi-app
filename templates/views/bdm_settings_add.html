@@ -1,80 +1,31 @@
 {{extend './layout.html'}} {{block 'content'}}
 <div class="card">
   <div class="card-body">
-    <form action="/bdm-settings/create" method="post" id="formBdmSettingsCreate">
+    <form
+      action="/bdm-settings/create"
+      method="post"
+      id="formBdmSettingsCreate"
+    >
+      <!-- name -->
+      {{include './components/input_text.html', {type: 'text', name: 'name',
+      value: body} }}
+      <!-- ifa -->
+      {{include './components/select_id.html', { name: 'ifa', value: user,
+      options: IFA} }}
+      <!-- bdm -->
+      {{include './components/select_id.html', { name: 'bdm', value: user,
+      options: BDM} }}
+      <!-- status -->
+      {{include './components/select.html', { name: 'status', value: user,
+      options: LEAD_STATUS} }}
       <div class="form-group">
-        <label>Setting Name</label>
-        <input
-          type="text"
-          class="form-control form-control-sm"
-          name="name"
-          value="{{if body}}{{body.name}}{{/if}}"
-        />
-        <small class="form-text text-danger" id="name_error"></small>
-      </div>
-      <div class="form-group">
-        <label>IFA</label>
-        <select
-          class="form-control form-control-sm select2bs4"
-          name="ifa"
-          style="width: 100%"
-        >
-          <option value="">Select IFA</option>
-          {{each IFA}}
-          <option 
-            value="{{$value._id.toString()}}"
-            {{if body}}{{if body.ifa == $value._id.toString()}}selected{{/if}}{{/if}}
-          >
-            {{$value.first_name}} {{$value.last_name}}
-          </option>
-          {{/each}}
-        </select>
-        <small class="form-text text-danger" id="ifa_error"></small>
-      </div>
-      <div class="form-group">
-        <label>BDM</label>
-        <select
-          class="form-contro form-control-sm select2bs4"
-          name="bdm"
-          style="width: 100%"
-        >
-          <option value="">Select BDM</option>
-          {{each BDM}}
-          <option 
-            value="{{$value._id.toString()}}"
-            {{if body}}{{if body.bdm == $value._id.toString()}}selected{{/if}}{{/if}}
-          >
-            {{$value.first_name}} {{$value.last_name}}
-          </option>
-          {{/each}}
-        </select>
-        <small class="form-text text-danger" id="bdm_error"></small>
-      </div>
-      <div class="form-group">
-        <label>Status</label>
-        <select
-          class="form-control form-control-sm select2bs4"
-          name="status"
-          style="width: 100%"
-        >
-          <option value="">Select Lead Status</option>
-          {{each LEAD_STATUS}}
-          <option 
-            value="{{$value}}"
-            {{if body}}{{if body.status == $value}}selected{{/if}}{{/if}}
-          >
-            {{$value}}
-          </option>
-          {{/each}}
-        </select>
-        <small class="form-text text-danger" id="status_error"></small>
-      </div>
-      <div class="form-group">
-        <button 
-          type="button" 
-          class="btn btn-block bg-teal" 
+        <button
+          type="button"
+          class="btn btn-block bg-teal"
           id="btnBdmSettingsCreate"
-        ><i class="fas fa-plus"></i> Add Settings</button>
+        >
+          <i class="fas fa-plus"></i> Add Settings
+        </button>
       </div>
     </form>
   </div>

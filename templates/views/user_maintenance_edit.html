@@ -1,5 +1,5 @@
 <!-- layout -->
-{{extend './layout.html'}} 
+{{extend './layout.html'}}
 <!-- content -->
 {{block 'content'}}
 <div class="card">
@@ -8,68 +8,43 @@
       <i class="fas fa-user-plus"></i> Edit User
     </h3>
   </div>
-  <form action="/user-maintenance/update/{{user._id.toString()}}" method="post" id="formUserUpdate">
+  <form
+    action="/user-maintenance/update/{{user._id.toString()}}"
+    method="post"
+    id="formUserUpdate"
+  >
     <div class="card-body">
-      {{each user}}
-        {{if $index === 'type'}}
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-append">
-                <span class="input-group-text text-sm">{{$index}}</span>
-              </div>
-              <select class="form-control form-control-sm select2bs4" name="{{$index}}">
-                {{each USER_TYPE}}
-                <option 
-                  value="{{$value}}"
-                  {{if user}}{{if user.type == $value}}selected{{/if}}{{/if}}
-                >{{$value}}</option>
-                {{/each}}
-              </select>
-              <small class="form-text text-danger" id="{{$index}}_error"></small>
-            </div>
-          </div>
-        {{else if $index === 'status'}}
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-append">
-                <span class="input-group-text text-sm">{{$index}}</span>
-              </div>
-              <select class="form-control form-control-sm select2bs4" name="{{$index}}">
-                {{each USER_STATUS}}
-                <option 
-                  value="{{$value}}"
-                  {{if user}}{{if user.status == $value}}selected{{/if}}{{/if}}
-                >{{$value}}</option>
-                {{/each}}
-              </select>
-              <small class="form-text text-danger" id="{{$index}}_error"></small>
-            </div>
-          </div>
-        {{else if $index !== '_id'}}
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-append">
-                <span class="input-group-text text-sm">{{$index | strReplace | strLimit 15}}</span>
-              </div>
-              <input 
-                type="{{if $index !== 'password'}}text{{else}}password{{/if}}" 
-                class="form-control form-control-sm" 
-                name="{{$index}}" 
-                value="{{if user}}{{user[$index]}}{{/if}}" 
-              />
-              <small class="form-text text-danger" id="{{$index}}_error"></small>
-            </div>
-          </div>
-        {{/if}}
-      {{/each}}
+      <!-- first name -->
+      {{include './components/input_text.html', {type: 'text', name:
+      'first_name', value: user} }}
+      <!-- last name -->
+      {{include './components/input_text.html', {type: 'text', name:
+      'last_name', value: user} }}
+      <!-- phone number -->
+      {{include './components/input_text.html', {type: 'text', name:
+      'phone_number', value: user} }}
+      <!-- email -->
+      {{include './components/input_text.html', {type: 'text', name: 'email',
+      value: user} }}
+      <!-- password -->
+      {{include './components/input_text.html', {type: 'password', name:
+      'password', value: user} }}
+      <!-- type -->
+      {{include './components/select.html', { name: 'type', value: user,
+      options: USER_TYPE} }}
+      <!-- status -->
+      {{include './components/select.html', { name: 'status', value: user,
+      options: USER_STATUS} }}
     </div>
     <div class="card-footer">
       <div class="form-group">
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="btn bg-teal btn-block font-weight-bold"
           id="btnUserUpdate"
-        ><i class="fas fa-save"></i> Update User</button>
+        >
+          <i class="fas fa-save"></i> Update User
+        </button>
       </div>
     </div>
   </form>
