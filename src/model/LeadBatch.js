@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
+const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const FILE_HEADERS = [
   'first_name',
@@ -11,17 +11,17 @@ const FILE_HEADERS = [
   'business_no',
   'mobile',
   'second_mobile',
-  'email',
-  'second_email',
+  'personal_email',
+  'work_email',
   'nationality',
   'description',
-];
+]
 
 const UPLOAD_STATUS = {
   ACTIVE: 'ACTIVE',
   PENDING: 'PENDING',
   INACTIVE: 'INACTIVE',
-};
+}
 
 const leadBatchSchema = new mongoose.Schema({
   upload_name: {
@@ -62,14 +62,14 @@ const leadBatchSchema = new mongoose.Schema({
       },
     ],
   },
-});
+})
 
-leadBatchSchema.plugin(mongoosePaginate);
+leadBatchSchema.plugin(mongoosePaginate)
 
-leadBatchSchema.index({ 'tags.tag': 1, _id: 1 });
+leadBatchSchema.index({ 'tags.tag': 1, _id: 1 })
 
 module.exports = {
   LeadBatch: mongoose.model('LeadBatch', leadBatchSchema),
   FILE_HEADERS,
   UPLOAD_STATUS,
-};
+}

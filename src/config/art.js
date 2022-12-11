@@ -1,5 +1,6 @@
 const art = require('express-art-template');
 const moment = require('moment-timezone');
+const { LEAD_STATUS } = require('../model/Lead');
 const { USER_TYPE, USER_STATUS } = require('../model/User');
 const { LOGIN_TYPE } = require('../model/UserLogin');
 
@@ -14,6 +15,16 @@ art.template.defaults.imports.formatDate = (
   }
   return date;
 };
+
+art.template.defaults.imports.formatDateRaw = (
+  date,
+  format = 'YYYY-MM-DD hh:mm A',
+) => {
+  if (date) {
+    return `${moment(date).tz('Asia/Dubai').format(format)}`;
+  }
+  return date
+}
 
 art.template.defaults.imports.escapeBackslash = (str) => {
   if (str) {
@@ -95,5 +106,58 @@ art.template.defaults.imports.strReplace = (str, replace = '_') => {
   }
   return str;
 };
+
+art.template.defaults.imports.leadStatusBadge = (status) => {
+  if (status === LEAD_STATUS.ACTIVE) {
+    return `<span class="badge bg-teal">${status}</span>`
+  }
+  if (status === LEAD_STATUS.MEETING) {
+    return `<span class="badge bg-success">${status}</span>`
+  }
+  if (status === LEAD_STATUS.CLIENT) {
+    return `<span class="badge bg-info">${status}</span>`
+  }
+  if (status === LEAD_STATUS.INACTIVE) {
+    return `<span class="badge bg-maroon">${status}</span>`
+  }
+  return `<span>${status}</span>`
+}
+
+art.template.defaults.imports.timeRemaining = (value, compare = moment()) => {
+  if (value) {
+    var datetime = moment(value)
+    times = ['days', 'hours', 'minutes']
+
+    for (x = 0; x < times.length; x++) {
+      let remaining = datetime.diff(compare, times[x])
+      if (remaining > 0) {
+        remaining_text = `${remaining} ${times[x]} remaining`
+        return remaining_text
+      }
+    }
+    return 'Overdue'
+  }
+  return value
+}
+
+art.template.defaults.imports.dateNow = moment()
+
+art.template.defaults.imports.isOverDue = (value) => {
+  console.log(value)
+  if (value) {
+    var datetime = moment(value)
+    var now = moment()
+    times = ['days', 'hours', 'minutes']
+
+    for (x = 0; x < times.length; x++) {
+      let remaining = datetime.diff(now, times[x])
+      if (remaining > 0) {
+        return false
+      }
+    }
+    return true
+  }
+  return value
+}
 
 module.exports = art;

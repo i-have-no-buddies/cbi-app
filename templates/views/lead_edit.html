@@ -3,11 +3,19 @@
   <div class="col-md-4">
     <div class="card ">
       <form id="lead_form" action="/lead/update" method="post">
+        <div class="card-header">
+          <h3 class="card-title font-weight-bold">
+            <i class="far fa-address-card"></i>  Lead Information
+          </h3>
+        </div>
         <div class="card-body">
           
           {{include './components/hidden_id.html', { value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'first_name', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'last_name', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'nationality', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'country', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'city', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'job_title', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'company', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'profile_link', value: lead} }}
@@ -15,20 +23,28 @@
           {{include './components/input_text.html', {type: 'text', name: 'business_no', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'mobile', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'second_mobile', value: lead} }}
-          {{include './components/input_text.html', {type: 'text', name: 'email', value: lead} }}
-          {{include './components/input_text.html', {type: 'text', name: 'second_email', value: lead} }}
-          {{include './components/input_text.html', {type: 'text', name: 'nationality', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'personal_email', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'work_email', value: lead} }}
           {{include './components/textarea.html', { name: 'description', value: lead} }}
         </div>
         <input type="hidden" name="date" id='hidden_date'/>
         <input type="hidden" name="time" id='hidden_time'/>
-        <input type="hidden" name="note" id='hidden_note'/>
+        <input type="hidden" name="address" id='hidden_address'/>
+        <input type="hidden" name="product" id='hidden_product'/>
+        <input type="hidden" name="program" id='hidden_program'/>
+
         <input type="hidden" name="status" id='hidden_status'/>
+        <input type="hidden" name="note" id='hidden_note'/>
+
+        <input type="hidden" name="meeting_id" id='hidden_meeting_id'/>
+        <input type="hidden" name="outcome" id='hidden_outcome'/>
+        <input type="hidden" name="outcome_note" id='hidden_outcome_note'/>
+
       </form>
         <div class="card-footer">
           <div class="form-group">
             <button 
-              onclick='submitUpdate()'
+              onclick='submitUpdate(`update`)'
               class="btn bg-teal btn-block font-weight-bold"
               ><i class="fas fa-save"></i> Update Lead</button>
           </div>
@@ -38,20 +54,29 @@
   
   <div class="col-md-8">
 
-
     <div class="card">
+      <div class="card-header">
+        <h3 class="card-title font-weight-bold">
+          <i class="far fa-edit"></i>  Status
+        </h3>
+      </div>
       <div class="card-body">
         <div class="row">
           <div class="col-md-6">
-            {{include './components/input_text.html', {type: 'text', name: 'date', value: lead} }}
-            {{include './components/textarea.html', { name: 'note', value: lead} }}
+            {{include './components/input_datetime.html', { name: 'date', value: lead, icon:'fa fa-calendar'} }}
+            {{include './components/input_datetime.html', { name: 'time', value: lead, icon:'far fa-clock'} }}
+            {{include './components/input_text.html', {type: 'text', name: 'address', value: lead} }}
+            {{include './components/input_text.html', {type: 'text', name: 'product', value: lead} }}
+            {{include './components/input_text.html', {type: 'text', name: 'program', value: lead} }}
+            
           </div>
           <div class="col-md-6">
-            {{include './components/input_text.html', {type: 'text', name: 'time', value: lead} }}
             {{include './components/select.html', { name: 'status', value: lead, options: LEAD_STATUS} }}
+            {{include './components/textarea.html', { name: 'note', value: lead} }}
+            
             <div class="form-group">
               <button 
-                onclick='submitStatusUpdate()'
+                onclick='submitUpdate(`update-status`)'
                 class="btn bg-teal btn-block font-weight-bold"
                 ><i class="fas fa-save"></i> Update Status</button>
             </div>
@@ -60,10 +85,33 @@
       </div>
     </div>
 
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title font-weight-bold">
+          <i class="far fa-handshake"></i> Meeting
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="timeline">
+          <!--div class="time-label">
+            <span class="bg-info">Pending: 1</span>
+          </div--> 
+          {{each meeting}}
+            {{include './components/meeting_timeline.html', {meeting: $value, outcome: OUTCOME} }}
+          {{/each}}
+        </div>
+      </div>
+    </div>
 
     <div class="card">
+      <div class="card-header">
+        <h3 class="card-title font-weight-bold">
+          <i class="fas fa-history"></i> Logs
+        </h3>
+      </div>
+      
       <div class="card-body">
-        LOGS
+        
       </div>
     </div>
   </div>
@@ -79,22 +127,55 @@
     handleError(`{{$index}}`,`{{$value}}`)
   {{/each}}
 
-  function submitUpdate() {
-    appendAction()
-    document.getElementById("lead_form").submit();
-  }
-  function submitStatusUpdate() {
-    appendAction()
-    document.getElementById("lead_form").action = "/lead/update-status";
+  var status_fields = ['status', 'note', 'date', 'time', 'address', 'product', 'program']
+  function submitUpdate(action) {
+    //reason: so inputs are returned to view
+    for (let i = 0; i < status_fields.length; i++) {
+      document.getElementById(`hidden_${status_fields[i]}`).value = document.getElementById(status_fields[i]).value;
+    }
+    document.getElementById("lead_form").action = `/lead/${action}`;
     document.getElementById("lead_form").submit()
   }
 
-  function appendAction(){
-    document.getElementById('hidden_date').value = document.getElementById('date').value;
-    document.getElementById('hidden_time').value = document.getElementById('time').value;
-    document.getElementById('hidden_note').value = document.getElementById('note').value;
-    document.getElementById('hidden_status').value = document.getElementById('status').value;
+  var outcome_fields = ['meeting_id', 'outcome', 'outcome_note']
+  function submitUpdateMeeting(meeting_id) {
+    //reason: so inputs are returned to view
+    for (let i = 0; i < status_fields.length; i++) {
+      $(`#hidden_${outcome_fields[i]}`).val( $(`#${meeting_id} #${outcome_fields[i]}`).val())
+    }
+    document.getElementById("lead_form").action = `/lead-meeting/meeting-update`;
+    document.getElementById("lead_form").submit()
   }
+  
+
+  
+  function changeActions(initial = false) {
+    let disabled = true
+    if(document.getElementById("status").value == 'MEETING') disabled = false
+    clearAndDisable('date', disabled, initial)
+    clearAndDisable('time', disabled, initial)
+    clearAndDisable('address', disabled, initial)
+
+    if(document.getElementById("status").value == 'CLIENT') disabled = false
+    if(document.getElementById("status").value == 'MEETING') disabled = true
+    clearAndDisable('product', disabled, initial)
+    clearAndDisable('program', disabled, initial)
+  }
+  
+  function clearAndDisable(field, disabled, initial) {
+    if(!initial) document.getElementById(field).value = ''
+    document.getElementById(field).disabled = disabled
+  }
+
+  $(function () {
+    $("#date").datetimepicker({format: 'YYYY-MM-DD'});
+    $('#time').datetimepicker({format: 'LT'});
+    
+    //bind on change
+    changeActions(true);
+    document.getElementById("status").setAttribute("onchange", 'changeActions()');
+  });
+  
   
 </script>
 {{/block}}

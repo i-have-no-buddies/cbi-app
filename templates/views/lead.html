@@ -61,7 +61,7 @@
                 <td><i class="fas fa-briefcase"></i> {{$value.job_title}}</td>
                 <td><i class="far fa-building"></i> {{$value.company}}</td>
                 <td><i class="fas fa-mobile-alt"></i> {{$value.mobile}}</td>
-                <td>{{@$value.status | userStatusBadge}}</td>
+                <td>{{@$value.status | leadStatusBadge}}</td>
 
               </tr>
               {{/each}}
@@ -89,8 +89,8 @@
   const page = parseInt('{{list.page}}');
   const totalPages = parseInt('{{list.totalPages}}');
   const totalDocs = parseInt('{{list.totalDocs}}');
-  document.getElementById('search').value = decodeHTML(
-    '{{search.search | escapeBackslash}}'
+  document.getElementById('name').value = decodeHTML(
+    '{{search.name | escapeBackslash}}'
   );
   document.getElementById('job_title').value = decodeHTML(
     '{{search.job_title | escapeBackslash}}'
@@ -100,18 +100,18 @@
   );
   
 
-  function search(page) {
+  function search(page = 1) {
     let url = window.location.href.split('?')[0];
-    let search = $('#search').val();
+    let name = $('#name').val();
     let job_title = $('#job_title').val();
     let company = $('#company').val();
     url += `?page=${page}`;
-    if (search) url += `&search=${search}`;
+    if (name) url += `&name=${name}`;
     if (job_title) url += `&job_title=${job_title}`;
     if (company) url += `&company=${company}`;
     window.location.href = url;
   }
-
+  
   $(function () {
     $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
   });

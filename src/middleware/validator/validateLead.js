@@ -1,6 +1,9 @@
-const { LEAD_STATUS } = require('../../model/Lead');
-const { check, validationResult } = require('express-validator');
-const { errorFormater } = require('../../utils/helper.js');
+const { check, validationResult } = require('express-validator')
+
+const { LEAD_STATUS, OUTCOME } = require('../../model/Lead')
+const { StatusLog } = require('../../model/StatusLog')
+
+const { errorFormater } = require('../../utils/helper.js')
 
 exports.validateLeadAdd = [
   check('first_name')
@@ -55,18 +58,18 @@ exports.validateLeadAdd = [
   //     .notEmpty()
   //     .withMessage('Second Mobile is required.')
   //     .bail(),
-  check('email')
+  check('personal_email')
     .trim()
     .notEmpty()
-    .withMessage('Email is required.')
+    .withMessage('Personal Email is required.')
     .bail()
     .isEmail()
-    .withMessage('Email is invalid.')
+    .withMessage('Personal Email is invalid.')
     .bail(),
-  check('second_email')
+  check('work_email')
     .trim()
     .isEmail()
-    .withMessage('Second Email is invalid.')
+    .withMessage('Work Email is invalid.')
     .bail(),
   check('nationality')
     .trim()
@@ -79,18 +82,18 @@ exports.validateLeadAdd = [
     .withMessage('Description is required.')
     .bail(),
   function (req, res, next) {
-    const errors = validationResult(req);
-    let error_results;
+    const errors = validationResult(req)
+    let error_results
     if (!errors.isEmpty()) {
-      error_results = errorFormater(errors);
+      error_results = errorFormater(errors)
       return res.render('lead_add', {
         lead: req.body,
         errors: error_results,
-      });
+      })
     }
-    next();
+    next()
   },
-];
+]
 
 exports.validateLeadEdit = [
   check('first_name')
@@ -109,6 +112,13 @@ exports.validateLeadEdit = [
     .isLength({ min: 2 })
     .withMessage('Last name must be minimum of 2 characters.')
     .bail(),
+  check('nationality')
+    .trim()
+    .notEmpty()
+    .withMessage('Nationality is required.')
+    .bail(),
+  check('country').trim().notEmpty().withMessage('Country is required.').bail(),
+  check('city').trim().notEmpty().withMessage('City is required.').bail(),
   check('job_title')
     .trim()
     .notEmpty()
@@ -145,43 +155,41 @@ exports.validateLeadEdit = [
   //     .notEmpty()
   //     .withMessage('Second Mobile is required.')
   //     .bail(),
-  check('email')
+  check('personal_email')
     .trim()
     .notEmpty()
-    .withMessage('Email is required.')
+    .withMessage('Personal Email is required.')
     .bail()
     .isEmail()
-    .withMessage('Email is invalid.')
+    .withMessage('Personal Email is invalid.')
     .bail(),
-  check('second_email')
+  check('work_email')
     .trim()
     .isEmail()
     .withMessage('Second Email is invalid.')
-    .bail(),
-  check('nationality')
-    .trim()
-    .notEmpty()
-    .withMessage('Nationality is required.')
     .bail(),
   check('description')
     .trim()
     .notEmpty()
     .withMessage('Description is required.')
     .bail(),
-  function (req, res, next) {
-    const errors = validationResult(req);
-    let error_results;
+  async function (req, res, next) {
+    const errors = validationResult(req)
+    let error_results
     if (!errors.isEmpty()) {
-      error_results = errorFormater(errors);
+      error_results = errorFormater(errors)
+      let meeting = await StatusLog.getLeadMeetings(req.body._id)
       return res.render('lead_edit', {
         LEAD_STATUS,
+        OUTCOME,
+        meeting,
         lead: req.body,
         errors: error_results,
-      });
+      })
     }
-    next();
+    next()
   },
-];
+]
 
 exports.validateLeadStatusEdit = [
   check('status')
@@ -190,28 +198,143 @@ exports.validateLeadStatusEdit = [
     .withMessage('Status is required.')
     .bail()
     .custom((status) => {
-      let arrLeadStatus = Object.values(LEAD_STATUS);
+      let arrLeadStatus = Object.values(LEAD_STATUS)
       if (!arrLeadStatus.includes(status)) {
-        throw new Error('Status invalid.');
+        throw new Error('Status invalid.')
       } else {
-        return true;
+        return true
       }
     })
     .bail(),
   check('note').trim().notEmpty().withMessage('Note is required.').bail(),
-  check('date').trim().notEmpty().withMessage('Date is required.').bail(),
-  check('time').trim().notEmpty().withMessage('Time is required.').bail(),
-  function (req, res, next) {
-    const errors = validationResult(req);
-    let error_results;
+  check('date')
+    .trim()
+    .custom((value, { req }) => {
+      if (meetingParamsUndefined(req.body, value)) {
+        throw new Error('Date is required.')
+      } else return true
+    })
+    .bail(),
+  check('time')
+    .trim()
+    .custom((value, { req }) => {
+      if (meetingParamsUndefined(req.body, value)) {
+        throw new Error('Time is required.')
+      } else return true
+    })
+    .bail(),
+  check('address')
+    .trim()
+    .custom((value, { req }) => {
+      if (meetingParamsUndefined(req.body, value)) {
+        throw new Error('Address is required.')
+      } else return true
+    })
+    .bail(),
+  check('product')
+    .trim()
+    .custom((value, { req }) => {
+      if (clientParamsUndefined(req.body, value)) {
+        throw new Error('Product is required.')
+      } else return true
+    })
+    .bail(),
+  check('program')
+    .trim()
+    .custom((value, { req }) => {
+      if (clientParamsUndefined(req.body, value)) {
+        throw new Error('Program is required.')
+      } else return true
+    })
+    .bail(),
+  async function (req, res, next) {
+    const errors = validationResult(req)
+    let error_results
     if (!errors.isEmpty()) {
-      error_results = errorFormater(errors);
+      error_results = errorFormater(errors)
+      let meeting = await StatusLog.getLeadMeetings(req.body._id)
       return res.render('lead_edit', {
         LEAD_STATUS,
+        OUTCOME,
+        meeting,
         lead: req.body,
         errors: error_results,
-      });
+      })
     }
-    next();
+    next()
   },
-];
+]
+
+exports.validateMeetingOutcome = [
+  check('outcome')
+    .trim()
+    .notEmpty()
+    .withMessage('Outcome is required.')
+    .bail()
+    .custom((outcome) => {
+      let arrLeadStatus = Object.values(OUTCOME)
+      if (!arrLeadStatus.includes(outcome)) {
+        throw new Error('Outcome invalid.')
+      } else {
+        return true
+      }
+    })
+    .bail(),
+  check('outcome_note')
+    .trim()
+    .notEmpty()
+    .withMessage('Outcome Note is required.')
+    .bail(),
+  // check('product')
+  //   .trim()
+  //   .custom((value, { req }) => {
+  //     if (clientParamsUndefined(req.body, value)) {
+  //       throw new Error('Product is required.')
+  //     } else return true
+  //   })
+  //   .bail(),
+  // check('program')
+  //   .trim()
+  //   .custom((value, { req }) => {
+  //     if (clientParamsUndefined(req.body, value)) {
+  //       throw new Error('Program is required.')
+  //     } else return true
+  //   })
+  //   .bail(),
+  async function (req, res, next) {
+    const errors = validationResult(req)
+    let error_results
+    if (!errors.isEmpty()) {
+      error_results = errorFormater(errors)
+      let meeting = await StatusLog.getLeadMeetings(req.body._id)
+      return res.render('lead_edit', {
+        LEAD_STATUS,
+        OUTCOME,
+        meeting,
+        lead: req.body,
+        errors: error_results,
+      })
+    }
+    next()
+  },
+]
+
+const meetingParamsUndefined = (body, value) => {
+  //check if status meeting
+  if (body.status == LEAD_STATUS.MEETING) {
+    //check if validating value is undefined
+    if (value == '' || value === undefined) {
+      return true
+    }
+  } else false
+}
+
+const clientParamsUndefined = (body, value) => {
+  //check if status meeting
+  if (body.status == LEAD_STATUS.CLIENT) {
+    //check if validating value is undefined
+    if (value == '' || value === undefined) {
+      return true
+    }
+  } else false
+}

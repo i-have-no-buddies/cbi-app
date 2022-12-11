@@ -1,6 +1,6 @@
-const { LEAD_STATUS } = require('../../model/Lead');
-const { check, validationResult } = require('express-validator');
-const { errorFormater } = require('../../utils/helper.js');
+const { LEAD_STATUS } = require('../../model/Lead')
+const { check, validationResult } = require('express-validator')
+const { errorFormater } = require('../../utils/helper.js')
 
 exports.validateLeadAdd = [
   check('first_name')
@@ -19,6 +19,13 @@ exports.validateLeadAdd = [
     .isLength({ min: 2 })
     .withMessage('Last name must be minimum of 2 characters.')
     .bail(),
+  check('nationality')
+    .trim()
+    .notEmpty()
+    .withMessage('Nationality is required.')
+    .bail(),
+  check('country').trim().notEmpty().withMessage('Country is required.').bail(),
+  check('city').trim().notEmpty().withMessage('City is required.').bail(),
   check('job_title')
     .trim()
     .notEmpty()
@@ -48,30 +55,25 @@ exports.validateLeadAdd = [
   check('business_no')
     .trim()
     .notEmpty()
-    .withMessage('Profile Link is required.')
+    .withMessage('Business No is required.')
     .bail(),
   // check('second_mobile')
   //     .trim()
   //     .notEmpty()
   //     .withMessage('Second Mobile is required.')
   //     .bail(),
-  check('email')
+  check('personal_email')
     .trim()
     .notEmpty()
-    .withMessage('Email is required.')
+    .withMessage('Personal Email is required.')
     .bail()
     .isEmail()
-    .withMessage('Email is invalid.')
+    .withMessage('Personal Email is invalid.')
     .bail(),
-  check('second_email')
+  check('work_email')
     .trim()
     .isEmail()
     .withMessage('Second Email is invalid.')
-    .bail(),
-  check('nationality')
-    .trim()
-    .notEmpty()
-    .withMessage('Nationality is required.')
     .bail(),
   check('description')
     .trim()
@@ -79,18 +81,18 @@ exports.validateLeadAdd = [
     .withMessage('Description is required.')
     .bail(),
   function (req, res, next) {
-    const errors = validationResult(req);
-    let error_results;
+    const errors = validationResult(req)
+    let error_results
     if (!errors.isEmpty()) {
-      error_results = errorFormater(errors);
+      error_results = errorFormater(errors)
       return res.render('lead_management_add', {
         lead: req.body,
         errors: error_results,
-      });
+      })
     }
-    next();
+    next()
   },
-];
+]
 
 exports.validateLeadEdit = [
   check('first_name')
@@ -109,6 +111,13 @@ exports.validateLeadEdit = [
     .isLength({ min: 2 })
     .withMessage('Last name must be minimum of 2 characters.')
     .bail(),
+  check('nationality')
+    .trim()
+    .notEmpty()
+    .withMessage('Nationality is required.')
+    .bail(),
+  check('country').trim().notEmpty().withMessage('Country is required.').bail(),
+  check('city').trim().notEmpty().withMessage('City is required.').bail(),
   check('job_title')
     .trim()
     .notEmpty()
@@ -145,23 +154,18 @@ exports.validateLeadEdit = [
   //     .notEmpty()
   //     .withMessage('Second Mobile is required.')
   //     .bail(),
-  check('email')
+  check('personal_email')
     .trim()
     .notEmpty()
-    .withMessage('Email is required.')
+    .withMessage('Personal Email is required.')
     .bail()
     .isEmail()
-    .withMessage('Email is invalid.')
+    .withMessage('Personal Email is invalid.')
     .bail(),
-  check('second_email')
+  check('work_email')
     .trim()
     .isEmail()
     .withMessage('Second Email is invalid.')
-    .bail(),
-  check('nationality')
-    .trim()
-    .notEmpty()
-    .withMessage('Nationality is required.')
     .bail(),
   check('description')
     .trim()
@@ -174,25 +178,25 @@ exports.validateLeadEdit = [
     .withMessage('Status is required.')
     .bail()
     .custom((status) => {
-      let arrLeadStatus = Object.values(LEAD_STATUS);
+      let arrLeadStatus = Object.values(LEAD_STATUS)
       if (!arrLeadStatus.includes(status)) {
-        throw new Error('Status invalid.');
+        throw new Error('Status invalid.')
       } else {
-        return true;
+        return true
       }
     })
     .bail(),
   function (req, res, next) {
-    const errors = validationResult(req);
-    let error_results;
+    const errors = validationResult(req)
+    let error_results
     if (!errors.isEmpty()) {
-      error_results = errorFormater(errors);
+      error_results = errorFormater(errors)
       return res.render('lead_management_edit', {
         LEAD_STATUS,
         lead: req.body,
         errors: error_results,
-      });
+      })
     }
-    next();
+    next()
   },
-];
+]

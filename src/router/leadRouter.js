@@ -1,30 +1,39 @@
-const leadController = require('../controller/leadController');
-const auth = require('../middleware/auth');
+const leadController = require('../controller/leadController')
+const auth = require('../middleware/auth')
 const {
   validateLeadEdit,
   validateLeadStatusEdit,
-} = require('../middleware/validator/validateLead');
+  validateMeetingOutcome,
+} = require('../middleware/validator/validateLead')
 
 module.exports = (app, setOnlineUser) => {
-  app.get('/lead', auth.authenticated, setOnlineUser, leadController.index);
+  app.get('/lead', auth.authenticated, setOnlineUser, leadController.index)
   app.get(
     '/lead/edit/:id',
     auth.authenticated,
     setOnlineUser,
-    leadController.edit
-  );
+    leadController.edit,
+  )
   app.post(
     '/lead/update',
     auth.authenticated,
     setOnlineUser,
     validateLeadEdit,
-    leadController.update
-  );
+    leadController.update,
+  )
   app.post(
     '/lead/update-status',
     auth.authenticated,
     setOnlineUser,
     validateLeadStatusEdit,
-    leadController.update_status
-  );
-};
+    leadController.update_status,
+  )
+
+  app.post(
+    '/lead-meeting/meeting-update',
+    auth.authenticated,
+    setOnlineUser,
+    validateMeetingOutcome,
+    leadController.meeting_update,
+  )
+}

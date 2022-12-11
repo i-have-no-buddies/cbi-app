@@ -3,11 +3,19 @@
   <div class="col-md-4">
     <div class="card ">
       <form action="/lead-management/update" method="post">
+        <div class="card-header">
+          <h3 class="card-title font-weight-bold">
+            <i class="far fa-address-card"></i> Lead Information
+          </h3>
+        </div>
         <div class="card-body">
           
           {{include './components/hidden_id.html', { value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'first_name', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'last_name', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'nationality', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'country', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'city', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'job_title', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'company', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'profile_link', value: lead} }}
@@ -15,9 +23,8 @@
           {{include './components/input_text.html', {type: 'text', name: 'business_no', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'mobile', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'second_mobile', value: lead} }}
-          {{include './components/input_text.html', {type: 'text', name: 'email', value: lead} }}
-          {{include './components/input_text.html', {type: 'text', name: 'second_email', value: lead} }}
-          {{include './components/input_text.html', {type: 'text', name: 'nationality', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'personal_email', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'work_email', value: lead} }}
           {{include './components/textarea.html', { name: 'description', value: lead} }}
           {{include './components/select.html', { name: 'status', value: lead, options: LEAD_STATUS} }}
         </div>
