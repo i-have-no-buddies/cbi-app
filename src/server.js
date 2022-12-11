@@ -16,6 +16,7 @@ const bdmSettingsRouter = require('./router/bdmSettingsRouter');
 const leadManagementRouter = require('./router/leadManagementRouter');
 const reportsRouter = require('./router/reportsRouter');
 const userMaintenanceRouter = require('./router/userMaintenanceRouter');
+const userLogsRouter = require('./router/userLogsRouter');
 const userLogin = require('./router/userLoginRouter');
 const userOnlineRouter = require('./router/userOnlineRouter');
 const APP_HOST = process.env.APP_HOST;
@@ -124,6 +125,7 @@ bdmSettingsRouter(app, setOnlineUser);
 leadManagementRouter(app, setOnlineUser);
 reportsRouter(app, setOnlineUser);
 userMaintenanceRouter(app, setOnlineUser);
+userLogsRouter(app, setOnlineUser);
 userLogin(app, setOnlineUser);
 userOnlineRouter(app, setOnlineUser);
 app.use((req, res) => {

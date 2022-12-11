@@ -3,7 +3,7 @@
 <!-- content -->
 {{block 'content'}}
 <div class="row">
-  <div class="col-md-3">
+  <div class="col-sm-3">
     <div class="card">
       <div class="card-header">
         <h3 class="card-title font-weight-bold">
@@ -12,35 +12,11 @@
       </div>
       <div class="card-body">
         <!-- name -->
-        {{include './components/search_box.html', { name: 'name' } }}
-        <!-- type -->
-        {{include './components/search_select.html', { name: 'type', options:
-        USER_TYPE } }}
-        <!-- status -->
-        {{include './components/search_select.html', { name: 'status', options:
-        USER_STATUS } }}
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title font-weight-bold">
-          <i class="fas fa-cog"></i> Option
-        </h3>
-      </div>
-      <div class="card-body">
-        <div class="form-group">
-          <a
-            href="/user-maintenance/add"
-            class="btn bg-teal btn-block font-weight-bold"
-          >
-            <i class="fas fa-user-plus"></i>
-            Add User
-          </a>
-        </div>
+        {{include './components/search_box.html', { name: '_id' } }}
       </div>
     </div>
   </div>
-  <div class="col-md-9">
+  <div class="col-sm-9">
     <div class="card">
       <div class="card-header">
         <h3 class="card-title font-weight-bold">
@@ -72,11 +48,10 @@
                   <i class="far fa-id-badge"></i>
                   Status
                 </th>
-                <th>Option</th>
               </tr>
             </thead>
             <tbody>
-              {{each users.docs}}
+              {{each user_logs.docs}}
               <tr>
                 <td>
                   <i class="far fa-calendar"></i>
@@ -85,7 +60,7 @@
                 <td>
                   <i class="far fa-user"></i>
                   <a
-                    href="/user-maintenance/edit/{{$value._id.toString()}}"
+                    href="/user-logs/{{$value._id.toString()}}"
                     rel="nofollow noopener noreferrer"
                     class="text-info"
                     id="user{{$index}}"
@@ -96,22 +71,19 @@
                     data-ot-target="#user{{$index}}"
                     data-ot-fixed="true"
                   >
-                    {{$value.first_name | titleCase}} {{$value.last_name |
-                    titleCase}}
+                    {{$value.current.first_name | titleCase}}
+                    {{$value.current.last_name | titleCase}}
                   </a>
                 </td>
                 <td>
                   <i class="far fa-envelope"></i>
                   <a href="mailto:{{$value.email}}" class="text-info"
-                    >{{$value.email}}</a
+                    >{{$value.current.email}}</a
                   >
                 </td>
-                <td>{{@$value.type | userTypeBadge | strReplace}}</td>
-                <td>{{@$value.status | userStatusBadge | strReplace}}</td>
+                <td>{{@$value.current.type | userTypeBadge | strReplace}}</td>
                 <td>
-                  <a href="/user-logs?_id={{$value._id.toString()}}">
-                    User Logs
-                  </a>
+                  {{@$value.current.status | userStatusBadge | strReplace}}
                 </td>
               </tr>
               {{/each}}
@@ -135,28 +107,18 @@
 {{block 'javascript'}}
 <script src="/app/global.js"></script>
 <script>
-  const page = parseInt('{{users.page}}');
-  const totalPages = parseInt('{{users.totalPages}}');
-  const totalDocs = parseInt('{{users.totalDocs}}');
-  document.getElementById('name').value = decodeHTML(
-    '{{search.name | escapeBackslash}}'
-  );
-  document.getElementById('type').value = decodeHTML(
-    '{{search.type | escapeBackslash}}'
-  );
-  document.getElementById('status').value = decodeHTML(
-    '{{search.status | escapeBackslash}}'
+  const page = parseInt('{{user_logs.page}}');
+  const totalPages = parseInt('{{user_logs.totalPages}}');
+  const totalDocs = parseInt('{{user_logs.totalDocs}}');
+  document.getElementById('_id').value = decodeHTML(
+    '{{search._id | escapeBackslash}}'
   );
 
   function search(page = 1) {
     let url = window.location.href.split('?')[0];
-    let name = $('#name').val();
-    let type = $('#type').val();
-    let status = $('#status').val();
+    let _id = $('#_id').val();
     url += `?page=${page}`;
-    if (name) url += `&name=${name}`;
-    if (type) url += `&type=${type}`;
-    if (status) url += `&status=${status}`;
+    if (_id) url += `&_id=${_id}`;
     window.location.href = url;
   }
 

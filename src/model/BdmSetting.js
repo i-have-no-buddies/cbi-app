@@ -67,9 +67,9 @@ bdmSettingSchema.pre('save', async function () {
   }
 });
 
-bdmSettingSchema.plugin(mongoosePaginate);
-
 bdmSettingSchema.index({ 'tags.tag': 1, _id: 1 });
+
+bdmSettingSchema.plugin(mongoosePaginate);
 
 module.exports = {
   BdmSetting: mongoose.model('BdmSetting', bdmSettingSchema),

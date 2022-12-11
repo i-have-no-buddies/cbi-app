@@ -19,6 +19,8 @@ const PAGES = {
   '/user-maintenance/add': 'User Maintenance',
   '/user-maintenance/create': 'User Maintenance',
   '/user-maintenance/edit/:_id': 'User Maintenance',
+  '/user-logs': 'User Logs',
+  '/user-logs/:_id': 'User Logs',
   '/user-login': 'User Login',
   '/user-online': 'User Online',
 };

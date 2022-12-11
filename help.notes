@@ -169,6 +169,9 @@ address
 -outcome
 -created_by
 product
+{
+  status: 'meeting', must_update_lead_status: false
+}
 
 - update logs
 
@@ -177,3 +180,10 @@ product
 - login post request (5 req per minute)
 !!! push app to server with nginx load balancer
 !!! setup development and production environment
+
+# 2022-12-09
+labelling
+- red
+- green
+- blue
+- yellow

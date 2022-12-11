@@ -1,11 +1,11 @@
-const mongoose = require('mongoose')
-const mongoosePaginate = require('mongoose-paginate-v2')
-const { ngramsAlgov2 } = require('../utils/helper')
+const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const { ngramsAlgov2 } = require('../utils/helper');
 
 const LEAD_STATUS = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-}
+};
 
 const leadSchema = new mongoose.Schema({
   lead_batch_id: {
@@ -86,11 +86,11 @@ const leadSchema = new mongoose.Schema({
       },
     ],
   },
-})
+});
 
 leadSchema.pre('save', async function () {
-  const doc = this
-  let name = `${doc.first_name.trim()} ${doc.last_name.trim()}`
+  const doc = this;
+  let name = `${doc.first_name.trim()} ${doc.last_name.trim()}`;
   doc.tags = [
     ...ngramsAlgov2(name.toLowerCase(), 'name'),
     ...ngramsAlgov2(doc.job_title.toLowerCase().trim(), 'job_title'),
@@ -103,12 +103,12 @@ leadSchema.pre('save', async function () {
     // ...ngramsAlgov2(doc.second_email.toLowerCase().trim(), 'second_email'),
     // ...ngramsAlgov2(doc.nationality.toLowerCase().trim(), 'nationality'),
     ...ngramsAlgov2(doc.status.toLowerCase().trim(), 'status'),
-  ]
-})
+  ];
+});
 
 leadSchema.pre('insertMany', async (next, docs) => {
   for (const doc of docs) {
-    let name = `${doc.first_name.trim()} ${doc.last_name.trim()}`
+    let name = `${doc.first_name.trim()} ${doc.last_name.trim()}`;
     doc.tags = [
       ...ngramsAlgov2(name.toLowerCase(), 'name'),
       ...ngramsAlgov2(doc.job_title.toLowerCase().trim(), 'job_title'),
@@ -121,16 +121,16 @@ leadSchema.pre('insertMany', async (next, docs) => {
       // ...ngramsAlgov2(doc.second_email.toLowerCase().trim(), 'second_email'),
       // ...ngramsAlgov2(doc.nationality.toLowerCase().trim(), 'nationality'),
       ...ngramsAlgov2(doc.status.toLowerCase().trim(), 'status'),
-    ]
+    ];
   }
-})
+});
 
-leadSchema.plugin(mongoosePaginate)
+leadSchema.index({ 'tags.tag': 1, _id: 1 });
+leadSchema.index({ lead_batch_id: 1, 'tags.tag': 1 });
 
-leadSchema.index({ 'tags.tag': 1, _id: 1 })
-leadSchema.index({ lead_batch_id: 1, 'tags.tag': 1 })
+leadSchema.plugin(mongoosePaginate);
 
 module.exports = {
   Lead: mongoose.model('Lead', leadSchema),
   LEAD_STATUS,
-}
+};

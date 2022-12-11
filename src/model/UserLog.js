@@ -10,12 +10,24 @@ const userLogSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  },
-  data: {
+  current: {
     type: Object,
+  },
+  previous: {
+    type: Object,
+  },
+  modified: {
+    type: Array,
+  },
+  tags: {
+    type: [
+      {
+        _id: false,
+        tag: {
+          type: String,
+        },
+      },
+    ],
   },
 });
 

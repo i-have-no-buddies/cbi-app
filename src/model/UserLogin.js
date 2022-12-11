@@ -39,9 +39,9 @@ userLogingSchema.pre('save', async function () {
   ];
 });
 
-userLogingSchema.plugin(mongoosePaginate);
-
 userLogingSchema.index({ 'tags.tag': 1, _id: 1 });
+
+userLogingSchema.plugin(mongoosePaginate);
 
 module.exports = {
   UserLogin: mongoose.model('UserLogin', userLogingSchema),

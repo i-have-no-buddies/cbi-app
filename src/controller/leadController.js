@@ -9,17 +9,14 @@ const LEAD_PER_PAGE = 10;
 exports.index = async (req, res) => {
   try {
     const page = req.query.page || 1;
-
-    let search_tags = ['name', 'job_title', 'company', 'status'];
-    var search = await tagsSearchFormater(search_tags, req.query);
-    var query_params = await queryParamReturner(search_tags, req.query);
-
+    const search_tags = ['name', 'job_title', 'company', 'status'];
+    const search = await tagsSearchFormater(search_tags, req.query);
+    const query_params = await queryParamReturner(search_tags, req.query);
     const list = await Lead.paginate(search, {
       lean: true,
       page,
       limit: LEAD_PER_PAGE,
     });
-
     return res.render('lead', {
       list,
       search: query_params,

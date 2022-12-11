@@ -90,8 +90,10 @@ art.template.defaults.imports.userLoginBadge = (type) => {
 
 art.template.defaults.imports.strReplace = (str, replace = '_') => {
   if (str) {
-    const regexExp = new RegExp(`${replace}`, 'g');
-    return str.replace(regexExp, ' ');
+    if (str !== '_id') {
+      const regexExp = new RegExp(`${replace}`, 'g');
+      return str.replace(regexExp, ' ');
+    }
   }
   return str;
 };
