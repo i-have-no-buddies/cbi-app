@@ -5,7 +5,15 @@ const { ngramsAlgov2 } = require('../utils/helper');
 const LEAD_STATUS = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-};
+  MEETING: 'MEETING',
+  CLIENT: 'CLIENT',
+}
+
+const OUTCOME = {
+  MEETING_SAT: 'MEETING_SAT',
+  NO_SHOW: 'NO_SHOW',
+  CANCELED: 'CANCELED',
+}
 
 const leadSchema = new mongoose.Schema({
   lead_batch_id: {
@@ -17,6 +25,18 @@ const leadSchema = new mongoose.Schema({
     trim: true,
   },
   last_name: {
+    type: String,
+    trim: true,
+  },
+  nationality: {
+    type: String,
+    trim: true,
+  },
+  country: {
+    type: String,
+    trim: true,
+  },
+  city: {
     type: String,
     trim: true,
   },
@@ -48,15 +68,11 @@ const leadSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  email: {
+  personal_email: {
     type: String,
     trim: true,
   },
-  second_email: {
-    type: String,
-    trim: true,
-  },
-  nationality: {
+  work_email: {
     type: String,
     trim: true,
   },
@@ -99,8 +115,8 @@ leadSchema.pre('save', async function () {
     // ...ngramsAlgov2(doc.business_no.toLowerCase().trim(), 'business_no'),
     ...ngramsAlgov2(doc.mobile.toLowerCase().trim(), 'mobile'),
     //...ngramsAlgov2(doc.second_mobile.toLowerCase().trim(), 'second_mobile'),
-    ...ngramsAlgov2(doc.email.toLowerCase().trim(), 'email'),
-    // ...ngramsAlgov2(doc.second_email.toLowerCase().trim(), 'second_email'),
+    ...ngramsAlgov2(doc.personal_email.toLowerCase().trim(), 'email'),
+    //...ngramsAlgov2(doc.work_email.toLowerCase().trim(), 'email'),
     // ...ngramsAlgov2(doc.nationality.toLowerCase().trim(), 'nationality'),
     ...ngramsAlgov2(doc.status.toLowerCase().trim(), 'status'),
   ];
@@ -117,8 +133,8 @@ leadSchema.pre('insertMany', async (next, docs) => {
       // ...ngramsAlgov2(doc.business_no.toLowerCase().trim(), 'business_no'),
       ...ngramsAlgov2(doc.mobile.toLowerCase().trim(), 'mobile'),
       //...ngramsAlgov2(doc.second_mobile.toLowerCase().trim(), 'second_mobile'),
-      ...ngramsAlgov2(doc.email.toLowerCase().trim(), 'email'),
-      // ...ngramsAlgov2(doc.second_email.toLowerCase().trim(), 'second_email'),
+      ...ngramsAlgov2(doc.personal_email.toLowerCase().trim(), 'email'),
+      //...ngramsAlgov2(doc.work_email.toLowerCase().trim(), 'email'),
       // ...ngramsAlgov2(doc.nationality.toLowerCase().trim(), 'nationality'),
       ...ngramsAlgov2(doc.status.toLowerCase().trim(), 'status'),
     ];
@@ -133,4 +149,5 @@ leadSchema.plugin(mongoosePaginate);
 module.exports = {
   Lead: mongoose.model('Lead', leadSchema),
   LEAD_STATUS,
-};
+  OUTCOME,
+}
