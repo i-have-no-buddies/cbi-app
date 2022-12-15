@@ -3,6 +3,7 @@ const {
   ngramsAlgov2,
   tagsSearchFormater,
   queryParamReturner,
+  getFullName
 } = require('../src/utils/helper')
 
 test('Test for Ngrams', () => {
@@ -40,3 +41,11 @@ test('Test for queryParamReturner', () => {
     company: 'hal',
   })
 })
+
+test('Test for getFullName', () => {
+  var query = { first_name: 'general luna', last_name: 'general heny' }
+  var result = getFullName(query)
+  expect(result).toStrictEqual('General Luna General Heny')
+})
+
+

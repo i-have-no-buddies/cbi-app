@@ -1,0 +1,63 @@
+<!-- layout -->
+{{extend './layout.html'}}
+<!-- content -->
+{{block 'content'}}
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title font-weight-bold">
+          <i class="fas fa-table"></i> Table
+        </h3>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>Fields</th>
+              <th>Values</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{each lead_update_log.current}}
+            <tr class="{{if lead_update_log.modified.includes($index)}}bg-teal{{/if}}">
+              <td><strong>{{$index}}</strong></td>
+              <td>{{$value}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title font-weight-bold">
+          <i class="fas fa-table"></i> Table
+        </h3>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>Fields</th>
+              <th>Values</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{each lead_update_log.previous}}
+            <tr
+              class="{{if lead_update_log.modified.includes($index)}}bg-maroon{{/if}}"
+            >
+              <td>{{$index}}</td>
+              <td>{{$value}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{{/block}}

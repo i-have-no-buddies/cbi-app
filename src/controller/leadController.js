@@ -1,9 +1,11 @@
 const { STATES } = require('mongoose')
 const moment = require('moment-timezone')
+//const { ObjectId } = require('mongodb')
 
 const { Lead, LEAD_STATUS, OUTCOME } = require('../model/Lead')
 const { StatusLog } = require('../model/StatusLog')
-const { tagsSearchFormater, queryParamReturner } = require('../utils/helper')
+const { LeadUpdateLog } = require('../model/LeadUpdateLog')
+const { tagsSearchFormater, queryParamReturner,arrayChunks} = require('../utils/helper')
 
 const LEAD_PER_PAGE = 10
 const date_format = 'YYYY-MM-DD hh:mm A'
@@ -14,6 +16,7 @@ exports.index = async (req, res) => {
     const search_tags = ['name', 'job_title', 'company', 'status'];
     const search = await tagsSearchFormater(search_tags, req.query);
     const query_params = await queryParamReturner(search_tags, req.query);
+
     const list = await Lead.paginate(search, {
       lean: true,
       page,
@@ -33,12 +36,18 @@ exports.index = async (req, res) => {
 exports.edit = async (req, res) => {
   try {
     const id = req.params.id
+    //const fields = {'_id':1, 'created_by': 1,'created_at':1,'module': 1,'description': 1,'log_type': 1 }
+
     const lead = await Lead.findById(id).lean()
     const meeting = await StatusLog.getLeadMeetings(id)
+    //const lead_logs = await LeadUpdateLog.find({lead_id: ObjectId(id)}, fields).sort({'created_at': 1})
+    const lead_logs = await LeadUpdateLog.getUpdateLogs(id)
+    const update_logs = arrayChunks(lead_logs)
 
     return res.render('lead_edit', {
       lead,
       meeting,
+      update_logs,
       LEAD_STATUS,
       OUTCOME,
     })
@@ -47,6 +56,16 @@ exports.edit = async (req, res) => {
     return res.render('500')
   }
 }
+
+exports.details = async (req, res) => {
+  try {
+    const lead_update_log = await LeadUpdateLog.findById(req.params._id).lean();
+    return res.render('lead_edit_details', { lead_update_log });
+  } catch (error) {
+    console.error(error);
+    return res.render('500');
+  }
+};
 
 exports.update = async (req, res) => {
   try {
@@ -68,7 +87,6 @@ exports.update = async (req, res) => {
 exports.update_status = async (req, res) => {
   try {
     const status_log = new StatusLog()
-    status_log.created_by = req.session.AUTH._id
     status_log.lead_id = req.body._id
     status_log.note = req.body.note
     status_log.status = req.body.status
@@ -79,8 +97,9 @@ exports.update_status = async (req, res) => {
       status_log.date_time = date_time
       status_log.address = req.body.address
     }
-    await status_log.save()
+    await status_log.save(req.session.AUTH)
 
+    //this can be updated on the status logs
     const lead = await Lead.findById(req.body._id)
     lead.status = req.body.status
     await lead.save()
@@ -98,7 +117,7 @@ exports.meeting_update = async (req, res) => {
     meeting.outcome = req.body.outcome
     meeting.outcome_note = req.body.outcome_note
     meeting.outcome_date = moment()
-    await meeting.save()
+    await meeting.save(req.session.AUTH)
 
     return res.redirect('/lead')
   } catch (error) {

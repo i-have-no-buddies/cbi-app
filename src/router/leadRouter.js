@@ -14,6 +14,12 @@ module.exports = (app, setOnlineUser) => {
     setOnlineUser,
     leadController.edit,
   )
+  app.get(
+    '/lead/edit-logs/:_id',
+    auth.authenticated,
+    setOnlineUser,
+    leadController.details
+  );
   app.post(
     '/lead/update',
     auth.authenticated,

@@ -7,6 +7,7 @@ const { User, USER_TYPE, USER_STATUS } = require('../model/User')
 const { UserLog } = require('../model/UserLog')
 const { UserLogin } = require('../model/UserLogin')
 const { StatusLog } = require('../model/StatusLog')
+const { LeadUpdateLog } = require('../model/LeadUpdateLog')
 
 const {
   randUser,
@@ -25,6 +26,8 @@ async function seed() {
   await UserLog.deleteMany({})
   await UserLogin.deleteMany({})
   await StatusLog.deleteMany({})
+  await LeadUpdateLog.deleteMany({})
+  
 
   let users = [
     {
