@@ -18,13 +18,13 @@ art.template.defaults.imports.formatDate = (
 
 art.template.defaults.imports.formatDateRaw = (
   date,
-  format = 'YYYY-MM-DD hh:mm A',
+  format = 'YYYY-MM-DD hh:mm A'
 ) => {
   if (date) {
     return `${moment(date).tz('Asia/Dubai').format(format)}`;
   }
-  return date
-}
+  return date;
+};
 
 art.template.defaults.imports.escapeBackslash = (str) => {
   if (str) {
@@ -90,10 +90,10 @@ art.template.defaults.imports.userStatusBadge = (status) => {
 };
 
 art.template.defaults.imports.userLoginBadge = (type) => {
-  if (type === LOGIN_TYPE.LOGIN) {
+  if (type === LOGIN_TYPE.LOG_IN) {
     return `<span class="badge bg-teal">${type}</span>`;
   }
-  if (type === LOGIN_TYPE.LOGOUT) {
+  if (type === LOGIN_TYPE.LOG_OUT) {
     return `<span class="badge bg-gray">${type}</span>`;
   }
   return `<span>${type}</span>`;
@@ -111,55 +111,55 @@ art.template.defaults.imports.strReplace = (str, replace = '_') => {
 
 art.template.defaults.imports.leadStatusBadge = (status) => {
   if (status === LEAD_STATUS.ACTIVE) {
-    return `<span class="badge bg-teal">${status}</span>`
+    return `<span class="badge bg-teal">${status}</span>`;
   }
   if (status === LEAD_STATUS.MEETING) {
-    return `<span class="badge bg-success">${status}</span>`
+    return `<span class="badge bg-success">${status}</span>`;
   }
   if (status === LEAD_STATUS.CLIENT) {
-    return `<span class="badge bg-info">${status}</span>`
+    return `<span class="badge bg-info">${status}</span>`;
   }
   if (status === LEAD_STATUS.INACTIVE) {
-    return `<span class="badge bg-maroon">${status}</span>`
+    return `<span class="badge bg-maroon">${status}</span>`;
   }
-  return `<span>${status}</span>`
-}
+  return `<span>${status}</span>`;
+};
 
 art.template.defaults.imports.timeRemaining = (value, compare = moment()) => {
   if (value) {
-    var datetime = moment(value)
-    times = ['days', 'hours', 'minutes']
+    var datetime = moment(value);
+    times = ['days', 'hours', 'minutes'];
 
     for (x = 0; x < times.length; x++) {
-      let remaining = datetime.diff(compare, times[x])
+      let remaining = datetime.diff(compare, times[x]);
       if (remaining > 0) {
-        remaining_text = `${remaining} ${times[x]} remaining`
-        return remaining_text
+        remaining_text = `${remaining} ${times[x]} remaining`;
+        return remaining_text;
       }
     }
-    return 'Overdue'
+    return 'Overdue';
   }
-  return value
-}
+  return value;
+};
 
-art.template.defaults.imports.dateNow = moment()
+art.template.defaults.imports.dateNow = moment();
 
 art.template.defaults.imports.isOverDue = (value) => {
-  console.log(value)
+  console.log(value);
   if (value) {
-    var datetime = moment(value)
-    var now = moment()
-    times = ['days', 'hours', 'minutes']
+    var datetime = moment(value);
+    var now = moment();
+    times = ['days', 'hours', 'minutes'];
 
     for (x = 0; x < times.length; x++) {
-      let remaining = datetime.diff(now, times[x])
+      let remaining = datetime.diff(now, times[x]);
       if (remaining > 0) {
-        return false
+        return false;
       }
     }
-    return true
+    return true;
   }
-  return value
-}
+  return value;
+};
 
 module.exports = art;

@@ -5,7 +5,7 @@ const PER_PAGE = 10;
 exports.index = async (req, res) => {
   try {
     const page = req.query.page || 1;
-    const search_tags = ['name', 'type'];
+    const search_tags = ['_id', 'first_name', 'last_name', 'type', 'login'];
     const search = await tagsSearchFormater(search_tags, req.query);
     const query_params = await queryParamReturner(search_tags, req.query);
     const user_logins = await UserLogin.paginate(search, {
@@ -16,7 +16,6 @@ exports.index = async (req, res) => {
     });
     return res.render('user_login', {
       user_logins,
-      LOGIN_TYPE,
       search: query_params,
     });
   } catch (error) {

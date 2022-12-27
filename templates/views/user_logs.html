@@ -10,9 +10,16 @@
           <i class="fas fa-search"></i> Search
         </h3>
       </div>
-      <div class="card-body">
-        <!-- name -->
+      <div class="card-body p-2">
+        <!-- _id -->
         {{include './components/search_box.html', { name: '_id' } }}
+        <!-- first name -->
+        {{include './components/search_box.html', { name: 'first_name' } }}
+        <!-- last name -->
+        {{include './components/search_box.html', { name: 'last_name' } }}
+        <!-- type -->
+        {{include './components/search_select.html', { name: 'type', options:
+        USER_TYPE } }}
       </div>
     </div>
   </div>
@@ -25,29 +32,14 @@
       </div>
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-striped">
+          <table class="table table-bordered table-hover table-sm">
             <thead>
               <tr>
-                <th>
-                  <i class="far fa-calendar"></i>
-                  Date
-                </th>
-                <th>
-                  <i class="far fa-user"></i>
-                  Name
-                </th>
-                <th>
-                  <i class="far fa-envelope"></i>
-                  Email
-                </th>
-                <th>
-                  <i class="far fa-id-card"></i>
-                  Type
-                </th>
-                <th>
-                  <i class="far fa-id-badge"></i>
-                  Status
-                </th>
+                <th><i class="far fa-calendar"></i>Date</th>
+                <th><i class="far fa-user"></i>Name</th>
+                <th><i class="far fa-envelope"></i>Email</th>
+                <th><i class="far fa-id-card"></i>Type</th>
+                <th><i class="far fa-id-badge"></i>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -113,12 +105,27 @@
   document.getElementById('_id').value = decodeHTML(
     '{{search._id | escapeBackslash}}'
   );
+  document.getElementById('first_name').value = decodeHTML(
+    '{{search.first_name | escapeBackslash}}'
+  );
+  document.getElementById('last_name').value = decodeHTML(
+    '{{search.last_name | escapeBackslash}}'
+  );
+  document.getElementById('type').value = decodeHTML(
+    '{{search.type | escapeBackslash}}'
+  );
 
   function search(page = 1) {
     let url = window.location.href.split('?')[0];
     let _id = $('#_id').val();
+    let first_name = $('#first_name').val();
+    let last_name = $('#last_name').val();
+    let type = $('#type').val();
     url += `?page=${page}`;
     if (_id) url += `&_id=${_id}`;
+    if (first_name) url += `&first_name=${first_name}`;
+    if (last_name) url += `&last_name=${last_name}`;
+    if (type) url += `&type=${type}`;
     window.location.href = url;
   }
 

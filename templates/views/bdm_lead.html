@@ -11,7 +11,7 @@
           <i class="fas fa-search"></i> Search
         </h3>
       </div>
-      <div class="card-body">
+      <div class="card-body p-2">
         <!-- name -->
         {{include './components/search_box.html', { name: 'name' } }}
       </div>
@@ -24,7 +24,7 @@
           {{each settings}}
           <li class="nav-item">
             <a
-              href=""
+              href="#"
               onclick="navigate('/bdm-lead?setting={{$value._id.toString()}}&page=1')"
               data-toggle="tab"
               class="nav-link small text-uppercase text-info {{if $value._id.toString() == CURRENT_BDM_SETTING}}active{{/if}}"
@@ -46,7 +46,7 @@
             class="tab-pane fade pt-3 {{if $value._id.toString() == CURRENT_BDM_SETTING}}active show{{/if}}"
           >
             <div class="table-responsive">
-              <table class="table table-striped">
+              <table class="table table-bordered table-hover table-sm">
                 <thead>
                   <tr>
                     <th><i class="far fa-calendar"></i> Date</th>
@@ -67,6 +67,7 @@
                       <i class="far fa-user"></i>
                       <a
                         href="/bdm-lead/{{$value._id.toString()}}"
+                        rel="nofollow noopener noreferrer"
                         class="text-info"
                         id="lead{{$index}}"
                         data-ot="Click to view details"

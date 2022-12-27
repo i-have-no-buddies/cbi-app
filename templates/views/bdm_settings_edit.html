@@ -1,11 +1,16 @@
 {{extend './layout.html'}} {{block 'content'}}
 <div class="card">
-  <div class="card-body">
-    <form
-      action="/bdm-settings/update/{{setting._id.toString()}}"
-      method="post"
-      id="formBdmSettingsUpdate"
-    >
+  <form
+    action="/bdm-settings/update/{{setting._id.toString()}}"
+    method="post"
+    id="formBdmSettingsUpdate"
+  >
+    <div class="card-header">
+      <h3 class="card-title font-weight-bold">
+        <i class="fas fa-save"></i> Edit Settings
+      </h3>
+    </div>
+    <div class="card-body p-2">
       <!-- name -->
       {{include './components/input_text.html', {type: 'text', name: 'name',
       value: setting} }}
@@ -18,6 +23,8 @@
       <!-- status -->
       {{include './components/select.html', { name: 'status', value: setting,
       options: LEAD_STATUS} }}
+    </div>
+    <div class="card-footer p-2">
       <div class="form-group">
         <button
           type="button"
@@ -27,8 +34,8 @@
           <i class="fas fa-save"></i> Update Settings
         </button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </div>
 {{/block}}
 <!-- javascript -->

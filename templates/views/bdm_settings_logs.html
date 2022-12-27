@@ -13,16 +13,14 @@
       <div class="card-body p-2">
         <!-- _id -->
         {{include './components/search_box.html', { name: '_id' } }}
-        <!-- first name -->
-        {{include './components/search_box.html', { name: 'first_name' } }}
-        <!-- last name -->
-        {{include './components/search_box.html', { name: 'last_name' } }}
-        <!-- type -->
-        {{include './components/search_select.html', { name: 'type', options:
-        USER_TYPE } }}
-        <!-- login -->
-        {{include './components/search_select.html', { name: 'login', options:
-        LOGIN_TYPE } }}
+        <!-- name -->
+        {{include './components/search_box.html', { name: 'name' } }}
+        <!-- ifa -->
+        {{include './components/search_select_id.html', { name: 'ifa', value:
+        user, options: IFA} }}
+        <!-- bdm -->
+        {{include './components/search_select_id.html', { name: 'bdm', value:
+        user, options: BDM} }}
       </div>
     </div>
   </div>
@@ -40,24 +38,44 @@
               <tr>
                 <th><i class="far fa-calendar"></i>Date</th>
                 <th><i class="far fa-user"></i>Name</th>
+                <th><i class="far fa-envelope"></i>Email</th>
                 <th><i class="far fa-id-card"></i>Type</th>
-                <th><i class="far fa-id-card"></i>Status</th>
               </tr>
             </thead>
             <tbody>
-              {{each user_logins.docs}}
+              {{each bdm_settings_logs.docs}}
               <tr>
                 <td>
                   <i class="far fa-calendar"></i>
-                  {{@ $value.created_at | formatDate 'YYYY-MM-DD hh:mm A'}}
+                  {{@ $value.created_at | formatDate 'YYYY-MM-DD'}}
                 </td>
                 <td>
                   <i class="far fa-user"></i>
-                  {{$value.user.first_name | titleCase}} {{$value.user.last_name
-                  | titleCase}}
+                  <a
+                    href="/bdm-settings-logs/{{$value._id.toString()}}"
+                    rel="nofollow noopener noreferrer"
+                    class="text-info"
+                    id="bdmSettings{{$index}}"
+                    data-ot="Click to view details"
+                    data-ot-delay="0"
+                    data-ot-tip-joint="bottom"
+                    data-ot-hide-delay="0"
+                    data-ot-target="#bdmSettings{{$index}}"
+                    data-ot-fixed="true"
+                  >
+                    {{$value.current.name | titleCase}}
+                  </a>
                 </td>
-                <td>{{@$value.user.type | userTypeBadge | strReplace}}</td>
-                <td>{{@$value.type | userLoginBadge | strReplace}}</td>
+                <td>
+                  <i class="far fa-envelope"></i>
+                  <a href="mailto:{{$value.email}}" class="text-info"
+                    >{{$value.current.email}}</a
+                  >
+                </td>
+                <td>{{@$value.current.type | userTypeBadge | strReplace}}</td>
+                <td>
+                  {{@$value.current.status | userStatusBadge | strReplace}}
+                </td>
               </tr>
               {{/each}}
             </tbody>
@@ -80,38 +98,33 @@
 {{block 'javascript'}}
 <script src="/app/global.js"></script>
 <script>
-  const page = parseInt('{{user_logins.page}}');
-  const totalPages = parseInt('{{user_logins.totalPages}}');
-  const totalDocs = parseInt('{{user_logins.totalDocs}}');
+  const page = parseInt('{{bdm_settings_logs.page}}');
+  const totalPages = parseInt('{{bdm_settings_logs.totalPages}}');
+  const totalDocs = parseInt('{{bdm_settings_logs.totalDocs}}');
   document.getElementById('_id').value = decodeHTML(
     '{{search._id | escapeBackslash}}'
   );
   document.getElementById('first_name').value = decodeHTML(
-    '{{search.first_name | escapeBackslash}}'
+    '{{search.name | escapeBackslash}}'
   );
   document.getElementById('last_name').value = decodeHTML(
-    '{{search.last_name | escapeBackslash}}'
+    '{{search.ifa | escapeBackslash}}'
   );
   document.getElementById('type').value = decodeHTML(
-    '{{search.type | escapeBackslash}}'
-  );
-  document.getElementById('login').value = decodeHTML(
-    '{{search.login | escapeBackslash}}'
+    '{{search.bdm | escapeBackslash}}'
   );
 
   function search(page = 1) {
     let url = window.location.href.split('?')[0];
     let _id = $('#_id').val();
-    let first_name = $('#first_name').val();
-    let last_name = $('#last_name').val();
-    let type = $('#type').val();
-    let login = $('#login').val();
+    let name = $('#name').val();
+    let ifa = $('#ifa').val();
+    let bdm = $('#bdm').val();
     url += `?page=${page}`;
     if (_id) url += `&_id=${_id}`;
-    if (first_name) url += `&first_name=${first_name}`;
-    if (last_name) url += `&last_name=${last_name}`;
-    if (type) url += `&type=${type}`;
-    if (login) url += `&login=${login}`;
+    if (name) url += `&name=${name}`;
+    if (ifa) url += `&ifa=${ifa}`;
+    if (bdm) url += `&bdm=${bdm}`;
     window.location.href = url;
   }
 

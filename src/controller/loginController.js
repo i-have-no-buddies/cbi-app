@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
     req.session.AUTH = user;
     const userLogin = new UserLogin({
       user,
-      type: LOGIN_TYPE.LOGIN,
+      type: LOGIN_TYPE.LOG_IN,
     });
     await userLogin.save();
     if (user.type === USER_TYPE.SUPER_ADMIN) {
@@ -68,7 +68,7 @@ exports.logout = async (req, res) => {
   try {
     const userLogin = new UserLogin({
       user: req.session.AUTH,
-      type: LOGIN_TYPE.LOGOUT,
+      type: LOGIN_TYPE.LOG_OUT,
     });
     await userLogin.save();
     req.session.destroy();

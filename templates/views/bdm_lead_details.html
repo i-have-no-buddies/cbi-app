@@ -10,7 +10,7 @@
           <i class="fas fa-user"></i> Lead Info
         </h3>
       </div>
-      <div class="card-body">
+      <div class="card-body p-2">
         {{each lead}}
           {{if $index === 'status'}}
             <div class="form-group">
@@ -45,6 +45,8 @@
             </div>
           {{/if}}
         {{/each}}
+      </div>
+      <div class="card-footer p-2">
         <div class="form-group">
           <button class="btn bg-teal btn-sm btn-block">
             <i class="fas fa-save"></i> Update Lead

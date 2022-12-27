@@ -3,11 +3,11 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const { ngramsAlgov2 } = require('../utils/helper');
 
 const LOGIN_TYPE = {
-  LOGIN: 'LOG_IN',
-  LOGOUT: 'LOG_OUT',
+  LOG_IN: 'LOG_IN',
+  LOG_OUT: 'LOG_OUT',
 };
 
-const userLogingSchema = new mongoose.Schema({
+const userLoginSchema = new mongoose.Schema({
   created_at: {
     type: Date,
     default: Date.now,
@@ -30,20 +30,29 @@ const userLogingSchema = new mongoose.Schema({
   },
 });
 
-userLogingSchema.pre('save', async function () {
+userLoginSchema.pre('save', async function (next) {
   const user_login = this;
-  const name = `${user_login.user.first_name.trim()} ${user_login.user.last_name.trim()}`;
   user_login.tags = [
-    ...ngramsAlgov2(name.toLowerCase(), 'name'),
-    ...ngramsAlgov2(user_login.type.toLowerCase(), 'type'),
+    ...ngramsAlgov2(user_login.user._id.toString(), '_id'),
+    ...ngramsAlgov2(
+      user_login.user.first_name.trim().toLowerCase(),
+      'first_name'
+    ),
+    ...ngramsAlgov2(user_login.user.last_name.trim().toLowerCase(), 'last_name'),
+    ...ngramsAlgov2(user_login.user.type.toLowerCase(), 'type'),
+    ...ngramsAlgov2(user_login.type.toLowerCase(), 'login'),
   ];
+  next();
 });
 
-userLogingSchema.index({ 'tags.tag': 1, _id: 1 });
+/**
+ * search index
+ */
+userLoginSchema.index({ 'tags.tag': 1, _id: 1 });
 
-userLogingSchema.plugin(mongoosePaginate);
+userLoginSchema.plugin(mongoosePaginate);
 
 module.exports = {
-  UserLogin: mongoose.model('UserLogin', userLogingSchema),
+  UserLogin: mongoose.model('UserLogin', userLoginSchema),
   LOGIN_TYPE,
 };

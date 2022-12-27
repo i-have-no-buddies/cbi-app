@@ -3,13 +3,13 @@
 <!-- content -->
 {{block 'content'}}
 <div class="card">
-  <div class="card-header">
-    <h3 class="card-title font-weight-bold">
-      <i class="fas fa-user-plus"></i> Add User
-    </h3>
-  </div>
-  <div class="card-body">
-    <form action="/user-maintenance/create" method="post" id="formUserCreate">
+  <form action="/user-maintenance/create" method="post" id="formUserCreate">
+    <div class="card-header">
+      <h3 class="card-title font-weight-bold">
+        <i class="fas fa-user-plus"></i> Add User
+      </h3>
+    </div>
+    <div class="card-body p-2">
       <!-- first name -->
       {{include './components/input_text.html', {type: 'text', name:
       'first_name', value: user} }}
@@ -28,13 +28,15 @@
       <!-- type -->
       {{include './components/select.html', { name: 'type', value: user,
       options: USER_TYPE} }}
+    </div>
+    <div class="card-footer">
       <div class="form-group">
         <button type="button" class="btn bg-teal btn-block" id="btnUserCreate">
           <i class="fas fa-save"></i> Create User
         </button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </div>
 {{/block}}
 <!-- javascript -->

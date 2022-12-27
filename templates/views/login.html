@@ -17,44 +17,57 @@
       href="/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css"
     />
     <link rel="stylesheet" href="assets/dist/css/adminlte.min.css" />
+    <style>
+      .form-group {
+        margin: 0px;
+        margin-bottom: 5px;
+      }
+    </style>
   </head>
   <body class="hold-transition login-page">
     <div class="login-box">
       <div class="card card-outline card-info">
-        <div class="card-header text-center">
-          <a href="/" class="h1"><b>CBI</b> APP</a>
-        </div>
-        <div class="card-body">
-          <p class="login-box-msg">Sign in to start your session</p>
-          <form action="/login" method="post">
-            <div class="input-group mb-3">
-              <input
-                type="email"
-                class="form-control"
-                name="email"
-                placeholder="Email"
-                value="{{if DEFAULT_EMAIL}}{{DEFAULT_EMAIL}}{{/if}}"
-              />
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-envelope"></span>
+        <form action="/login" method="post">
+          <div class="card-header text-center">
+            <a href="/" class="h2"><b>CBI</b> APP</a>
+          </div>
+          <div class="card-body p-2">
+            <p class="login-box-msg">Sign in to start your session</p>
+            <div class="form-group">
+              <div class="input-group">
+                <input
+                  type="search"
+                  class="form-control"
+                  name="email"
+                  placeholder="Email"
+                  value="{{if DEFAULT_EMAIL}}{{DEFAULT_EMAIL}}{{/if}}"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-envelope"></span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="input-group mb-3">
-              <input
-                type="password"
-                class="form-control"
-                name="password"
-                placeholder="Password"
-                value="{{if DEFAULT_PASSWORD}}{{DEFAULT_PASSWORD}}{{/if}}"
-              />
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-lock"></span>
+            <div class="form-group">
+              <div class="input-group">
+                <input
+                  type="search"
+                  class="form-control"
+                  name="password"
+                  placeholder="Password"
+                  value="{{if DEFAULT_PASSWORD}}{{DEFAULT_PASSWORD}}{{/if}}"
+                  style="-webkit-text-security: disc"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-lock"></span>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div class="card-footer p-2">
             <div class="row">
               <div class="col-12">
                 <button type="submit" class="btn bg-info btn-block">
@@ -62,8 +75,8 @@
                 </button>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
     <script src="/assets/plugins/jquery/jquery.min.js"></script>
