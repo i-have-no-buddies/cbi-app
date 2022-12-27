@@ -2,8 +2,9 @@ const { check, validationResult } = require('express-validator')
 
 const { LEAD_STATUS, OUTCOME } = require('../../model/Lead')
 const { StatusLog } = require('../../model/StatusLog')
+const { LeadUpdateLog } = require('../../model/LeadUpdateLog')
 
-const { errorFormater } = require('../../utils/helper.js')
+const { errorFormater, arrayChunks } = require('../../utils/helper.js')
 
 exports.validateLeadAdd = [
   check('first_name')
@@ -179,10 +180,14 @@ exports.validateLeadEdit = [
     if (!errors.isEmpty()) {
       error_results = errorFormater(errors)
       let meeting = await StatusLog.getLeadMeetings(req.body._id)
+      const lead_logs = await LeadUpdateLog.getUpdateLogs(req.body._id)
+      const update_logs = arrayChunks(lead_logs)
+
       return res.render('lead_edit', {
         LEAD_STATUS,
         OUTCOME,
         meeting,
+        update_logs,
         lead: req.body,
         errors: error_results,
       })
@@ -253,10 +258,14 @@ exports.validateLeadStatusEdit = [
     if (!errors.isEmpty()) {
       error_results = errorFormater(errors)
       let meeting = await StatusLog.getLeadMeetings(req.body._id)
+      const lead_logs = await LeadUpdateLog.getUpdateLogs(req.body._id)
+      const update_logs = arrayChunks(lead_logs)
+
       return res.render('lead_edit', {
         LEAD_STATUS,
         OUTCOME,
         meeting,
+        update_logs,
         lead: req.body,
         errors: error_results,
       })
@@ -307,10 +316,14 @@ exports.validateMeetingOutcome = [
     if (!errors.isEmpty()) {
       error_results = errorFormater(errors)
       let meeting = await StatusLog.getLeadMeetings(req.body._id)
+      const lead_logs = await LeadUpdateLog.getUpdateLogs(req.body._id)
+      const update_logs = arrayChunks(lead_logs)
+
       return res.render('lead_edit', {
         LEAD_STATUS,
         OUTCOME,
         meeting,
+        update_logs,
         lead: req.body,
         errors: error_results,
       })

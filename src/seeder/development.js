@@ -18,14 +18,16 @@ const {
 } = require('@ngneat/falso');
 
 async function seed() {
-  await BdmSetting.deleteMany({});
-  await BdmSettingLog.deleteMany({});
-  await Lead.deleteMany({});
-  await LeadBatch.deleteMany({});
-  await User.deleteMany({});
-  await UserLog.deleteMany({});
-  await UserLogin.deleteMany({});
-  await StatusLog.deleteMany({});
+  await BdmSetting.deleteMany({})
+  await BdmSettingLog.deleteMany({})
+  await Lead.deleteMany({})
+  await LeadBatch.deleteMany({})
+  await User.deleteMany({})
+  await UserLog.deleteMany({})
+  await UserLogin.deleteMany({})
+  await StatusLog.deleteMany({})
+  await LeadUpdateLog.deleteMany({})
+  
 
   let users = [
     {

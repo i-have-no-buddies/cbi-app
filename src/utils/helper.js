@@ -97,6 +97,38 @@ const queryParamReturner = (fields, query) => {
   return search;
 };
 
+const getFullName = (user) => {
+  let firstlast_name = `${user.first_name} ${user.last_name}`
+  let full_name = ''
+  firstlast_name.split(' ').forEach(function(str) {
+    full_name += str.charAt(0).toUpperCase() + str.slice(1) + ' ';
+  });
+  return full_name.trim();
+};
+
+const logDescriptionFormater = (user, did, what, from = '') => {
+  let description = getFullName(user) + ' '
+  description += did.toLowerCase() + ' '
+  description += what + ' '
+  description += from + ' '
+  return description.trim();
+};
+
+const arrayChunks = (array, size = 5) => {
+  const result = array.reduce((result_array, item, index) => { 
+    const chunk_index = Math.floor(index/size)
+  
+    if(!result_array[chunk_index]) {
+      result_array[chunk_index] = [] // start a new chunk
+    }
+    result_array[chunk_index].push(item)
+  
+    return result_array
+  }, [])
+
+  return result
+}
+
 module.exports = {
   ngramsAlgo,
   ngramsAlgov2,
@@ -105,4 +137,7 @@ module.exports = {
   readHeader,
   tagsSearchFormater,
   queryParamReturner,
+  getFullName,
+  logDescriptionFormater,
+  arrayChunks
 };
