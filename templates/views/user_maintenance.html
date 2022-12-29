@@ -84,6 +84,7 @@
                     data-ot-hide-delay="0"
                     data-ot-target="#user{{$index}}"
                     data-ot-fixed="true"
+                    target="_blank"
                   >
                     {{$value.first_name | titleCase}} {{$value.last_name |
                     titleCase}}
@@ -115,6 +116,7 @@
                         class="dropdown-item"
                         href="/user-logs?_id={{$value._id.toString()}}"
                         rel="nofollow noopener noreferrer"
+                        target="_blank"
                       >
                         <i class="fas fa-user-edit text-purple"></i>
                         User Log
@@ -123,6 +125,7 @@
                         class="dropdown-item"
                         href="/user-login?_id={{$value._id.toString()}}"
                         rel="nofollow noopener noreferrer"
+                        target="_blank"
                       >
                         <i class="fas fa-user-lock text-purple"></i>
                         User Login

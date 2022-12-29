@@ -96,10 +96,13 @@ const cleanupFrequency = 30 * 1000;
 const cleanupTarget = 2 * 60 * 1000;
 function setOnlineUser(req, res, next) {
   if (req.session.AUTH) {
-    userOnlineMap.set(
-      `${req.session.AUTH.first_name} ${req.session.AUTH.last_name}|${req.session.AUTH.email}|${req.session.AUTH.type}`,
-      [Date.now(), req.route.path]
-    );
+    userOnlineMap.set(req.session.AUTH._id, [
+      `${req.session.AUTH.first_name} ${req.session.AUTH.last_name}`,
+      req.session.AUTH.email,
+      req.session.AUTH.type,
+      Date.now(),
+      req.route.path,
+    ]);
     res.locals.ONLINE = Array.from(userOnlineMap.keys());
     res.locals.LAST_ACTION = Array.from(userOnlineMap.values());
   }

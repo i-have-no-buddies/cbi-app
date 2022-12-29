@@ -21,22 +21,22 @@
         <tr>
           <td>
             <i class="far fa-user"></i>
-            {{$value.split('|')[0] | titleCase}}
+            {{LAST_ACTION[$index][0] | titleCase}}
           </td>
           <td>
             <i class="far fa-envelope"></i>
             <a href="mailto:{{$value.split('|')[1]}}" class="text-info">
-              {{$value.split('|')[1]}}
+              {{LAST_ACTION[$index][1]}}
             </a>
           </td>
-          <td>{{@$value.split('|')[2] | userTypeBadge | strReplace}}</td>
+          <td>{{@LAST_ACTION[$index][2] | userTypeBadge | strReplace}}</td>
           <td>
             <i class="far fa-calendar"></i>
-            {{@ LAST_ACTION[$index][0] | formatDate 'YYYY-MM-DD hh:mm:ss A'}}
+            {{@ LAST_ACTION[$index][3] | formatDate 'YYYY-MM-DD hh:mm:ss A'}}
           </td>
           <td>
             <i class="fas fa-route"></i>
-            {{LAST_ACTION[$index][1]}}
+            {{LAST_ACTION[$index][4]}}
           </td>
         </tr>
         {{/each}}

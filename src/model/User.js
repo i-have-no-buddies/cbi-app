@@ -117,7 +117,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', async function (next) {
   /**
    * tags
    */
@@ -151,10 +151,6 @@ userSchema.pre('save', function (next) {
       ...ngramsAlgov2(this.status.toLowerCase(), 'status'),
     ];
   }
-  next();
-});
-
-userSchema.post('save', async function () {
   /**
    * logs
    */
@@ -189,69 +185,7 @@ userSchema.post('save', async function () {
   user_log.modified = modified;
   user_log.created_by = this.updated_by;
   await user_log.save();
-});
-
-userSchema.pre('insertMany', function (next, docs) {
-  for (const doc of docs) {
-    /**
-     * tags
-     */
-    doc.tags = [];
-    if (doc.first_name) {
-      doc.tags = [
-        ...doc.tags,
-        ...ngramsAlgov2(doc.first_name.toLowerCase(), 'first_name'),
-      ];
-    }
-    if (doc.last_name) {
-      doc.tags = [
-        ...doc.tags,
-        ...ngramsAlgov2(doc.last_name.toLowerCase(), 'last_name'),
-      ];
-    }
-    if (doc.email) {
-      doc.tags = [
-        ...doc.tags,
-        ...ngramsAlgov2(doc.email.toLowerCase(), 'email'),
-      ];
-    }
-    if (doc.type) {
-      doc.tags = [...doc.tags, ...ngramsAlgov2(doc.type.toLowerCase(), 'type')];
-    }
-    if (doc.status) {
-      doc.tags = [
-        ...doc.tags,
-        ...ngramsAlgov2(doc.status.toLowerCase(), 'status'),
-      ];
-    }
-  }
   next();
-});
-
-userSchema.post('insertMany', async function (docs) {
-  for (const doc of docs) {
-    /**
-     * logs
-     */
-    let previous = {};
-    let current = {};
-    let modified = [];
-    const user_log = new UserLog();
-    user_log.user_id = doc._id;
-    for (const property in userSchema.paths) {
-      if (!EXCLUDED_FIELDS.includes(property)) {
-        previous[property] = '';
-        current[property] = doc[property] || '';
-        if (doc[property]) {
-          modified.push(property);
-        }
-      }
-    }
-    user_log.current = current;
-    user_log.previous = previous;
-    user_log.modified = modified;
-    await user_log.save();
-  }
 });
 
 userSchema.static('getActiveIfa', function () {

@@ -37,15 +37,14 @@ const userLogSchema = new mongoose.Schema({
 });
 
 userLogSchema.pre('save', async function (next) {
-  const user_log = this;
-  user_log.tags = [
-    ...ngramsAlgov2(user_log.user_id.toString(), '_id'),
+  this.tags = [
+    ...ngramsAlgov2(this.user_id.toString(), '_id'),
     ...ngramsAlgov2(
-      user_log.current.first_name.trim().toLowerCase(),
+      this.current.first_name.trim().toLowerCase(),
       'first_name'
     ),
-    ...ngramsAlgov2(user_log.current.last_name.trim().toLowerCase(), 'last_name'),
-    ...ngramsAlgov2(user_log.current.type.toLowerCase(), 'type'),
+    ...ngramsAlgov2(this.current.last_name.trim().toLowerCase(), 'last_name'),
+    ...ngramsAlgov2(this.current.type.toLowerCase(), 'type'),
   ];
   next();
 });

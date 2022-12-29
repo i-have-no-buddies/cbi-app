@@ -29,7 +29,7 @@ exports.details = async (req, res) => {
     const bdm_settings_log = await BdmSettingLog.findById(
       req.params._id
     ).lean();
-    return res.render('bdm_settings_log', { bdm_settings_log });
+    return res.render('bdm_settings_logs_details', { bdm_settings_log });
   } catch (error) {
     console.error(error);
     return res.render('500');
