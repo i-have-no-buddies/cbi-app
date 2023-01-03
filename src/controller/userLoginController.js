@@ -1,4 +1,4 @@
-const { UserLogin, LOGIN_TYPE } = require('../model/UserLogin');
+const { UserLogin } = require('../model/UserLogin');
 const { tagsSearchFormater, queryParamReturner } = require('../utils/helper');
 const PER_PAGE = 10;
 
@@ -19,7 +19,7 @@ exports.index = async (req, res) => {
       search: query_params,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.render('500');
   }
 };

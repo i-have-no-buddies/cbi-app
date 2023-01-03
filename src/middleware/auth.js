@@ -1,5 +1,6 @@
 const { USER_TYPE, USER_STATUS } = require('../model/User');
-const { LOGIN_TYPE } = require('../model/UserLogin');
+const { UserLogin, LOGIN_TYPE } = require('../model/UserLogin');
+var { getInactiveUsers, removeInactiveUser } = require('../utils/helper');
 
 const PAGES = {
   '/lead': 'Lead',
@@ -102,14 +103,14 @@ const ACCESS_MODULES = {
     '/logout',
   ],
   IFA: [
-    '/lead', 
-    '/lead/edit/:id', 
-    '/lead/update', 
+    '/lead',
+    '/lead/edit/:id',
+    '/lead/update',
     '/lead/edit-logs/:_id',
     '/lead/update-status',
     '/lead-meeting/meeting-update',
-    '/calendar', 
-    '/logout'
+    '/calendar',
+    '/logout',
   ],
   BDM: [
     '/bdm-lead',
@@ -121,14 +122,36 @@ const ACCESS_MODULES = {
   ],
 };
 
-exports.authenticated = (req, res, next) => {
+exports.authenticated = async (req, res, next) => {
   try {
+    /**
+     * redirect unathenicated users
+     */
     if (!req.session.AUTH) {
       return res.redirect('/login');
     }
+    /**
+     * redirect users that do not have access to the route
+     */
     if (!ACCESS_MODULES[req.session.AUTH.type].includes(req.route.path)) {
       return res.redirect('/login');
     }
+    /**
+     * log out inactive users
+     */
+    if (getInactiveUsers().includes(req.session.AUTH._id.toString())) {
+      removeInactiveUser(req.session.AUTH._id.toString());
+      const userLogin = new UserLogin({
+        user: req.session.AUTH,
+        type: LOGIN_TYPE.LOG_OUT,
+      });
+      await userLogin.save();
+      req.session.destroy();
+      return res.redirect('/login');
+    }
+    /**
+     * pass constants to views
+     */
     res.locals.AUTH = req.session.AUTH;
     res.locals.CURRENT_PAGE = PAGES[req.route.path];
     res.locals.CURRENT_DATE = new Date();

@@ -92,7 +92,6 @@ exports.update_status = async (req, res) => {
     status_log.status = req.body.status
 
     if (req.body.status == LEAD_STATUS.MEETING) {
-      console.log(`${req.body.date} ${req.body.time}`)
       var date_time = moment(`${req.body.date} ${req.body.time}`, date_format)
       status_log.date_time = date_time
       status_log.address = req.body.address

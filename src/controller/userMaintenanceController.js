@@ -1,5 +1,6 @@
-const { User, USER_TYPE, USER_STATUS } = require('../model/User');
+const { User, USER_STATUS } = require('../model/User');
 const { tagsSearchFormater, queryParamReturner } = require('../utils/helper');
+var { setInactiveUser } = require('../utils/helper');
 const bcryptjs = require('bcryptjs');
 const PER_PAGE = 9;
 
@@ -94,6 +95,9 @@ exports.update = async (req, res) => {
     user.updated_at = new Date();
     user.updated_by = req.session.AUTH._id;
     await user.save();
+    if (user.status === USER_STATUS.INACTIVE) {
+      setInactiveUser(user._id.toString());
+    }
     return res.redirect('/user-maintenance');
   } catch (error) {
     console.error(error);

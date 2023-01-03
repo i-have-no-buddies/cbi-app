@@ -1,6 +1,7 @@
 const generatePassword = require('generate-password');
 const csv = require('@fast-csv/parse');
 var fs = require('fs');
+var inactiveUsers = [];
 
 const ngramsAlgo = (str, field) => {
   try {
@@ -98,36 +99,48 @@ const queryParamReturner = (fields, query) => {
 };
 
 const getFullName = (user) => {
-  let firstlast_name = `${user.first_name} ${user.last_name}`
-  let full_name = ''
-  firstlast_name.split(' ').forEach(function(str) {
+  let firstlast_name = `${user.first_name} ${user.last_name}`;
+  let full_name = '';
+  firstlast_name.split(' ').forEach(function (str) {
     full_name += str.charAt(0).toUpperCase() + str.slice(1) + ' ';
   });
   return full_name.trim();
 };
 
 const logDescriptionFormater = (user, did, what, from = '') => {
-  let description = getFullName(user) + ' '
-  description += did.toLowerCase() + ' '
-  description += what + ' '
-  description += from + ' '
+  let description = getFullName(user) + ' ';
+  description += did.toLowerCase() + ' ';
+  description += what + ' ';
+  description += from + ' ';
   return description.trim();
 };
 
 const arrayChunks = (array, size = 5) => {
-  const result = array.reduce((result_array, item, index) => { 
-    const chunk_index = Math.floor(index/size)
-  
-    if(!result_array[chunk_index]) {
-      result_array[chunk_index] = [] // start a new chunk
-    }
-    result_array[chunk_index].push(item)
-  
-    return result_array
-  }, [])
+  const result = array.reduce((result_array, item, index) => {
+    const chunk_index = Math.floor(index / size);
 
-  return result
-}
+    if (!result_array[chunk_index]) {
+      result_array[chunk_index] = []; // start a new chunk
+    }
+    result_array[chunk_index].push(item);
+
+    return result_array;
+  }, []);
+
+  return result;
+};
+
+const setInactiveUser = (_id) => {
+  inactiveUsers.push(_id);
+};
+
+const removeInactiveUser = (_id) => {
+  inactiveUsers = inactiveUsers.filter((row) => row != _id);
+};
+
+const getInactiveUsers = () => {
+  return inactiveUsers;
+};
 
 module.exports = {
   ngramsAlgo,
@@ -139,5 +152,8 @@ module.exports = {
   queryParamReturner,
   getFullName,
   logDescriptionFormater,
-  arrayChunks
+  arrayChunks,
+  setInactiveUser,
+  removeInactiveUser,
+  getInactiveUsers,
 };
