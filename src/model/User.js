@@ -121,6 +121,7 @@ userSchema.pre('save', async function (next) {
   /**
    * tags
    */
+  this.tags = [];
   if (this.first_name) {
     this.tags = [
       ...this.tags,

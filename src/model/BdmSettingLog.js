@@ -37,12 +37,31 @@ const bdmSettingLogSchema = new mongoose.Schema({
 });
 
 bdmSettingLogSchema.pre('save', async function (next) {
-  this.tags = [
-    ...ngramsAlgov2(this.setting_id.toString(), '_id'),
-    ...ngramsAlgov2(this.current.ifa_name.trim().toLowerCase(), 'first_name'),
-    ...ngramsAlgov2(this.current.bdm_name.trim().toLowerCase(), 'last_name'),
-    ...ngramsAlgov2(this.current.status.toLowerCase(), 'status'),
-  ];
+  this.tags = [];
+  if (this.setting_id.toString()) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.setting_id.toString(), '_id'),
+    ];
+  }
+  if (this.current.ifa_name) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.current.ifa_name.trim().toLowerCase(), 'first_name'),
+    ];
+  }
+  if (this.current.bdm_name) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.current.bdm_name.trim().toLowerCase(), 'last_name'),
+    ];
+  }
+  if (this.current_status) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.current.status.toLowerCase(), 'status'),
+    ];
+  }
   next();
 });
 

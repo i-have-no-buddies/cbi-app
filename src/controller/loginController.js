@@ -12,7 +12,7 @@ exports.index = (req, res) => {
         return res.redirect('/lead-management');
       }
       if (req.session.AUTH.type === USER_TYPE.IFA) {
-        return res.redirect('/leads');
+        return res.redirect('/lead');
       }
       if (req.session.AUTH.type === USER_TYPE.BDM) {
         return res.redirect('/bdm-lead');
@@ -53,7 +53,7 @@ exports.login = async (req, res) => {
       return res.redirect('/lead-management');
     }
     if (user.type === USER_TYPE.IFA) {
-      return res.redirect('/leads');
+      return res.redirect('/lead');
     }
     if (user.type === USER_TYPE.BDM) {
       return res.redirect('/bdm-lead');

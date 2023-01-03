@@ -31,17 +31,40 @@ const userLoginSchema = new mongoose.Schema({
 });
 
 userLoginSchema.pre('save', async function (next) {
-  const user_login = this;
-  user_login.tags = [
-    ...ngramsAlgov2(user_login.user._id.toString(), '_id'),
-    ...ngramsAlgov2(
-      user_login.user.first_name.trim().toLowerCase(),
-      'first_name'
-    ),
-    ...ngramsAlgov2(user_login.user.last_name.trim().toLowerCase(), 'last_name'),
-    ...ngramsAlgov2(user_login.user.type.toLowerCase(), 'type'),
-    ...ngramsAlgov2(user_login.type.toLowerCase(), 'login'),
-  ];
+  this.tags = [];
+  if (this.user._id.toString()) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.user._id.toString(), '_id'),
+    ];
+  }
+  if (this.user.first_name) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.user.first_name.trim().toLowerCase(), 'first_name'),
+    ];
+  }
+  if (this.user.last_name) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(
+        this.user.last_name.trim().toLowerCase(),
+        'last_name'
+      ),
+    ];
+  }
+  if (this.user.type) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.user.type.toLowerCase(), 'type'),
+    ];
+  }
+  if (this.type) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.type.toLowerCase(), 'login'),
+    ];
+  }
   next();
 });
 

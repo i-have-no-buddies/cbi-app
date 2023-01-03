@@ -37,15 +37,31 @@ const userLogSchema = new mongoose.Schema({
 });
 
 userLogSchema.pre('save', async function (next) {
-  this.tags = [
-    ...ngramsAlgov2(this.user_id.toString(), '_id'),
-    ...ngramsAlgov2(
-      this.current.first_name.trim().toLowerCase(),
-      'first_name'
-    ),
-    ...ngramsAlgov2(this.current.last_name.trim().toLowerCase(), 'last_name'),
-    ...ngramsAlgov2(this.current.type.toLowerCase(), 'type'),
-  ];
+  this.tags = [];
+  if (this.user_id.toString()) {
+    this.tags = [...this.tags, ...ngramsAlgov2(this.user_id.toString(), '_id')];
+  }
+  if (this.current.first_name) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(
+        this.current.first_name.trim().toLowerCase(),
+        'first_name'
+      ),
+    ];
+  }
+  if (this.current.last_name) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.current.last_name.trim().toLowerCase(), 'last_name'),
+    ];
+  }
+  if (this.current.type) {
+    this.tags = [
+      ...this.tags,
+      ...ngramsAlgov2(this.current.type.toLowerCase(), 'type'),
+    ];
+  }
   next();
 });
 
