@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const minify = require('express-minify');
 const art = require('./config/art');
 const expressSession = require('express-session');
+const MemoryStore = require('memorystore')(expressSession);
 const flash = require('connect-flash');
 const loginRouter = require('./router/loginRouter');
 const leadRouter = require('./router/leadRouter');
@@ -23,6 +24,9 @@ const userOnlineRouter = require('./router/userOnlineRouter');
 const APP_HOST = process.env.APP_HOST;
 const APP_PORT = process.env.APP_PORT;
 const APP_SECRET = process.env.APP_SECRET;
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+const Events = require('events');
 
 /**
  * database connection
@@ -55,9 +59,9 @@ app.set('views', path.join(__dirname, '..\\templates\\views'));
 /**
  * session
  */
-// note: enable trust proxy and cookie secure true
 const sessionConfig = {};
 const eightHours = 1000 * 60 * 60 * 8;
+app.set('trust proxy', 1);
 sessionConfig.secret = APP_SECRET;
 sessionConfig.saveUninitialized = true;
 sessionConfig.cookie = {};
@@ -67,9 +71,11 @@ sessionConfig.cookie.sameSite = true;
 sessionConfig.cookie.secure = false;
 sessionConfig.resave = false;
 if (process.env.NODE_ENV === 'production') {
-  app.enable('trust proxy');
   sessionConfig.cookie.secure = true;
 }
+sessionConfig.store = new MemoryStore({
+  checkPeriod: eightHours, // prune expired entries every 8h
+});
 app.use(expressSession(sessionConfig));
 
 /**
@@ -90,10 +96,8 @@ app.use(express.urlencoded({ extended: false }));
  * user online map
  */
 const userOnlineMap = new Map();
-// run cleanup every 5 seconds
-const cleanupFrequency = 30 * 1000;
-// clean out users who haven't been here in the 30 seconds
-const cleanupTarget = 2 * 60 * 1000;
+const cleanupFrequency = 5 * 1000; // run cleanup every 5 seconds
+const cleanupTarget = 2 * 60 * 1000; // clean out users who haven't been here in 2 minutes
 function setOnlineUser(req, res, next) {
   if (req.session.AUTH) {
     userOnlineMap.set(req.session.AUTH._id, [
@@ -110,13 +114,25 @@ function setOnlineUser(req, res, next) {
 }
 setInterval(() => {
   let now = Date.now();
-  for (let [id, lastAccess] of userOnlineMap.entries()) {
+  for (let [id, details] of userOnlineMap.entries()) {
+    let lastAccess = details[3];
+    // delete users who haven't been here in 2 minutes
     if (now - lastAccess > cleanupTarget) {
-      // delete users who haven't been here in 30 seconds
       userOnlineMap.delete(id);
     }
   }
 }, cleanupFrequency);
+
+/**
+ * web socket
+ */
+io.on('connection', function (socket) {
+  var eventEmitter = new Events.EventEmitter();
+  eventEmitter.on('reloadEvent', (msg) => {
+    io.sockets.emit('page reload', msg);
+  });
+  exports.emitter = eventEmitter;
+});
 
 /**
  * routes
