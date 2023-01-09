@@ -64,8 +64,6 @@ const leadBatchSchema = new mongoose.Schema({
   },
 })
 
-leadBatchSchema.plugin(mongoosePaginate)
-
 leadBatchSchema.index({ 'tags.tag': 1, _id: 1 })
 
 leadBatchSchema.plugin(mongoosePaginate);

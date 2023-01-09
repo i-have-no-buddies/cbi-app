@@ -192,18 +192,21 @@
   document.getElementById('name').value = decodeHTML(
     '{{search.name | escapeBackslash}}'
   );
-  document.getElementById('job_title').value = decodeHTML(
-    '{{search.job_title | escapeBackslash}}'
-  );
-  document.getElementById('batch').value = decodeHTML(
-    '{{search.batch | escapeBackslash}}'
-  );
-  document.getElementById('status').value = decodeHTML(
-    '{{search.status | escapeBackslash}}'
-  );
-  document.getElementById('company').value = decodeHTML(
-    '{{search.company | escapeBackslash}}'
-  );
+  
+  {{if type == 'lead'}}
+    document.getElementById('job_title').value = decodeHTML(
+      '{{search.job_title | escapeBackslash}}'
+    );
+    document.getElementById('batch').value = decodeHTML(
+      '{{search.batch | escapeBackslash}}'
+    );
+    document.getElementById('status').value = decodeHTML(
+      '{{search.status | escapeBackslash}}'
+    );
+    document.getElementById('company').value = decodeHTML(
+      '{{search.company | escapeBackslash}}'
+    );
+  {{/if}}
   
 
   function search(page = 1) {

@@ -37,6 +37,7 @@ exports.index = async (req, res) => {
         limit: BATCH_PER_PAGE,
       });
     }
+
     return res.render('lead_management', {
       list,
       type: type,

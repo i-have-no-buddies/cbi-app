@@ -36,11 +36,8 @@ exports.index = async (req, res) => {
 exports.edit = async (req, res) => {
   try {
     const id = req.params.id
-    //const fields = {'_id':1, 'created_by': 1,'created_at':1,'module': 1,'description': 1,'log_type': 1 }
-
     const lead = await Lead.findById(id).lean()
     const meeting = await StatusLog.getLeadMeetings(id)
-    //const lead_logs = await LeadUpdateLog.find({lead_id: ObjectId(id)}, fields).sort({'created_at': 1})
     const lead_logs = await LeadUpdateLog.getUpdateLogs(id)
     const update_logs = arrayChunks(lead_logs)
 
@@ -76,6 +73,9 @@ exports.update = async (req, res) => {
         lead[property] = req.body[property]
       }
     }
+    
+    lead.updated_at = new Date();
+    lead.updated_by = req.session.AUTH._id;
     await lead.save()
     return res.redirect('/lead')
   } catch (error) {
@@ -96,11 +96,16 @@ exports.update_status = async (req, res) => {
       status_log.date_time = date_time
       status_log.address = req.body.address
     }
-    await status_log.save(req.session.AUTH)
+    
+    status_log.updated_at = new Date();
+    status_log.updated_by = req.session.AUTH._id;
+    await status_log.save()
 
-    //this can be updated on the status logs
+    //this is wrong because it create another log
     const lead = await Lead.findById(req.body._id)
     lead.status = req.body.status
+    lead.updated_at = new Date();
+    lead.updated_by = req.session.AUTH._id;
     await lead.save()
 
     return res.redirect('/lead')
@@ -112,11 +117,14 @@ exports.update_status = async (req, res) => {
 
 exports.meeting_update = async (req, res) => {
   try {
-    const meeting = await StatusLog.findById(req.body.meeting_id)
-    meeting.outcome = req.body.outcome
-    meeting.outcome_note = req.body.outcome_note
-    meeting.outcome_date = moment()
-    await meeting.save(req.session.AUTH)
+    const status_log = await StatusLog.findById(req.body.meeting_id)
+    status_log.outcome = req.body.outcome
+    status_log.outcome_note = req.body.outcome_note
+    status_log.outcome_date = moment()
+    
+    status_log.updated_at = new Date();
+    status_log.updated_by = req.session.AUTH._id;
+    await status_log.save()
 
     return res.redirect('/lead')
   } catch (error) {

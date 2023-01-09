@@ -64,7 +64,7 @@ leadUpdateLogSchema.static('getUpdateLogs', function (lead_id) {
   return this.find({
     lead_id: ObjectId(lead_id),
   })
-  .sort({'created_at': 1})
+  .sort({'created_at': -1})
   .select('_id created_by created_at module description log_type')
 })
 

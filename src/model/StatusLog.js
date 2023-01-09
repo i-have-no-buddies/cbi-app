@@ -3,6 +3,16 @@ const { ObjectId } = require('mongodb')
 const mongoosePaginate = require('mongoose-paginate-v2')
 const { ngramsAlgov2, logDescriptionFormater } = require('../utils/helper');
 const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
+const { User } = require('../model/User');
+
+const EXCLUDED_FIELDS = [
+  '_id',
+  '__v',
+  'created_at',
+  'created_by',
+  'updated_at',
+  'updated_by',
+];
 
 const statusLogSchema = new mongoose.Schema({
   created_by: {
@@ -13,6 +23,14 @@ const statusLogSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  updated_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
   lead_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lead',
@@ -20,6 +38,7 @@ const statusLogSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
+    default: '',
     set: function (status) {
       this.old_status = this.status;
       return status;
@@ -28,6 +47,7 @@ const statusLogSchema = new mongoose.Schema({
   note: {
     type: String,
     required: true,
+    default: '',
     set: function (note) {
       this.old_note = this.note;
       return note;
@@ -35,6 +55,7 @@ const statusLogSchema = new mongoose.Schema({
   },
   date_time: {
     type: Date,
+    default: '',
     set: function (date_time) {
       this.old_date_time = this.date_time;
       return date_time;
@@ -42,6 +63,7 @@ const statusLogSchema = new mongoose.Schema({
   },
   address: {
     type: String,
+    default: '',
     set: function (address) {
       this.old_address = this.address;
       return address;
@@ -49,6 +71,7 @@ const statusLogSchema = new mongoose.Schema({
   },
   product: {
     type: String,
+    default: '',
     set: function (product) {
       this.old_product = this.product;
       return product;
@@ -56,6 +79,7 @@ const statusLogSchema = new mongoose.Schema({
   },
   program: {
     type: String,
+    default: '',
     set: function (program) {
       this.old_program = this.program;
       return program;
@@ -63,6 +87,7 @@ const statusLogSchema = new mongoose.Schema({
   },
   outcome: {
     type: String,
+    default: '',
     set: function (outcome) {
       this.old_outcome = this.outcome;
       return outcome;
@@ -70,6 +95,7 @@ const statusLogSchema = new mongoose.Schema({
   },
   outcome_note: {
     type: String,
+    default: '',
     set: function (outcome_note) {
       this.old_outcome_note = this.outcome_note;
       return outcome_note;
@@ -77,6 +103,7 @@ const statusLogSchema = new mongoose.Schema({
   },
   outcome_date: {
     type: Date,
+    default: '',
     set: function (outcome_date) {
       this.old_outcome_date = this.outcome_date;
       return outcome_date;
@@ -85,62 +112,51 @@ const statusLogSchema = new mongoose.Schema({
 })
 
 
-statusLogSchema.pre('save', async function (next, session, callback) {
-  const status = this;
-  status.created_by = session._id
+statusLogSchema.pre('save', async function (next) {  
   /**
-   * status logs
+   * logs
    */
-  var current = {};
-  var previous = {};
-  const modified = [];
-  
-  for (const row in status) {
-    if (!row.startsWith('old_')) {
-      if (status.isModified(row)) {
-        modified.push(row);
+  let previous = {};
+  let current = {};
+  let modified = [];
+  const lead_update_log = new LeadUpdateLog();
+  if (this.isNew) {
+    for (const property in statusLogSchema.paths) {
+      if (!EXCLUDED_FIELDS.includes(property)) {
+        previous[property] = '';
+        current[property] = this[property] || '';
+        if (this[property]) {
+          modified.push(property);
+        }
       }
     }
-    
-    if (row.startsWith('old_')) {
-      const property = row.replace(/^old_/, '');
-      current[property] = status[property];
-      // this.isNew for new data save
-      // each schema has paths
-      previous[property] = status[row];
+  } else {
+    for (const property in statusLogSchema.paths) {
+      if (!EXCLUDED_FIELDS.includes(property)) {
+        previous[property] = this[`old_${property}`] || '';
+        current[property] = this[property] || '';
+        if (this.isModified(property)) {
+          modified.push(property);
+        }
+      }
     }
   }
+  
+  // //think of module
+  let user = await User.findById(this.updated_by).lean()
+  var log_type = this.isNew? LOG_TYPE.CREATE : LOG_TYPE.UPDATE
+  var description = logDescriptionFormater(user, log_type, this.status)
 
-  //think of module
-  var log_type = status.isNew? LOG_TYPE.CREATE : LOG_TYPE.UPDATE
-  var description = logDescriptionFormater(session, log_type, status.status)
-
-  //might change depending on the conditions
-  //bottom is meeting updated
-  if(log_type == LOG_TYPE.UPDATE) {
-    let copy_fields = ['lead_id','note','status','date_time','address']
-    
-    copy_fields.forEach((field) => {
-      current[field] = status[field];
-      previous[field] = status[field];
-    });
-  }
-
-  const tags = []
-  //const tags = [...ngramsAlgov2(user._id.toString(), '_id')];
-  const lead_update_log = new LeadUpdateLog({
-    //module,
-    description,
-    lead_id: status.lead_id,
-    status_log_id: status._id,
-    created_by: session._id,
-    log_type,
-    current,
-    previous,
-    modified,
-    tags,
-  });
+  lead_update_log.lead_id = this['lead_id'],
+  lead_update_log.status_log_id = this['_id'],
+  lead_update_log.log_type = log_type;
+  lead_update_log.description = description;
+  lead_update_log.current = current;
+  lead_update_log.previous = previous;
+  lead_update_log.modified = modified;
+  lead_update_log.created_by = this.updated_by;
   await lead_update_log.save();
+  next();
 });
 
 statusLogSchema.index({ status: 1, outcome: 1, lead_id: 1 })
@@ -148,7 +164,7 @@ statusLogSchema.index({ status: 1, outcome: 1, lead_id: 1 })
 statusLogSchema.static('getLeadMeetings', function (lead_id) {
   return this.find({
     status: 'MEETING',
-    outcome: { $exists: false },
+    outcome: '',
     lead_id: ObjectId(lead_id),
   }).select('_id note date_time address')
 })
