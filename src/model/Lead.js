@@ -302,17 +302,17 @@ leadSchema.pre('save', async function (next) {
 
   
   // //think of module
-  let user = await User.findById(this.updated_by).lean()
-  var log_type = this.isNew? LOG_TYPE.CREATE : LOG_TYPE.UPDATE
-  var description = logDescriptionFormater(user, log_type, 'Lead Information')
+  if(this.updated_by) {
+    let user = await User.findById(this.updated_by).lean()
+    lead_update_log.log_type = this.isNew? LOG_TYPE.CREATE : LOG_TYPE.UPDATE
+    lead_update_log.description = logDescriptionFormater(user, log_type, 'Lead Information')
+    lead_update_log.created_by = this.updated_by;
+  }
 
   lead_update_log.lead_id = this['_id'],
-  lead_update_log.log_type = log_type;
-  lead_update_log.description = description;
   lead_update_log.current = current;
   lead_update_log.previous = previous;
   lead_update_log.modified = modified;
-  lead_update_log.created_by = this.updated_by;
   await lead_update_log.save();
   next();
 });
