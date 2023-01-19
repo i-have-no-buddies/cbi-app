@@ -3,6 +3,7 @@ const { UserLogin, LOGIN_TYPE } = require('../model/UserLogin');
 var { getInactiveUsers, removeInactiveUser } = require('../utils/helper');
 
 const PAGES = {
+  '/initial-meeting': 'Initial Meeting',
   '/lead': 'Lead',
   '/lead/edit/:id': 'Lead',
   '/lead/update': 'Lead',
@@ -41,6 +42,7 @@ const PAGES = {
 
 const ACCESS_MODULES = {
   SUPER_ADMIN: [
+    '/initial-meeting',
     '/lead',
     '/lead/edit/:id',
     '/lead/update',
@@ -78,6 +80,7 @@ const ACCESS_MODULES = {
     '/logout',
   ],
   ADMIN: [
+    '/initial-meeting',
     '/lead',
     '/lead/edit/:id',
     '/lead/update',
@@ -106,6 +109,7 @@ const ACCESS_MODULES = {
     '/logout',
   ],
   IFA: [
+    '/initial-meeting',
     '/lead',
     '/lead/edit/:id',
     '/lead/update',
@@ -153,7 +157,7 @@ exports.authenticated = async (req, res, next) => {
       return res.redirect('/login');
     }
     /**
-     * pass constants to views
+     * pass constant to views
      */
     res.locals.AUTH = req.session.AUTH;
     res.locals.CURRENT_PAGE = PAGES[req.route.path];

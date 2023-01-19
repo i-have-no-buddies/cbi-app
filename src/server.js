@@ -10,6 +10,7 @@ const expressSession = require('express-session');
 const MemoryStore = require('memorystore')(expressSession);
 const flash = require('connect-flash');
 const loginRouter = require('./router/loginRouter');
+const initialMeetingRouter = require('./router/initialMeetingRouter');
 const leadRouter = require('./router/leadRouter');
 const calendarRouter = require('./router/calendarRouter');
 const bdmLeadRouter = require('./router/bdmLeadRouter');
@@ -138,6 +139,7 @@ io.on('connection', function (socket) {
  * routes
  */
 loginRouter(app);
+initialMeetingRouter(app, setOnlineUser);
 leadRouter(app, setOnlineUser);
 calendarRouter(app, setOnlineUser);
 bdmLeadRouter(app, setOnlineUser);

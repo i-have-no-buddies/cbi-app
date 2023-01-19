@@ -1,6 +1,30 @@
 const loginController = require('../controller/loginController');
 const auth = require('../middleware/auth');
 
+const rateLimit = require('express-rate-limit');
+
+const limitLoginPageRequest = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req, res) => req.ip,
+  handler: (req, res, next) => {
+    return res.render('429');
+  },
+});
+
+const limitLoginPageSubmit = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req, res) => req.ip,
+  handler: (req, res, next) => {
+    return res.render('429');
+  },
+});
+
 const setDefaultCredentials = (req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     res.locals.DEFAULT_EMAIL = process.env.DEFAULT_EMAIL;
@@ -10,8 +34,8 @@ const setDefaultCredentials = (req, res, next) => {
 };
 
 module.exports = (app) => {
-  app.get('/', setDefaultCredentials, loginController.index);
-  app.get('/login', setDefaultCredentials, loginController.index);
-  app.post('/login', loginController.login);
+  app.get('/', limitLoginPageRequest, setDefaultCredentials, loginController.index);
+  app.get('/login', limitLoginPageRequest, setDefaultCredentials, loginController.index);
+  app.post('/login', limitLoginPageSubmit, loginController.login);
   app.get('/logout', auth.authenticated, loginController.logout);
 };
