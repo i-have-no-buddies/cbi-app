@@ -14,6 +14,21 @@ exports.index = (req, res) => {
 };
 
 exports.downloadUserReport = async (req, res) => {
+  let search = {};
+  if (req.query.from_date) {
+    search = { created_at: { $gte: `${req.query.from_date} 00:00:00` } };
+  }
+  if (req.query.to_date) {
+    search = { created_at: { $lte: `${req.query.to_date} 23:59:59` } };
+  }
+  if (req.query.from_date && req.query.to_date) {
+    search = {
+      created_at: {
+        $gte: `${req.query.from_date} 00:00:00`,
+        $lte: `${req.query.to_date} 23:59:59`,
+      },
+    };
+  }
   const fields = [
     'first_name',
     'last_name',
@@ -25,7 +40,7 @@ exports.downloadUserReport = async (req, res) => {
   res.setHeader('Content-Disposition', 'attachment; filename=users.csv');
   res.setHeader('Content-Type', 'text/csv');
   res.write(fields.join(',') + '\n');
-  const modelStream = User.find()
+  const modelStream = User.find(search)
     .select('-_id ' + fields.join(' '))
     .populate({ path: 'created_by', select: 'first_name last_name' })
     .batchSize(100)
@@ -54,11 +69,26 @@ exports.downloadUserReport = async (req, res) => {
 };
 
 exports.downloadUserLogReport = async (req, res) => {
+  let search = {};
+  if (req.query.from_date) {
+    search = { created_at: { $gte: `${req.query.from_date} 00:00:00` } };
+  }
+  if (req.query.to_date) {
+    search = { created_at: { $lte: `${req.query.to_date} 23:59:59` } };
+  }
+  if (req.query.from_date && req.query.to_date) {
+    search = {
+      created_at: {
+        $gte: `${req.query.from_date} 00:00:00`,
+        $lte: `${req.query.to_date} 23:59:59`,
+      },
+    };
+  }
   const fields = ['-_id', 'created_at', 'previous', 'current', 'created_by'];
   res.setHeader('Content-Disposition', 'attachment; filename=user-logs.csv');
   res.setHeader('Content-Type', 'text/csv');
   res.write(fields.join(',') + '\n');
-  const modelStream = UserLog.find()
+  const modelStream = UserLog.find(search)
     .select('-_id ' + fields.join(' '))
     .populate({ path: 'created_by', select: 'first_name last_name' })
     .batchSize(100)
@@ -87,11 +117,26 @@ exports.downloadUserLogReport = async (req, res) => {
 };
 
 exports.downloadUserLoginReport = async (req, res) => {
+  let search = {};
+  if (req.query.from_date) {
+    search = { created_at: { $gte: `${req.query.from_date} 00:00:00` } };
+  }
+  if (req.query.to_date) {
+    search = { created_at: { $lte: `${req.query.to_date} 23:59:59` } };
+  }
+  if (req.query.from_date && req.query.to_date) {
+    search = {
+      created_at: {
+        $gte: `${req.query.from_date} 00:00:00`,
+        $lte: `${req.query.to_date} 23:59:59`,
+      },
+    };
+  }
   const fields = ['created_at', 'type', 'user'];
   res.setHeader('Content-Disposition', 'attachment; filename=user-logins.csv');
   res.setHeader('Content-Type', 'text/csv');
   res.write(fields.join(',') + '\n');
-  const modelStream = UserLogin.find()
+  const modelStream = UserLogin.find(search)
     .select('-_id ' + fields.join(' '))
     .batchSize(100)
     .cursor();

@@ -215,6 +215,10 @@ userSchema.index({ 'tags.tag': 1, _id: 1 });
  * model static function
  */
 userSchema.index({ type: 1, status: 1 });
+/**
+ * report index
+ */
+userSchema.index({ created_at: 1 });
 
 userSchema.plugin(mongoosePaginate);
 

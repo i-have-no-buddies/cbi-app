@@ -15,9 +15,9 @@
         {{include './components/search_select.html', { name: 'report_type'
         options: REPORT_TYPE } }}
         <!-- filter from date -->
-        {{include './components/input_datetime.html', { name: 'from_date'} }}
+        {{include './components/search_box.html', { name: 'from_date'} }}
         <!-- filter to date -->
-        {{include './components/input_datetime.html', { name: 'to_date'} }}
+        {{include './components/search_box.html', { name: 'to_date'} }}
       </div>
       <div class="card-footer">
         <a
@@ -42,13 +42,27 @@
       .val()
       .toLowerCase()
       .replace(/\_/g, '-');
-    console.log(url);
+    let query = '';
+    if ($('input[name="from_date"]').val()) {
+      if (!query) {
+        query += `from_date=${$('input[name="from_date"]').val()}`;
+      } else {
+        query += `&from_date=${$('input[name="from_date"]').val()}`;
+      }
+    }
+    if ($('input[name="to_date"]').val()) {
+      if (!query) {
+        query += `to_date=${$('input[name="to_date"]').val()}`;
+      } else {
+        query += `&to_date=${$('input[name="to_date"]').val()}`;
+      }
+    }
     if (!url) {
       $('#btnDownload').prop('disabled', true);
       $('#btnDownload').attr('href', '#');
     } else {
       $('#btnDownload').prop('disabled', false);
-      $('#btnDownload').attr('href', `/reports/${url}`);
+      $('#btnDownload').attr('href', `/reports/${url}?${query}`);
     }
   }
 </script>

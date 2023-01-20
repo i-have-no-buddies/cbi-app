@@ -69,6 +69,10 @@ userLogSchema.pre('save', async function (next) {
  * search index
  */
 userLogSchema.index({ 'tags.tag': 1, _id: 1 });
+/**
+ * report index
+ */
+userLogSchema.index({ created_at: 1 });
 
 userLogSchema.plugin(mongoosePaginate);
 
