@@ -5,7 +5,7 @@ const rateLimit = require('express-rate-limit');
 
 const limitLoginPageRequest = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 60,
+  max: 20,
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req, res) => req.ip,

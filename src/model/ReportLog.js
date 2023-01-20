@@ -28,4 +28,5 @@ reportLogSchema.plugin(mongoosePaginate);
 
 module.exports = {
   ReportLog: mongoose.model('ReportLog', reportLogSchema),
+  REPORT_TYPE,
 };

@@ -1,5 +1,6 @@
 const { USER_TYPE, USER_STATUS } = require('../model/User');
 const { UserLogin, LOGIN_TYPE } = require('../model/UserLogin');
+const { REPORT_TYPE } = require('../model/ReportLog');
 var { getInactiveUsers, removeInactiveUser } = require('../utils/helper');
 
 const PAGES = {
@@ -29,6 +30,9 @@ const PAGES = {
   '/lead-management/add': 'Lead Management',
   '/lead-management/create': 'Lead Management',
   '/reports': 'Reports',
+  '/reports/users': 'Reports',
+  '/reports/user-logs': 'Reports',
+  '/reports/user-logins': 'Reports',
   '/user-maintenance': 'User Maintenance',
   '/user-maintenance/add': 'User Maintenance',
   '/user-maintenance/create': 'User Maintenance',
@@ -68,6 +72,9 @@ const ACCESS_MODULES = {
     '/lead-management/add',
     '/lead-management/create',
     '/reports',
+    '/reports/users',
+    '/reports/user-logs',
+    '/reports/user-logins',
     '/user-maintenance',
     '/user-maintenance/add',
     '/user-maintenance/create',
@@ -106,6 +113,9 @@ const ACCESS_MODULES = {
     '/lead-management/add',
     '/lead-management/create',
     '/reports',
+    '/reports/users',
+    '/reports/user-logs',
+    '/reports/user-logins',
     '/logout',
   ],
   IFA: [
@@ -165,6 +175,7 @@ exports.authenticated = async (req, res, next) => {
     res.locals.USER_TYPE = USER_TYPE;
     res.locals.USER_STATUS = USER_STATUS;
     res.locals.LOGIN_TYPE = LOGIN_TYPE;
+    res.locals.REPORT_TYPE = REPORT_TYPE;
     next();
   } catch (error) {
     console.error(error);

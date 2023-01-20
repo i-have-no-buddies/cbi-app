@@ -47,44 +47,49 @@ async function seed() {
       status: USER_STATUS.ACTIVE,
     },
   ];
-  for (let i = 1; i <= 100; i++) {
+  for (const user of users) {
+    const createUser = new User(user);
+    await createUser.save();
+  }
+  const adminCreatedBy = await User.findOne({ email: 'ejer@email.com' });
+  for (let i = 1; i <= 100000; i++) {
     let user = randUser();
-    users.push({
+    let newUser = {
       first_name: user.firstName,
       last_name: user.lastName,
       email: user.email,
       password: await bcryptjs.hash('123456', 8),
       type: rand(Object.values(USER_TYPE)),
       status: rand(Object.values(USER_STATUS)),
-    });
-  }
-  for (const user of users) {
-    const newUser = new User(user);
-    await newUser.save();
+      created_by: adminCreatedBy._id,
+      updated_by: adminCreatedBy._id,
+    };
+    const createUser = new User(newUser);
+    await createUser.save();
   }
 
-  for (let i = 1; i <= 10; i++) {
-    const leadBatch = new LeadBatch({
-      upload_name: randFootballTeam(),
-    });
-    await leadBatch.save();
-    for (let j = 1; j <= rand([10, 20, 30]); j++) {
-      let lead = randUser();
-      const currentLead = {
-        lead_batch_id: leadBatch._id,
-        first_name: lead.firstName,
-        last_name: lead.lastName,
-        job_title: randJobTitle(),
-        company: randCompanyName(),
-        mobile: lead.phone,
-        personal_email: lead.email,
-        work_email: lead.email,
-        status: rand(Object.values(LEAD_STATUS)),
-      };
-      const newLead = new Lead(currentLead);
-      await newLead.save();
-    }
-  }
+  // for (let i = 1; i <= 10; i++) {
+  //   const leadBatch = new LeadBatch({
+  //     upload_name: randFootballTeam(),
+  //   });
+  //   await leadBatch.save();
+  //   for (let j = 1; j <= rand([10, 20, 30]); j++) {
+  //     let lead = randUser();
+  //     const currentLead = {
+  //       lead_batch_id: leadBatch._id,
+  //       first_name: lead.firstName,
+  //       last_name: lead.lastName,
+  //       job_title: randJobTitle(),
+  //       company: randCompanyName(),
+  //       mobile: lead.phone,
+  //       personal_email: lead.email,
+  //       work_email: lead.email,
+  //       status: rand(Object.values(LEAD_STATUS)),
+  //     };
+  //     const newLead = new Lead(currentLead);
+  //     await newLead.save();
+  //   }
+  // }
   process.exit();
 }
 

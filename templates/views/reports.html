@@ -12,14 +12,21 @@
       </div>
       <div class="card-body">
         <!-- filter report type -->
-        {{include './components/search_select.html', { name: 'report_type'} }}
+        {{include './components/search_select.html', { name: 'report_type'
+        options: REPORT_TYPE } }}
         <!-- filter from date -->
         {{include './components/input_datetime.html', { name: 'from_date'} }}
         <!-- filter to date -->
         {{include './components/input_datetime.html', { name: 'to_date'} }}
       </div>
       <div class="card-footer">
-        <button class="btn btn-success btn-sm btn-block">Download</button>
+        <a
+          href="#"
+          class="btn btn-success btn-sm btn-block"
+          target="_blank"
+          id="btnDownload"
+          >Download</a
+        >
       </div>
     </div>
   </div>
@@ -29,5 +36,20 @@
 <!-- javascript -->
 {{block 'javascript'}}
 <script src="/app/global.js"></script>
-<script></script>
+<script>
+  function search() {
+    let url = $('select[name="report_type"]')
+      .val()
+      .toLowerCase()
+      .replace(/\_/g, '-');
+    console.log(url);
+    if (!url) {
+      $('#btnDownload').prop('disabled', true);
+      $('#btnDownload').attr('href', '#');
+    } else {
+      $('#btnDownload').prop('disabled', false);
+      $('#btnDownload').attr('href', `/reports/${url}`);
+    }
+  }
+</script>
 {{/block}}
