@@ -189,8 +189,8 @@ labelling
 - yellow
 
 # status
-*first_meeting
-*second_meeting
+*first meeting // hide this
+*second meeting
 *email
 *whatsapp
 *sms
@@ -201,3 +201,6 @@ labelling
   - sat
 *client
 - product
+
+# hierarchy
+first meeting -> second meeting -> client
