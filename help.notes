@@ -187,3 +187,17 @@ labelling
 - green
 - blue
 - yellow
+
+# status
+*first_meeting
+*second_meeting
+*email
+*whatsapp
+*sms
+*meeting (date, time, location, outcome)
+  list of meeting outcome
+  - rescheduled
+  - cancelled
+  - sat
+*client
+- product

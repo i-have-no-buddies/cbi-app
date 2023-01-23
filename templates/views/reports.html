@@ -42,6 +42,18 @@
       .val()
       .toLowerCase()
       .replace(/\_/g, '-');
+    /**
+     * show and hide
+     */
+    if (['users', 'user-logs', 'user-logins'].includes(url)) {
+      $('input[name="from_date"]').parent().css('display', '');
+      $('input[name="to_date"]').parent().css('display', '');
+    } else {
+      hideSearchInput();
+    }
+    /**
+     * create url query
+     */
     let query = '';
     if ($('input[name="from_date"]').val()) {
       if (!query) {
@@ -65,5 +77,14 @@
       $('#btnDownload').attr('href', `/reports/${url}?${query}`);
     }
   }
+
+  function hideSearchInput() {
+    $('input[name="from_date"]').parent().css('display', 'none');
+    $('input[name="to_date"]').parent().css('display', 'none');
+  }
+  
+  $(document).ready(function () {
+    hideSearchInput();
+  });
 </script>
 {{/block}}
