@@ -194,7 +194,7 @@ labelling
 *email
 *whatsapp
 *sms
-*meeting (date, time, location, outcome)
+*meeting (date, time, location, outcome, is_first_meeting, is_second_meeting)
   list of meeting outcome
   - rescheduled
   - cancelled
