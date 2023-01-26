@@ -105,6 +105,7 @@ exports.update_status = async (req, res) => {
     
     status_log.updated_at = new Date();
     status_log.updated_by = req.session.AUTH._id;
+    status_log.created_by = req.session.AUTH._id;
     await status_log.save()
 
     //this is wrong because it create another log

@@ -209,12 +209,22 @@ statusLogSchema.pre('save', async function (next) {
 });
 
 statusLogSchema.index({ status_log: 1, outcome: 1, lead_id: 1 })
+statusLogSchema.index({ status_log: 1, outcome: 1, created_by: 1, datetime: 1 })
 
 statusLogSchema.static('getLeadMeetings', function (lead_id) {
   return this.find({
     status_log: 'MEETING',
     outcome: '',
     lead_id: ObjectId(lead_id),
+  }).select('_id note datetime address')
+})
+
+statusLogSchema.static('getCalendarMeetings', function (start, end, user) {
+  return this.find({
+    status_log: 'MEETING',
+    outcome: '',
+    created_by: ObjectId(user),
+    datetime: {$gte: start, $lt: end},
   }).select('_id note datetime address')
 })
 

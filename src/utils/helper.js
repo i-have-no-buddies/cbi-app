@@ -1,4 +1,6 @@
 const generatePassword = require('generate-password');
+const { check, validationResult } = require('express-validator')
+const moment = require('moment-timezone')
 const csv = require('@fast-csv/parse');
 var fs = require('fs');
 var inactiveUsers = [];
@@ -152,8 +154,42 @@ const schemaTagsFormater = (tags, data, field) => {
   return tags
 }
 
-const validateUpload = (data) => {
-  return true;
+
+const date_format = 'MM/DD/YYYY'
+const time_format = 'hh:mm A'
+const validateUpload = async (data) => {
+  
+  //mobile validate ask?
+  await check('first_name').trim().notEmpty().run(data);
+  await check('last_name').trim().notEmpty().run(data);
+  await check('job_title').trim().notEmpty().run(data);
+  await check('company').trim().notEmpty().run(data);
+  await check('profile_link').trim().isURL().run(data);
+  await check('gender').trim().notEmpty().run(data);
+  await check('mobile').trim().notEmpty().run(data);
+  await check('business_no').trim().notEmpty().run(data);
+  await check('second_mobile').trim().notEmpty().run(data);
+  await check('personal_email').trim().isEmail().run(data);
+  await check('work_email').trim().isEmail().run(data);
+  await check('nationality').trim().notEmpty().run(data);
+  await check('description').trim().notEmpty().run(data);
+
+  await check('ifa_email').trim().isEmail().run(data);
+  await check('meeting_date').trim().custom(value => {
+    let date = moment(value, date_format);
+    if(date.isValid()) return true
+    else throw new Error('Meeting Date invalid.')
+  }).run(data);
+  await check('meeting_time').trim().custom(value => {
+    let date = moment(value, time_format);
+    if(date.isValid()) return true
+    else throw new Error('Meeting Time invalid.')
+  }).run(data);
+  await check('meeting_address').trim().notEmpty().run(data);
+  await check('meeting_note').trim().notEmpty().run(data);
+
+  const result = validationResult(data);
+  return result;
 };
 
 module.exports = {

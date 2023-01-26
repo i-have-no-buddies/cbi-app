@@ -3,52 +3,8 @@
 {{block 'content'}}
 <link rel="stylesheet" href="/assets/plugins/fullcalendar/main.css" />
 <div class="row">
-  <!-- <div class="col-md-3">
-    <div class="sticky-top mb-3">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Draggable Events</h4>
-        </div>
-        <div class="card-body">
-          <div id="external-events">
-            <div class="external-event bg-success">Lunch</div>
-            <div class="external-event bg-warning">Go home</div>
-            <div class="external-event bg-info">Do homework</div>
-            <div class="external-event bg-primary">Work on UI design</div>
-            <div class="external-event bg-danger">Sleep tight</div>
-            <div class="checkbox">
-              <label for="drop-remove">
-                <input type="checkbox" id="drop-remove">
-                remove after drop
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Create Event</h3>
-        </div>
-        <div class="card-body">
-          <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-            <ul class="fc-color-picker" id="color-chooser">
-              <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
-              <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
-              <li><a class="text-success" href="#"><i class="fas fa-square"></i></a></li>
-              <li><a class="text-danger" href="#"><i class="fas fa-square"></i></a></li>
-              <li><a class="text-muted" href="#"><i class="fas fa-square"></i></a></li>
-            </ul>
-          </div>
-          <div class="input-group">
-            <input id="new-event" type="text" class="form-control" placeholder="Event Title">
-            <div class="input-group-append">
-              <button id="add-new-event" type="button" class="btn btn-primary">Add</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
+  <input type='hidden' id='view' name='view' value='month' >
+  <input type='hidden' id='date_nav' name='date_nav' value=0>
   <div class="col-md-12">
     <div class="card card-primary">
       <div class="card-body p-0">
@@ -60,45 +16,78 @@
 {{/block}}{{block 'javascript'}}
 <script src="/assets/plugins/moment/moment.min.js"></script>
 <script src="/assets/plugins/fullcalendar/main.js"></script>
+<script src="/app/global.js"></script>
 <script>
+  document.getElementById('date_nav').value = decodeHTML(
+    '{{search.date_nav | escapeBackslash}}'
+  );
+
+  var meeting_events = [
+    {{each meetings}}
+      { 
+        title: `{{$value.note}}`,
+        start: new Date(`{{@$value.datetime | formatDateRaw}}`),
+        backgroundColor: '#f39c12', //yellow
+        borderColor    : '#f39c12' //yellow
+      },
+      
+    {{/each}}
+  ]
+
+  function paginate() {
+    let url = window.location.href.split('?')[0];
+    let type = $('#view').val();
+    let date_nav = $('#date_nav').val();
+    url += `?date_nav=${date_nav}&type=${type}`;
+    window.location.href = url;
+  }
+
   $(function () {
     var Calendar = FullCalendar.Calendar;
     var date = new Date()
     var d    = date.getDate(),
         m    = date.getMonth(),
         y    = date.getFullYear()
+        
     
     
     var calendarEl = document.getElementById('calendar');
-    
     var calendar = new Calendar(calendarEl, {
-      headerToolbar: {
-        left  : 'prev,next today',
-        center: 'title',
-        right : 'dayGridMonth,timeGridWeek,timeGridDay'
+      initialDate: '{{init_date}}',
+      customButtons: {
+        custom_prev: {
+          text: 'PREV',
+          click: function() {
+            let page = parseInt($('#date_nav').val())
+            $('#date_nav').val(page - 1)
+            paginate()
+          }
+        },
+        custom_next: {
+          text: 'NEXT',
+          click: function() {
+            let page = parseInt($('#date_nav').val())
+            $('#date_nav').val(page + 1)
+            paginate()
+          }
+        }
       },
-      themeSystem: 'bootstrap',
+
+
+      headerToolbar: {
+        left  : 'custom_prev,custom_next today',
+        center: 'title',
+        //right : 'dayGridMonth,timeGridWeek,timeGridDay'
+        right : ''
+      },
+      themeSystem: 'bootstrap5',
       //Random default events
-      events: [
-        {
-          title          : 'All Day Event',
-          start          : new Date(y, m, 1),
-          backgroundColor: '#f56954', //red
-          borderColor    : '#f56954', //red
-          allDay         : true
-        },
-        {
-          title          : 'Long Event',
-          start          : new Date(y, m, d - 5),
-          end            : new Date(y, m, d - 2),
-          backgroundColor: '#f39c12', //yellow
-          borderColor    : '#f39c12' //yellow
-        },
-      ],
-      editable  : true,
-      droppable : true, // this allows things to be dropped onto the calendar !!!
+      events: meeting_events,
+      //editable  : true,
+      //droppable : true, // this allows things to be dropped onto the calendar !!!
     });
 
+    
     calendar.render();
   });
 

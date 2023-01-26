@@ -3,7 +3,7 @@ const { ObjectId } = require('mongodb');
 const fs = require('fs');
 const csv = require('@fast-csv/parse');
 
-const { LeadBatch, UPLOAD_STATUS} = require('../model/LeadBatch');
+const { LeadBatch, UPLOAD_STATUS, FILE_HEADERS } = require('../model/LeadBatch');
 const { Lead, LEAD_STATUS, HIERARCHY } = require('../model/Lead');
 const { User } = require('../model/User');
 const { StatusLog } = require('../model/StatusLog');
@@ -82,6 +82,7 @@ exports.new_upload = async (req, res) => {
     
     var all_users = await User.find({},{email: 1, _id: 1}).lean();
     var leads = []
+    var invalid_leads = []
     let uploaded_count = 0;
     let invalid_count = 0;
     const stream = fs.createReadStream(`./public/uploads/${req.file.filename}`);
@@ -89,15 +90,10 @@ exports.new_upload = async (req, res) => {
       .parseStream(stream, { headers: true, ignoreEmpty: true })
       .on('error', (error) => console.error(error))
       .on('data', async (row) => {
-        
-        //validation
-        let valid = await validateUpload(row);
-        let allocated_to = all_users.find(o => o.email === row.ifa_email);
-
+        //append datas needed
         row.lead_batch_id = lead_batch._id;
         row.created_by = req.session.AUTH._id;
         row.updated_by = req.session.AUTH._id;
-        row.allocated_to = allocated_to._id;
         //will be used in creating initial meeting
         row.uploaded_meeting = {
           created_by: req.session.AUTH._id,
@@ -109,15 +105,22 @@ exports.new_upload = async (req, res) => {
           address: row.meeting_note
         };
 
-        if(valid) {
+        //validation
+        let allocated_to = all_users.find(o => o.email === row.ifa_email);
+        let errors = await validateUpload({body: row});
+        let valid = errors.isEmpty()? true : false;
+        
+        if(valid && allocated_to != null) {
+          row.allocated_to = allocated_to._id;
           row.status = LEAD_STATUS.NEW;
           row.hierarchy = HIERARCHY.NEW;
           leads.push(row);
           uploaded_count++;
         }
         else {
+          //append the errors?
+          invalid_leads.push(row);
           invalid_count++;
-          //better if inserted and updated
         }
 
         if (leads.length == 500) {
@@ -133,11 +136,27 @@ exports.new_upload = async (req, res) => {
         lead_batch.uploaded = uploaded_count;
         lead_batch.invalid = invalid_count;
         await lead_batch.save()
+
+        //data has invalid return datas
+        if(invalid_count != 0) {
+          let fields = FILE_HEADERS
+          res.setHeader('Content-Disposition', `attachment; filename=${upload_name}-invalid.csv`);
+          res.setHeader('Content-Type', 'text/csv');
+          res.setHeader('Location', '/lead-management');
+          res.write(fields.join(',') + '\n');
+          invalid_leads.forEach(element => {
+            let content = [];
+            for (const property of fields) {
+              if (element.hasOwnProperty(property)) content.push(element[property]);
+            } 
+            res.write(content.join(',') + '\n');
+          });
+          res.end();
+        } else {
+          return res.redirect('/lead-management');
+        }
       })
 
-    //maybe add childprocess here?
-
-    res.redirect('/lead-management');
   } catch (error) {
     console.error(error);
     return res.render('500');
