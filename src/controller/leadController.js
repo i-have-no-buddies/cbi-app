@@ -1,14 +1,14 @@
-const { STATES } = require('mongoose')
 const moment = require('moment-timezone')
-//const { ObjectId } = require('mongodb')
+const { ObjectId } = require('mongodb')
 
-const { Lead, LEAD_STATUS, OUTCOME } = require('../model/Lead')
+const { Lead, LEAD_STATUS, OUTCOME, HIERARCHY } = require('../model/Lead')
 const { StatusLog } = require('../model/StatusLog')
 const { LeadUpdateLog } = require('../model/LeadUpdateLog')
 const { tagsSearchFormater, queryParamReturner,arrayChunks} = require('../utils/helper')
 
 const LEAD_PER_PAGE = 10
 const date_format = 'YYYY-MM-DD hh:mm A'
+const time_format = 'YYMMDDhhA'
 
 exports.index = async (req, res) => {
   try {
@@ -16,6 +16,8 @@ exports.index = async (req, res) => {
     const search_tags = ['name', 'job_title', 'company', 'status'];
     const search = await tagsSearchFormater(search_tags, req.query);
     const query_params = await queryParamReturner(search_tags, req.query);
+    search['hierarchy'] = {'$in': [HIERARCHY.FIRST_MEETING, HIERARCHY.SECOND_MEETING, HIERARCHY.CLIENT]};
+    search['allocated_to'] = ObjectId(req.session.AUTH._id);
 
     const list = await Lead.paginate(search, {
       lean: true,
@@ -36,7 +38,7 @@ exports.index = async (req, res) => {
 exports.edit = async (req, res) => {
   try {
     const id = req.params.id
-    const lead = await Lead.findById(id).lean()
+    var lead = await Lead.findById(id).lean()
     const meeting = await StatusLog.getLeadMeetings(id)
     const lead_logs = await LeadUpdateLog.getUpdateLogs(id)
     const update_logs = arrayChunks(lead_logs)
@@ -45,7 +47,6 @@ exports.edit = async (req, res) => {
       lead,
       meeting,
       update_logs,
-      LEAD_STATUS,
       OUTCOME,
     })
   } catch (error) {
@@ -89,12 +90,17 @@ exports.update_status = async (req, res) => {
     const status_log = new StatusLog()
     status_log.lead_id = req.body._id
     status_log.note = req.body.note
-    status_log.status = req.body.status
+    status_log.status_log = req.body.status_log
 
-    if (req.body.status == LEAD_STATUS.MEETING) {
-      var date_time = moment(`${req.body.date} ${req.body.time}`, date_format)
-      status_log.date_time = date_time
-      status_log.address = req.body.address
+    if (req.body.status_log == LEAD_STATUS.MEETING) {
+      let datetime = moment(`${req.body.datetime}`, date_format);
+      status_log.datetime = datetime;
+      status_log.meeting_time = datetime.format(time_format);
+      status_log.address = req.body.address;
+    }
+    if (req.body.status_log == LEAD_STATUS.CLIENT) {
+      status_log.product = req.body.product
+      status_log.program = req.body.program
     }
     
     status_log.updated_at = new Date();
@@ -102,8 +108,18 @@ exports.update_status = async (req, res) => {
     await status_log.save()
 
     //this is wrong because it create another log
-    const lead = await Lead.findById(req.body._id)
-    lead.status = req.body.status
+    const lead = await Lead.findById(req.body._id);
+    lead.status = req.body.status_log;
+    
+    if (req.body.status_log == LEAD_STATUS.CLIENT) {
+      lead.client = new Date();
+      lead.hierarchy = HIERARCHY.CLIENT;
+      lead.status = LEAD_STATUS.CLIENT;
+    }
+    else {
+      lead.status = req.body.status_log;
+    }
+
     lead.updated_at = new Date();
     lead.updated_by = req.session.AUTH._id;
     await lead.save()
@@ -117,14 +133,31 @@ exports.update_status = async (req, res) => {
 
 exports.meeting_update = async (req, res) => {
   try {
-    const status_log = await StatusLog.findById(req.body.meeting_id)
-    status_log.outcome = req.body.outcome
-    status_log.outcome_note = req.body.outcome_note
-    status_log.outcome_date = moment()
-    
+    const status_log = await StatusLog.findById(req.body.meeting_id);
+    status_log.is_second_meeting = req.body.is_second_meeting;
+    status_log.outcome = req.body.outcome;
+    status_log.outcome_note = req.body.outcome_note;
+    status_log.outcome_date = new Date();
     status_log.updated_at = new Date();
     status_log.updated_by = req.session.AUTH._id;
     await status_log.save()
+
+    const lead = await Lead.findById(req.body._id)
+    if(status_log.is_second_meeting == true) {
+      if(lead.hierarchy == HIERARCHY.FIRST_MEETING) {
+        lead.second_meeting = new Date()
+        lead.status = LEAD_STATUS.SECOND_MEETING
+        lead.hierarchy = HIERARCHY.SECOND_MEETING
+        await lead.save()
+      }
+      //what if second meeting?
+      if(lead.hierarchy == HIERARCHY.SECOND_MEETING) {
+        //set as 2nd meeting?
+        lead.second_meeting = new Date()
+        lead.status = LEAD_STATUS.SECOND_MEETING
+        await lead.save()
+      }
+    }
 
     return res.redirect('/lead')
   } catch (error) {

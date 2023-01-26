@@ -1,6 +1,6 @@
 const art = require('express-art-template');
 const moment = require('moment-timezone');
-const { LEAD_STATUS } = require('../model/Lead');
+const { LEAD_STATUS, HIERARCHY } = require('../model/Lead');
 const { USER_TYPE, USER_STATUS } = require('../model/User');
 const { LOGIN_TYPE } = require('../model/UserLogin');
 
@@ -109,18 +109,46 @@ art.template.defaults.imports.strReplace = (str, replace = '_') => {
   return str;
 };
 
+art.template.defaults.imports.leadHierarchyBadge = (hierarchy) => {
+  if (hierarchy == HIERARCHY.NEW) {
+    return `<span class="badge bg-teal">NEW</span>`;
+  }
+  if (hierarchy == HIERARCHY.FIRST_MEETING) {
+    return `<span class="badge bg-success">FIRST MEETING</span>`;
+  }
+  if (hierarchy == HIERARCHY.SECOND_MEETING) {
+    return `<span class="badge bg-info">SECOND MEETING</span>`;
+  }
+  if (hierarchy == HIERARCHY.CLIENT) {
+    return `<span class="badge bg-maroon">CLIENT</span>`;
+  }
+  return `<span>hierarchy</span>`;
+};
+
 art.template.defaults.imports.leadStatusBadge = (status) => {
-  if (status === LEAD_STATUS.ACTIVE) {
-    return `<span class="badge bg-teal">${status}</span>`;
+  if (status === LEAD_STATUS.NEW) {
+    return `<span class="badge bg-teal">NEW</span>`;
+  }
+  if (status === LEAD_STATUS.FIRST_MEETING) {
+    return `<span class="badge bg-success">FIRST MEETING</span>`;
+  }
+  if (status === LEAD_STATUS.SECOND_MEETING) {
+    return `<span class="badge bg-info">SECOND MEETING</span>`;
+  }
+  if (status === LEAD_STATUS.EMAIL) {
+    return `<span class="badge bg-success">EMAIL</span>`;
+  }
+  if (status === LEAD_STATUS.WHATSAPP) {
+    return `<span class="badge bg-success">WHATSAPP</span>`;
+  }
+  if (status === LEAD_STATUS.SMS) {
+    return `<span class="badge bg-success">SMS</span>`;
   }
   if (status === LEAD_STATUS.MEETING) {
-    return `<span class="badge bg-success">${status}</span>`;
+    return `<span class="badge bg-success">MEETING</span>`;
   }
   if (status === LEAD_STATUS.CLIENT) {
-    return `<span class="badge bg-info">${status}</span>`;
-  }
-  if (status === LEAD_STATUS.INACTIVE) {
-    return `<span class="badge bg-maroon">${status}</span>`;
+    return `<span class="badge bg-maroon">CLIENT</span>`;
   }
   return `<span>${status}</span>`;
 };

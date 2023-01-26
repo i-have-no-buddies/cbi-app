@@ -34,9 +34,8 @@ module.exports = (app, setOnlineUser) => {
     validateLeadStatusEdit,
     leadController.update_status,
   )
-
   app.post(
-    '/lead-meeting/meeting-update',
+    '/lead/meeting-update',
     auth.authenticated,
     setOnlineUser,
     validateMeetingOutcome,

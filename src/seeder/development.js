@@ -52,7 +52,7 @@ async function seed() {
     await createUser.save();
   }
   const adminCreatedBy = await User.findOne({ email: 'ejer@email.com' });
-  for (let i = 1; i <= 100000; i++) {
+  for (let i = 1; i <= 100; i++) {
     let user = randUser();
     let newUser = {
       first_name: user.firstName,

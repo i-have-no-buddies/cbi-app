@@ -1,16 +1,22 @@
 const { USER_TYPE, USER_STATUS } = require('../model/User');
 const { UserLogin, LOGIN_TYPE } = require('../model/UserLogin');
+const { LEAD_STATUS, OUTCOME, HIERARCHY } = require('../model/Lead');
+const { PRODUCTS, PROGRAMS } = require('../model/StatusLog');
 const { REPORT_TYPE } = require('../model/ReportLog');
 var { getInactiveUsers, removeInactiveUser } = require('../utils/helper');
 
 const PAGES = {
   '/initial-meeting': 'Initial Meeting',
+  '/initial-meeting/edit/:id': 'Initial Meeting',
+  '/initial-meeting/update': 'Initial Meeting',
+  '/initial-meeting/update-status': 'Initial Meeting',
+  '/initial-meeting/meeting-update': 'Initial Meeting',
   '/lead': 'Lead',
   '/lead/edit/:id': 'Lead',
   '/lead/update': 'Lead',
   '/lead/edit-logs/:_id': 'Lead',
   '/lead/update-status': 'Lead',
-  '/lead-meeting/meeting-update': 'Lead',
+  '/lead/meeting-update': 'Lead',
   '/calendar': 'Calendar',
   '/bdm-lead': 'BDM Lead',
   '/bdm-lead/:_id': 'BDM Lead',
@@ -47,12 +53,16 @@ const PAGES = {
 const ACCESS_MODULES = {
   SUPER_ADMIN: [
     '/initial-meeting',
+    '/initial-meeting/edit/:id',
+    '/initial-meeting/update',
+    '/initial-meeting/update-status',
+    '/initial-meeting/meeting-update',
     '/lead',
     '/lead/edit/:id',
     '/lead/update',
     '/lead/edit-logs/:_id',
     '/lead/update-status',
-    '/lead-meeting/meeting-update',
+    '/lead/meeting-update',
     '/calendar',
     '/bdm-lead',
     '/bdm-lead/:_id',
@@ -88,12 +98,16 @@ const ACCESS_MODULES = {
   ],
   ADMIN: [
     '/initial-meeting',
+    '/initial-meeting/edit/:id',
+    '/initial-meeting/update',
+    '/initial-meeting/update-status',
+    '/initial-meeting/meeting-update',
     '/lead',
     '/lead/edit/:id',
     '/lead/update',
     '/lead/edit-logs/:_id',
     '/lead/update-status',
-    '/lead-meeting/meeting-update',
+    '/lead/meeting-update',
     '/calendar',
     '/bdm-lead',
     '/bdm-lead/:_id',
@@ -120,12 +134,16 @@ const ACCESS_MODULES = {
   ],
   IFA: [
     '/initial-meeting',
+    '/initial-meeting/edit/:id',
+    '/initial-meeting/update',
+    '/initial-meeting/update-status',
+    '/initial-meeting/meeting-update',
     '/lead',
     '/lead/edit/:id',
     '/lead/update',
     '/lead/edit-logs/:_id',
     '/lead/update-status',
-    '/lead-meeting/meeting-update',
+    '/lead/meeting-update',
     '/calendar',
     '/logout',
   ],
@@ -138,6 +156,23 @@ const ACCESS_MODULES = {
     '/logout',
   ],
 };
+
+
+const INITIAL_ROUTES = [
+  '/initial-meeting',
+  '/initial-meeting/edit/:id',
+  '/initial-meeting/update',
+  '/initial-meeting/update-status',
+  '/initial-meeting/meeting-update',
+];
+const LEAD_ROUTES = [
+  '/lead',
+  '/lead/edit/:id',
+  '/lead/update',
+  '/lead/edit-logs/:_id',
+  '/lead/update-status',
+  '/lead/meeting-update',
+];
 
 exports.authenticated = async (req, res, next) => {
   try {
@@ -153,6 +188,24 @@ exports.authenticated = async (req, res, next) => {
     if (!ACCESS_MODULES[req.session.AUTH.type].includes(req.route.path)) {
       return res.redirect('/login');
     }
+    /**
+     * remove new update stage in quality assurance route
+     */
+    let NEW_LEAD_STATUS = { ...LEAD_STATUS };
+    if (INITIAL_ROUTES.includes(req.route.path)) {
+      delete NEW_LEAD_STATUS.NEW;
+      delete NEW_LEAD_STATUS.FIRST_MEETING;
+      delete NEW_LEAD_STATUS.SECOND_MEETING;
+      delete NEW_LEAD_STATUS.CLIENT;
+    }
+
+    if (LEAD_ROUTES.includes(req.route.path)) {
+      delete NEW_LEAD_STATUS.NEW;
+      delete NEW_LEAD_STATUS.FIRST_MEETING;
+      delete NEW_LEAD_STATUS.SECOND_MEETING;
+    }
+    
+
     /**
      * log out inactive users
      */
@@ -176,6 +229,12 @@ exports.authenticated = async (req, res, next) => {
     res.locals.USER_STATUS = USER_STATUS;
     res.locals.LOGIN_TYPE = LOGIN_TYPE;
     res.locals.REPORT_TYPE = REPORT_TYPE;
+    res.locals.LEAD_STATUS = NEW_LEAD_STATUS;
+    res.locals.OUTCOME = OUTCOME;
+    res.locals.HIERARCHY = HIERARCHY;
+    res.locals.PRODUCTS = PRODUCTS;
+    res.locals.PROGRAMS = PROGRAMS;
+    
     next();
   } catch (error) {
     console.error(error);

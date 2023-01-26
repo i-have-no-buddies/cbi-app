@@ -63,13 +63,6 @@
   <div class="col-md-9">
     <!--made by button to remove one search-->
     <div class="card card-primary card-outline card-outline-tabs">
-      <!--div class="card-header p-0 border-bottom-0">
-        <div class="btn-group w-100 mb-2">
-          <a class="btn btn-info {{if type == 'lead'}}active{{/if}}" href="/lead-management?page=1&type=lead"> Leads </a>
-          <a class="btn btn-info {{if type == 'batch'}}active{{/if}}" href="/lead-management?page=1&type=batch"> Lead Batches </a>
-        </div>
-      </div-->
-
       <ul id="tabs" class="nav nav-tabs">
         <li class="nav-item">
           <a
@@ -134,7 +127,7 @@
                 <td><i class="fas fa-briefcase"></i> {{$value.job_title}}</td>
                 <td><i class="far fa-building"></i> {{$value.company}}</td>
                 <td><i class="fas fa-mobile-alt"></i> {{$value.mobile}}</td>
-                <td>{{@$value.status | userStatusBadge}}</td>
+                <td>{{@$value.status | leadStatusBadge}}</td>
               </tr>
               {{/each}}
             </tbody>
@@ -153,12 +146,12 @@
                   <ul class="nav flex-column">
                     <li class="nav-item">
                       <a href="/lead-management?page=1&type=lead&batch={{$value.id}}&status=ACTIVE" class="nav-link">
-                        ACTIVE <span class="float-right badge bg-teal">{{$value.uploaded}}</span>
+                        UPLOADED <span class="float-right badge bg-teal">{{$value.uploaded}}</span>
                       </a>
                     </li>
                     <li class="nav-item">
                       <a href="/lead-management?page=1&type=lead&batch={{$value.id}}&status=INACTIVE" class="nav-link">
-                        INACTIVE <span class="float-right badge bg-maroon">{{$value.allocated}}</span>
+                        INVALID <span class="float-right badge bg-maroon">{{$value.invalid}}</span>
                       </a>
                     </li>
                   </ul>

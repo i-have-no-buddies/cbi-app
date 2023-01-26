@@ -142,6 +142,20 @@ const getInactiveUsers = () => {
   return inactiveUsers;
 };
 
+const schemaTagsFormater = (tags, data, field) => {
+  if (data) {
+    tags = [
+      ...tags,
+      ...ngramsAlgov2(data.toLowerCase(), field),
+    ];
+  }
+  return tags
+}
+
+const validateUpload = (data) => {
+  return true;
+};
+
 module.exports = {
   ngramsAlgo,
   ngramsAlgov2,
@@ -156,4 +170,6 @@ module.exports = {
   setInactiveUser,
   removeInactiveUser,
   getInactiveUsers,
+  schemaTagsFormater,
+  validateUpload
 };

@@ -15,6 +15,9 @@ process.on('message', async ({ upload, user_id }) => {
     .on('data', async (row) => {
       row.lead_batch_id = upload._id
       row.created_by = user_id
+      
+      //validation
+      
       //leads.push(row)
       leadbatch.uploaded++
       

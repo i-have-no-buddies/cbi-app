@@ -15,6 +15,11 @@ const FILE_HEADERS = [
   'work_email',
   'nationality',
   'description',
+  'ifa_email',
+  'meeting_date',	
+  'meeting_time',
+  'meeting_address',
+  'meeting_note'
 ]
 
 const UPLOAD_STATUS = {
@@ -40,7 +45,7 @@ const leadBatchSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  allocated: {
+  invalid: {
     type: Number,
     default: 0,
   },

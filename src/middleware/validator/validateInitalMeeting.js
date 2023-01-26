@@ -6,96 +6,6 @@ const { LeadUpdateLog } = require('../../model/LeadUpdateLog')
 
 const { errorFormater, arrayChunks } = require('../../utils/helper.js')
 
-exports.validateLeadAdd = [
-  check('first_name')
-    .trim()
-    .notEmpty()
-    .withMessage('First name is required.')
-    .bail()
-    .isLength({ min: 2 })
-    .withMessage('First name must be minimum of 2 characters.')
-    .bail(),
-  check('last_name')
-    .trim()
-    .notEmpty()
-    .withMessage('Last name is required.')
-    .bail()
-    .isLength({ min: 2 })
-    .withMessage('Last name must be minimum of 2 characters.')
-    .bail(),
-  check('job_title')
-    .trim()
-    .notEmpty()
-    .withMessage('Job Title is required.')
-    .bail()
-    .isLength({ min: 2 })
-    .withMessage('Job Title must be minimum of 2 characters.')
-    .bail(),
-  check('company')
-    .trim()
-    .notEmpty()
-    .withMessage('Company is required.')
-    .bail()
-    .isLength({ min: 2 })
-    .withMessage('Company must be minimum of 2 characters.')
-    .bail(),
-  check('profile_link')
-    .trim()
-    .notEmpty()
-    .withMessage('Profile Link is required.')
-    .bail()
-    .isURL()
-    .withMessage('Profile Link is invalid URL')
-    .bail(),
-  check('gender').trim().notEmpty().withMessage('Gender is required.').bail(),
-  //update regex?
-  check('business_no')
-    .trim()
-    .notEmpty()
-    .withMessage('Profile Link is required.')
-    .bail(),
-  // check('second_mobile')
-  //     .trim()
-  //     .notEmpty()
-  //     .withMessage('Second Mobile is required.')
-  //     .bail(),
-  check('personal_email')
-    .trim()
-    .notEmpty()
-    .withMessage('Personal Email is required.')
-    .bail()
-    .isEmail()
-    .withMessage('Personal Email is invalid.')
-    .bail(),
-  check('work_email')
-    .trim()
-    .isEmail()
-    .withMessage('Work Email is invalid.')
-    .bail(),
-  check('nationality')
-    .trim()
-    .notEmpty()
-    .withMessage('Nationality is required.')
-    .bail(),
-  check('description')
-    .trim()
-    .notEmpty()
-    .withMessage('Description is required.')
-    .bail(),
-  function (req, res, next) {
-    const errors = validationResult(req)
-    let error_results
-    if (!errors.isEmpty()) {
-      error_results = errorFormater(errors)
-      return res.render('lead_add', {
-        lead: req.body,
-        errors: error_results,
-      })
-    }
-    next()
-  },
-]
-
 exports.validateLeadEdit = [
   check('first_name')
     .trim()
@@ -183,8 +93,8 @@ exports.validateLeadEdit = [
       const lead_logs = await LeadUpdateLog.getUpdateLogs(req.body._id)
       const update_logs = arrayChunks(lead_logs)
 
-      return res.render('lead_edit', {
-        OUTCOME,
+      return res.render('initial_meeting_edit', {
+        
         meeting,
         update_logs,
         lead: req.body,
@@ -199,7 +109,7 @@ exports.validateLeadStatusEdit = [
   check('status_log')
     .trim()
     .notEmpty()
-    .withMessage('Status Log is required.')
+    .withMessage('Status log is required.')
     .bail()
     .custom((status_log) => {
       let arrLeadStatus = Object.values(LEAD_STATUS)
@@ -268,8 +178,8 @@ exports.validateLeadStatusEdit = [
       const lead_logs = await LeadUpdateLog.getUpdateLogs(req.body._id)
       const update_logs = arrayChunks(lead_logs)
 
-      return res.render('lead_edit', {
-        OUTCOME,
+      return res.render('initial_meeting_edit', {
+        
         meeting,
         update_logs,
         lead: req.body,
@@ -300,33 +210,17 @@ exports.validateMeetingOutcome = [
     .notEmpty()
     .withMessage('Outcome Note is required.')
     .bail(),
-  // check('product')
-  //   .trim()
-  //   .custom((value, { req }) => {
-  //     if (clientParamsUndefined(req.body, value)) {
-  //       throw new Error('Product is required.')
-  //     } else return true
-  //   })
-  //   .bail(),
-  // check('program')
-  //   .trim()
-  //   .custom((value, { req }) => {
-  //     if (clientParamsUndefined(req.body, value)) {
-  //       throw new Error('Program is required.')
-  //     } else return true
-  //   })
-  //   .bail(),
   async function (req, res, next) {
     const errors = validationResult(req)
     let error_results
+    console.log(req.body)
     if (!errors.isEmpty()) {
       error_results = errorFormater(errors)
       let meeting = await StatusLog.getLeadMeetings(req.body._id)
       const lead_logs = await LeadUpdateLog.getUpdateLogs(req.body._id)
       const update_logs = arrayChunks(lead_logs)
 
-      return res.render('lead_edit', {
-        OUTCOME,
+      return res.render('initial_meeting_edit', {
         meeting,
         update_logs,
         lead: req.body,

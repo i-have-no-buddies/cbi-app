@@ -1,0 +1,18 @@
+<div class="form-group">
+    <div class="input-group">
+      <div class="input-group-append">
+        <span class="input-group-text text-sm"
+          >{{name | strReplace | strLimit 14}}</span
+        >
+      </div>
+      <input
+        type="text"
+        class="form-control form-control-sm datetimev2"
+        id="{{name}}"
+        name="{{name}}"
+        value="{{if value}}{{value[name]}}{{/if}}"
+      />
+    </div>
+    <small class="form-text text-danger" id="{{name}}_error"></small>
+</div>
+  

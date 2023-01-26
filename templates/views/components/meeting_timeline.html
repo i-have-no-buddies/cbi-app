@@ -1,9 +1,9 @@
 <div>
-  <i class="far fa-sticky-note {{if dateNow > meeting.date_time }} bg-maroon {{else}} bg-teal {{/if}}"></i>
+  <i class="far fa-sticky-note {{if dateNow > meeting.datetime }} bg-maroon {{else}} bg-teal {{/if}}"></i>
   <div class="timeline-item">
-    <span class="time"><i class="fas fa-clock"></i> {{ meeting.date_time | timeRemaining }} </span>
-    <h3 class="timeline-header {{if dateNow > meeting.date_time }}  bg-maroon {{/if}}">
-      {{@meeting.date_time | formatDate 'YYYY-MM-DD hh:mm:ss A'}}
+    <span class="time"><i class="fas fa-clock"></i> {{ meeting.datetime | timeRemaining }} </span>
+    <h3 class="timeline-header {{if dateNow > meeting.datetime }}  bg-maroon {{/if}}">
+      {{@meeting.datetime | formatDate 'YYYY-MM-DD hh:mm:ss A'}}
      </h3>
      
     <div class="timeline-body row">
@@ -12,11 +12,11 @@
           <tbody>
             <tr>
               <td width="10%">Date:</td>
-              <td>{{meeting.date_time | formatDateRaw 'YYYY-MM-DD'}}</td>
+              <td>{{meeting.datetime | formatDateRaw 'YYYY-MM-DD'}}</td>
             </tr>
             <tr>
               <td>Time:</td>
-              <td>{{meeting.date_time | formatDateRaw 'hh:mm A'}}</td>
+              <td>{{meeting.datetime | formatDateRaw 'hh:mm A'}}</td>
             </tr>
             <tr>
               <td>Note:</td>
@@ -33,6 +33,34 @@
           <input type="hidden" class="form-control" id="meeting_id" value="{{meeting._id.toString()}}"/>
           {{include './select.html', { name: 'outcome', options: outcome} }}
           {{include './textarea.html', { name: 'outcome_note'} }}
+          {{if hierarchy == 0 }} <!--HIERARCHY.NEW-->
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id='is_first_meeting' name='is_first_meeting' />
+                <label class="form-check-label">First Meeting</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id='is_second_meeting' name='is_second_meeting' disabled />
+                <label class="form-check-label">Second Meeting</label>
+              </div>
+            </div>
+          {{/if}}
+          {{if hierarchy == 1 }} <!--HIERARCHY.FIRST_MEETING-->
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id='is_first_meeting' name='is_first_meeting' disabled checked />
+                <label class="form-check-label">First Meeting</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id='is_second_meeting' name='is_second_meeting' />
+                <label class="form-check-label">Second Meeting</label>
+              </div>
+            </div>
+          {{/if}}
           <div class="form-group">
             <button onclick="submitUpdateMeeting(`{{meeting._id.toString()}}`)" class="btn bg-teal btn-block font-weight-bold">
               <i class="fas fa-save"></i> Update Meeting

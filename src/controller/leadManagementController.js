@@ -1,16 +1,21 @@
-const { fork } = require('child_process')
-const { ObjectId } = require('mongodb')
+//const { fork } = require('child_process')
+const { ObjectId } = require('mongodb');
+const fs = require('fs');
+const csv = require('@fast-csv/parse');
 
-const { LeadBatch } = require('../model/LeadBatch')
-const { Lead, LEAD_STATUS } = require('../model/Lead')
+const { LeadBatch, UPLOAD_STATUS} = require('../model/LeadBatch');
+const { Lead, LEAD_STATUS, HIERARCHY } = require('../model/Lead');
+const { User } = require('../model/User');
+const { StatusLog } = require('../model/StatusLog');
 const {
   ngramsAlgo,
   tagsSearchFormater,
   queryParamReturner,
-} = require('../utils/helper')
+  validateUpload
+} = require('../utils/helper');
 
-const LEAD_PER_PAGE = 10
-const BATCH_PER_PAGE = 9
+const LEAD_PER_PAGE = 10;
+const BATCH_PER_PAGE = 9;
 
 exports.index = async (req, res) => {
   try {
@@ -29,12 +34,14 @@ exports.index = async (req, res) => {
         lean: true,
         page,
         limit: LEAD_PER_PAGE,
+        sort: { _id: -1 },
       });
     } else {
       list = await LeadBatch.paginate(search, {
         lean: true,
         page,
         limit: BATCH_PER_PAGE,
+        sort: { _id: -1 },
       });
     }
 
@@ -61,19 +68,74 @@ exports.upload = (req, res) => {
 
 exports.new_upload = async (req, res) => {
   try {
+    let {upload_name} = req.body;
     var lead_batch = new LeadBatch();
-    lead_batch.upload_name = req.body.upload_name;
+    lead_batch.upload_name = upload_name;
     lead_batch.file_location = req.file.filename;
     lead_batch.created_by = req.session.AUTH._id;
-    lead_batch.tags = ngramsAlgo(
-      req.body.upload_name.toLowerCase().trim(),
-      'tag'
-    );
+    lead_batch.tags = ngramsAlgo(upload_name.toLowerCase().trim(), 'tag');
     await lead_batch.save();
 
     //or make it a function here?
-    const childProcess = fork('./src/childProcess/uploadLeads.js');
-    childProcess.send({ upload: lead_batch, user_id: req.session.AUTH._id });
+    // const childProcess = fork('./src/childProcess/uploadLeads.js');
+    // childProcess.send({ upload: lead_batch, user_id: req.session.AUTH._id });
+    
+    var all_users = await User.find({},{email: 1, _id: 1}).lean();
+    var leads = []
+    let uploaded_count = 0;
+    let invalid_count = 0;
+    const stream = fs.createReadStream(`./public/uploads/${req.file.filename}`);
+    csv
+      .parseStream(stream, { headers: true, ignoreEmpty: true })
+      .on('error', (error) => console.error(error))
+      .on('data', async (row) => {
+        
+        //validation
+        let valid = await validateUpload(row);
+        let allocated_to = all_users.find(o => o.email === row.ifa_email);
+
+        row.lead_batch_id = lead_batch._id;
+        row.created_by = req.session.AUTH._id;
+        row.updated_by = req.session.AUTH._id;
+        row.allocated_to = allocated_to._id;
+        //will be used in creating initial meeting
+        row.uploaded_meeting = {
+          created_by: req.session.AUTH._id,
+          updated_by: req.session.AUTH._id,
+          status_log: LEAD_STATUS.MEETING,
+          note: row.meeting_note,
+          meeting_date: row.meeting_date,
+          meeting_time: row.meeting_time,
+          address: row.meeting_note
+        };
+
+        if(valid) {
+          row.status = LEAD_STATUS.NEW;
+          row.hierarchy = HIERARCHY.NEW;
+          leads.push(row);
+          uploaded_count++;
+        }
+        else {
+          invalid_count++;
+          //better if inserted and updated
+        }
+
+        if (leads.length == 500) {
+          await Lead.insertMany(leads, { ordered: false });
+          leads = [];
+        }
+      })
+      .on('end', async (rowCount) => {
+        if (leads.length > 0) {
+          await Lead.insertMany(leads, { ordered: false });
+        }
+        lead_batch.status = UPLOAD_STATUS.ACTIVE;
+        lead_batch.uploaded = uploaded_count;
+        lead_batch.invalid = invalid_count;
+        await lead_batch.save()
+      })
+
+    //maybe add childprocess here?
 
     res.redirect('/lead-management');
   } catch (error) {
