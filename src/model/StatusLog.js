@@ -225,7 +225,7 @@ statusLogSchema.static('getCalendarMeetings', function (start, end, user) {
     outcome: '',
     created_by: ObjectId(user),
     datetime: {$gte: start, $lt: end},
-  }).select('_id note datetime address')
+  }).select('_id lead_id note datetime address')
 })
 
 statusLogSchema.plugin(mongoosePaginate)

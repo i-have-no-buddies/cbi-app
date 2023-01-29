@@ -3,7 +3,7 @@
 {{block 'content'}}
 <link rel="stylesheet" href="/assets/plugins/fullcalendar/main.css" />
 <div class="row">
-  <input type='hidden' id='view' name='view' value='month' >
+  <input type='hidden' id='view_type' name='view_type' value='timeGridWeek' >
   <input type='hidden' id='date_nav' name='date_nav' value=0>
   <div class="col-md-12">
     <div class="card card-primary">
@@ -18,17 +18,27 @@
 <script src="/assets/plugins/fullcalendar/main.js"></script>
 <script src="/app/global.js"></script>
 <script>
+  document.getElementById('view_type').value = decodeHTML(
+    '{{search.view_type | escapeBackslash}}'
+  );
   document.getElementById('date_nav').value = decodeHTML(
     '{{search.date_nav | escapeBackslash}}'
   );
 
+  //title must be name
   var meeting_events = [
     {{each meetings}}
       { 
-        title: `{{$value.note}}`,
-        start: new Date(`{{@$value.datetime | formatDateRaw}}`),
-        backgroundColor: '#f39c12', //yellow
-        borderColor    : '#f39c12' //yellow
+        title : `{{$value.note}}`,
+        start : new Date(`{{@$value.datetime | formatDateRaw}}`),
+        url : `{{$value.lead_id.toString()}}`,
+        extendedProps: {note: `{{$value.note}}`}, //if you to add any
+        eventColor : '#f39c12', //yellow
+        eventTimeFormat: {
+          hour: 'numeric',
+          minute: '2-digit',
+          meridiem: 'short'
+        }
       },
       
     {{/each}}
@@ -36,11 +46,36 @@
 
   function paginate() {
     let url = window.location.href.split('?')[0];
-    let type = $('#view').val();
+    let view_type = $('#view_type').val();
     let date_nav = $('#date_nav').val();
-    url += `?date_nav=${date_nav}&type=${type}`;
+    url += `?date_nav=${date_nav}&view_type=${view_type}`;
     window.location.href = url;
   }
+
+  var open_meeting = function(info) {
+    info.jsEvent.preventDefault(); 
+    
+    // to manage if by timeGridWeek or dayGridMonth  
+    console.log(info.view.type);
+    console.log(info.event.extendedProps);
+    //check if url exist
+    if (info.event.url) {
+      let lead_info = `/lead/edit/${info.event.url}`
+      window.open(lead_info);
+    }
+  }
+
+  var hover_meeting = function(info) {
+    new Opentip(info.el, {
+      title: info.event.extendedProps.note,
+      tipJoint: 'top',
+      className: 'calendar-tip',
+      lastZIndex: 10000
+    });
+    Opentip.lastZIndex = 10000;
+  }
+
+  
 
   $(function () {
     var Calendar = FullCalendar.Calendar;
@@ -52,7 +87,8 @@
     
     
     var calendarEl = document.getElementById('calendar');
-    var calendar = new Calendar(calendarEl, {
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: '{{search.view_type}}',
       initialDate: '{{init_date}}',
       customButtons: {
         custom_prev: {
@@ -70,23 +106,49 @@
             $('#date_nav').val(page + 1)
             paginate()
           }
+        },
+        custom_month: {
+          text: 'Month',
+          click: function() {
+            $('#date_nav').val(0)
+            let page = parseInt($('#date_nav').val())
+            $('#view_type').val('dayGridMonth')
+            paginate()
+          }
+        },
+        custom_week: {
+          text: 'Week',
+          click: function() {
+            $('#date_nav').val(0)
+            let page = parseInt($('#date_nav').val())
+            $('#view_type').val('timeGridWeek')
+            paginate()
+          }
         }
       },
 
-
+      
+      eventClick: open_meeting,
+      eventDidMount: hover_meeting,
+      
       headerToolbar: {
-        left  : 'custom_prev,custom_next today',
+        left  : 'custom_prev,custom_next',
         center: 'title',
-        //right : 'dayGridMonth,timeGridWeek,timeGridDay'
-        right : ''
+        right : 'custom_week,custom_month'
+        //right : ''
       },
       themeSystem: 'bootstrap5',
-      //Random default events
+      //events on db
       events: meeting_events,
-      //editable  : true,
-      //droppable : true, // this allows things to be dropped onto the calendar !!!
+      //exclusive for week view
+      allDaySlot: false,
+      slotDuration: {hours: 1},
+
+      //exclusive for month view
+      dayMaxEvents: true,
     });
 
+    //calendar.changeView('{{view_type}}');
     
     calendar.render();
   });
