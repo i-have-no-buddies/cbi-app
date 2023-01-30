@@ -3,8 +3,11 @@
 {{block 'content'}}
 <link rel="stylesheet" href="/assets/plugins/fullcalendar/main.css" />
 <div class="row">
-  <input type='hidden' id='view_type' name='view_type' value='timeGridWeek' >
-  <input type='hidden' id='date_nav' name='date_nav' value=0>
+  <div class="col-md-3">
+    <input type='hidden' id='view_type' name='view_type' value='timeGridWeek' >
+    <input type='hidden' id='date_nav' name='date_nav' value=0>
+    {{include './components/search_select.html', { name: 'outcome', remove_empty: true, options: outcome_list } }}
+  </div>
   <div class="col-md-12">
     <div class="card card-primary">
       <div class="card-body p-0">
@@ -24,16 +27,29 @@
   document.getElementById('date_nav').value = decodeHTML(
     '{{search.date_nav | escapeBackslash}}'
   );
+  document.getElementById('outcome').value = decodeHTML(
+    '{{search.outcome | escapeBackslash}}'
+  );
+  
+  var colors = {
+    'BOOKED': '#6610f2',
+    'MEETING_SAT': '#3d9970',
+    'NO_SHOW': '#d81b60' ,
+    'CANCELED': '#dc3545',
+  }
 
   //title must be name
   var meeting_events = [
     {{each meetings}}
       { 
-        title : `{{$value.note}}`,
+        title : `{{$value.lead_id.first_name}} {{$value.lead_id.last_name}}`,
         start : new Date(`{{@$value.datetime | formatDateRaw}}`),
-        url : `{{$value.lead_id.toString()}}`,
-        extendedProps: {note: `{{$value.note}}`}, //if you to add any
-        eventColor : '#f39c12', //yellow
+        url : `{{$value.lead_id._id.toString()}}`,
+        extendedProps: {
+          note: `{{$value.note}}`,
+          address: `{{$value.address}}`,
+        }, //if you to add any
+        color : colors[`{{$value.outcome}}`],
         eventTimeFormat: {
           hour: 'numeric',
           minute: '2-digit',
@@ -44,13 +60,15 @@
     {{/each}}
   ]
 
-  function paginate() {
+  function search() {
     let url = window.location.href.split('?')[0];
     let view_type = $('#view_type').val();
     let date_nav = $('#date_nav').val();
-    url += `?date_nav=${date_nav}&view_type=${view_type}`;
+    let outcome = $('#outcome').val();
+    url += `?date_nav=${date_nav}&view_type=${view_type}&outcome=${outcome}`;
     window.location.href = url;
   }
+  
 
   var open_meeting = function(info) {
     info.jsEvent.preventDefault(); 
@@ -66,13 +84,15 @@
   }
 
   var hover_meeting = function(info) {
-    new Opentip(info.el, {
-      title: info.event.extendedProps.note,
+    let note = `[address]: ${info.event.extendedProps.address}`
+    note += `<br>[note]: ${info.event.extendedProps.note}`
+    new Opentip(info.el, note, {
       tipJoint: 'top',
       className: 'calendar-tip',
-      lastZIndex: 10000
+      lastZIndex: 10000,
     });
     Opentip.lastZIndex = 10000;
+    console.log(Opentip)
   }
 
   
@@ -96,7 +116,7 @@
           click: function() {
             let page = parseInt($('#date_nav').val())
             $('#date_nav').val(page - 1)
-            paginate()
+            search()
           }
         },
         custom_next: {
@@ -104,7 +124,7 @@
           click: function() {
             let page = parseInt($('#date_nav').val())
             $('#date_nav').val(page + 1)
-            paginate()
+            search()
           }
         },
         custom_month: {
@@ -113,7 +133,7 @@
             $('#date_nav').val(0)
             let page = parseInt($('#date_nav').val())
             $('#view_type').val('dayGridMonth')
-            paginate()
+            search()
           }
         },
         custom_week: {
@@ -122,7 +142,7 @@
             $('#date_nav').val(0)
             let page = parseInt($('#date_nav').val())
             $('#view_type').val('timeGridWeek')
-            paginate()
+            search()
           }
         }
       },
