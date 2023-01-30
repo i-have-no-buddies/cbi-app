@@ -80,7 +80,7 @@ exports.validateLeadAdd = [
         return true
       }
       try {
-        number = phoneUtil.parse(value);
+        number = phoneUtil.parse(`+${value}`, '');
         let is_valid = phoneUtil.isPossibleNumber(number);
         let is_valid2 = phoneUtil.isValidNumber(number);
         if(is_valid && is_valid2) return true
@@ -99,7 +99,7 @@ exports.validateLeadAdd = [
         return true
       }
       try {
-        number = phoneUtil.parse(value);
+        number = phoneUtil.parse(`+${value}`, '');
         let is_valid = phoneUtil.isPossibleNumber(number);
         let is_valid2 = phoneUtil.isValidNumber(number);
         if(is_valid && is_valid2) return true
@@ -218,7 +218,7 @@ exports.validateLeadEdit = [
         return true
       }
       try {
-        number = phoneUtil.parse(value);
+        number = phoneUtil.parse(`+${value}`, '');
         let is_valid = phoneUtil.isPossibleNumber(number);
         let is_valid2 = phoneUtil.isValidNumber(number);
         if(is_valid && is_valid2) return true
@@ -237,7 +237,7 @@ exports.validateLeadEdit = [
         return true
       }
       try {
-        number = phoneUtil.parse(value);
+        number = phoneUtil.parse(`+${value}`, '');
         let is_valid = phoneUtil.isPossibleNumber(number);
         let is_valid2 = phoneUtil.isValidNumber(number);
         if(is_valid && is_valid2) return true
