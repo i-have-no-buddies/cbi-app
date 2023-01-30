@@ -6,12 +6,12 @@ const csv = require('@fast-csv/parse');
 const { LeadBatch, UPLOAD_STATUS, FILE_HEADERS } = require('../model/LeadBatch');
 const { Lead, LEAD_STATUS, HIERARCHY } = require('../model/Lead');
 const { User } = require('../model/User');
-const { StatusLog } = require('../model/StatusLog');
 const {
   ngramsAlgo,
   tagsSearchFormater,
   queryParamReturner,
-  validateUpload
+  validateUpload,
+  errorFormaterCSV
 } = require('../utils/helper');
 
 const LEAD_PER_PAGE = 10;
@@ -119,6 +119,7 @@ exports.new_upload = async (req, res) => {
         }
         else {
           //append the errors?
+          row['invalid'] = await errorFormaterCSV(errors)
           invalid_leads.push(row);
           invalid_count++;
         }
@@ -140,6 +141,7 @@ exports.new_upload = async (req, res) => {
         //data has invalid return datas
         if(invalid_count != 0) {
           let fields = FILE_HEADERS
+          fields = [...fields, 'invalid']
           res.setHeader('Content-Disposition', `attachment; filename=${upload_name}-invalid.csv`);
           res.setHeader('Content-Type', 'text/csv');
           res.setHeader('Location', '/lead-management');
@@ -147,7 +149,12 @@ exports.new_upload = async (req, res) => {
           invalid_leads.forEach(element => {
             let content = [];
             for (const property of fields) {
-              if (element.hasOwnProperty(property)) content.push(element[property]);
+              if (element.hasOwnProperty(property)) {
+                if (element[property].replace(/ /g, '').match(/[\s,"]/)) {
+                  element[property] =  '"' + element[property].replace(/"/g, '""') + '"';
+                }
+                content.push(element[property]);
+              }
             } 
             res.write(content.join(',') + '\n');
           });

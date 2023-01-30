@@ -1,5 +1,6 @@
 const { LEAD_STATUS } = require('../../model/Lead')
 const { check, validationResult } = require('express-validator')
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance()
 const { errorFormater } = require('../../utils/helper.js')
 
 exports.validateLeadAdd = [
@@ -53,15 +54,61 @@ exports.validateLeadAdd = [
   check('gender').trim().notEmpty().withMessage('Gender is required.').bail(),
   //update regex?
   check('business_no')
-    .trim()
-    .notEmpty()
-    .withMessage('Business No is required.')
+    .custom((value, {req}) => {
+      if(req.body.business_no == '' && req.body.mobile == '' && req.body.second_mobile == '') {
+        throw new Error('Atleast 1 Contact is required')
+      } else if (req.body.business_no == '') {
+        return true
+      }
+      try {
+        number = phoneUtil.parse(`+${value}`, '');
+        let is_valid = phoneUtil.isPossibleNumber(number);
+        let is_valid2 = phoneUtil.isValidNumber(number);
+        if(is_valid && is_valid2) return true
+        else throw new Error('Business No Invalid')
+      } catch (e) {
+        throw new Error('Business No Invalid')
+      }
+    })
     .bail(),
-  // check('second_mobile')
-  //     .trim()
-  //     .notEmpty()
-  //     .withMessage('Second Mobile is required.')
-  //     .bail(),
+  check('mobile')
+    .custom((value, {req}) => {
+      if(req.body.business_no == '' && req.body.mobile == '' && req.body.second_mobile == '') {
+        return true
+        //throw new Error('Atleast 1 Contact is required')
+      } else if (req.body.mobile == '') {
+        return true
+      }
+      try {
+        number = phoneUtil.parse(value);
+        let is_valid = phoneUtil.isPossibleNumber(number);
+        let is_valid2 = phoneUtil.isValidNumber(number);
+        if(is_valid && is_valid2) return true
+        else throw new Error('Mobile Invalid')
+      } catch (e) {
+        throw new Error('Mobile Invalid')
+      }
+    })
+    .bail(),
+  check('second_mobile')
+    .custom((value, {req}) => {
+      if(req.body.business_no == '' && req.body.mobile == '' && req.body.second_mobile == '') {
+        return true
+        //throw new Error('Atleast 1 Contact is required')
+      } else if (req.body.second_mobile == '') {
+        return true
+      }
+      try {
+        number = phoneUtil.parse(value);
+        let is_valid = phoneUtil.isPossibleNumber(number);
+        let is_valid2 = phoneUtil.isValidNumber(number);
+        if(is_valid && is_valid2) return true
+        else throw new Error('Second Mobile Invalid')
+      } catch (e) {
+        throw new Error('Second Mobile Invalid')
+      }
+    })
+    .bail(),
   check('personal_email')
     .trim()
     .notEmpty()
@@ -145,15 +192,61 @@ exports.validateLeadEdit = [
   check('gender').trim().notEmpty().withMessage('Gender is required.').bail(),
   //update regex?
   check('business_no')
-    .trim()
-    .notEmpty()
-    .withMessage('Profile Link is required.')
+    .custom((value, {req}) => {
+      if(req.body.business_no == '' && req.body.mobile == '' && req.body.second_mobile == '') {
+        throw new Error('Atleast 1 Contact is required')
+      } else if (req.body.business_no == '') {
+        return true
+      }
+      try {
+        number = phoneUtil.parse(`+${value}`, '');
+        let is_valid = phoneUtil.isPossibleNumber(number);
+        let is_valid2 = phoneUtil.isValidNumber(number);
+        if(is_valid && is_valid2) return true
+        else throw new Error('Business No Invalid')
+      } catch (e) {
+        throw new Error('Business No Invalid')
+      }
+    })
     .bail(),
-  // check('second_mobile')
-  //     .trim()
-  //     .notEmpty()
-  //     .withMessage('Second Mobile is required.')
-  //     .bail(),
+  check('mobile')
+    .custom((value, {req}) => {
+      if(req.body.business_no == '' && req.body.mobile == '' && req.body.second_mobile == '') {
+        return true
+        //throw new Error('Atleast 1 Contact is required')
+      } else if (req.body.mobile == '') {
+        return true
+      }
+      try {
+        number = phoneUtil.parse(value);
+        let is_valid = phoneUtil.isPossibleNumber(number);
+        let is_valid2 = phoneUtil.isValidNumber(number);
+        if(is_valid && is_valid2) return true
+        else throw new Error('Mobile Invalid')
+      } catch (e) {
+        throw new Error('Mobile Invalid')
+      }
+    })
+    .bail(),
+  check('second_mobile')
+    .custom((value, {req}) => {
+      if(req.body.business_no == '' && req.body.mobile == '' && req.body.second_mobile == '') {
+        return true
+        //throw new Error('Atleast 1 Contact is required')
+      } else if (req.body.second_mobile == '') {
+        return true
+      }
+      try {
+        number = phoneUtil.parse(value);
+        let is_valid = phoneUtil.isPossibleNumber(number);
+        let is_valid2 = phoneUtil.isValidNumber(number);
+        if(is_valid && is_valid2) return true
+        else throw new Error('Second Mobile Invalid')
+      } catch (e) {
+        throw new Error('Second Mobile Invalid')
+      }
+    })
+    .bail(),
   check('personal_email')
     .trim()
     .notEmpty()
