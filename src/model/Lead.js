@@ -2,13 +2,7 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const { schemaTagsFormater, logDescriptionFormater } = require('../utils/helper');
 const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
-const { StatusLog } = require('../model/StatusLog');
 const { User } = require('../model/User');
-
-const moment = require('moment-timezone')
-const date_format = 'MM/DD/YYYY hh:mm A'
-const time_format = 'YYMMDDhhA'
-
 
 const HIERARCHY = {
   NEW: 0,
@@ -242,6 +236,10 @@ const leadSchema = new mongoose.Schema({
   },
 });
 
+leadSchema.pre('findOneAndUpdate', function (next) {
+  next();
+});
+
 leadSchema.pre('save', async function (next) {
   let tags = []
   let name = `${this.first_name.trim()} ${this.last_name.trim()}`;
@@ -303,7 +301,6 @@ leadSchema.pre('save', async function (next) {
 });
 
 
-
 leadSchema.pre('insertMany', async function (next, docs) {
   for(doc of docs) {
     let tags = []
@@ -332,24 +329,13 @@ leadSchema.post('insertMany', async function (docs, next) {
     let previous = {};
     let current = {};
     let modified = [];
-    if (doc.isNew) {
-      for (const property in leadSchema.paths) {
-        if (!EXCLUDED_FIELDS.includes(property)) {
-          previous[property] = '';
-          current[property] = doc[property] || '';
-          if (doc[property]) {
-            modified.push(property);
-          }
-        }
-      }
-    } else {
-      for (const property in leadSchema.paths) {
-        if (!EXCLUDED_FIELDS.includes(property)) {
-          previous[property] = doc[`old_${property}`] || '';
-          current[property] = doc[property] || '';
-          if (doc.isModified(property)) {
-            modified.push(property);
-          }
+    
+    for (const property in leadSchema.paths) {
+      if (!EXCLUDED_FIELDS.includes(property)) {
+        previous[property] = '';
+        current[property] = doc[property] || '';
+        if (doc[property]) {
+          modified.push(property);
         }
       }
     }
@@ -368,23 +354,8 @@ leadSchema.post('insertMany', async function (docs, next) {
     lead_update_log.previous = previous;
     lead_update_log.modified = modified;
     await lead_update_log.save();
-
-    
-    // create here insert many meetings?
-    let datetime = moment(`${doc.uploaded_meeting.meeting_date} ${doc.uploaded_meeting.meeting_time}`, date_format);
-    const new_status_log = new StatusLog();
-    new_status_log.created_by = doc.uploaded_meeting.created_by;
-    new_status_log.updated_by = doc.uploaded_meeting.updated_by;
-    new_status_log.lead_id = doc['_id'];
-    new_status_log.status_log = doc.uploaded_meeting.status_log;
-    new_status_log.note = doc.uploaded_meeting.note; 
-    new_status_log.address = doc.uploaded_meeting.address;
-    new_status_log.datetime = datetime;
-    new_status_log.meeting_time = datetime.format(time_format)
-    new_status_log.save();
-    //but this create a new Log for the meeting
   });
-})
+});
 
 
 leadSchema.index({ 'tags.tag': 1, _id: 1 });

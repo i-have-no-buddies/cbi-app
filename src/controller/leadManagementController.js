@@ -1,7 +1,7 @@
-//const { fork } = require('child_process')
 const { ObjectId } = require('mongodb');
 const fs = require('fs');
 const csv = require('@fast-csv/parse');
+const { fork } = require('child_process');
 
 const { LeadBatch, UPLOAD_STATUS, FILE_HEADERS } = require('../model/LeadBatch');
 const { Lead, LEAD_STATUS, HIERARCHY } = require('../model/Lead');
@@ -94,6 +94,11 @@ exports.new_upload = async (req, res) => {
         row.lead_batch_id = lead_batch._id;
         row.created_by = req.session.AUTH._id;
         row.updated_by = req.session.AUTH._id;
+        
+        row.business_no = row.business_no.replace('`', '').replace('"', '').replace("'", '')
+        row.mobile = row.mobile.replace('`', '').replace('"', '').replace("'", '')
+        row.second_mobile = row.second_mobile.replace('`', '').replace('"', '').replace("'", '')
+        
         //will be used in creating initial meeting
         row.uploaded_meeting = {
           created_by: req.session.AUTH._id,
@@ -136,7 +141,10 @@ exports.new_upload = async (req, res) => {
         lead_batch.status = UPLOAD_STATUS.ACTIVE;
         lead_batch.uploaded = uploaded_count;
         lead_batch.invalid = invalid_count;
-        await lead_batch.save()
+        await lead_batch.save();
+
+        const childProcess = fork('./src/childProcess/uploadedLeadMeeting.js');
+        childProcess.send({ lead_batch: lead_batch });
 
         //data has invalid return datas
         if(invalid_count != 0) {

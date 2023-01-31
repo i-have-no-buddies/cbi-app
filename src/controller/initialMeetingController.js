@@ -89,14 +89,7 @@ exports.update_status = async (req, res) => {
     status_log.updated_at = new Date();
     status_log.updated_by = req.session.AUTH._id;
     status_log.created_by = req.session.AUTH._id;
-    await status_log.save()
-
-    //this is wrong because it create another log
-    const lead = await Lead.findById(req.body._id)
-    lead.status = req.body.status_log
-    lead.updated_at = new Date();
-    lead.updated_by = req.session.AUTH._id;
-    await lead.save()
+    await status_log.save();
 
     return res.redirect('/initial-meeting')
   } catch (error) {
@@ -115,16 +108,6 @@ exports.meeting_update = async (req, res) => {
     status_log.updated_at = new Date();
     status_log.updated_by = req.session.AUTH._id;
     await status_log.save();
-
-    const lead = await Lead.findById(req.body._id)
-    if(status_log.is_first_meeting == true) {
-      if(lead.hierarchy == HIERARCHY.NEW) {
-        lead.first_meeting = new Date()
-        lead.status = LEAD_STATUS.FIRST_MEETING
-        lead.hierarchy = HIERARCHY.FIRST_MEETING
-        await lead.save()
-      }
-    }
 
     return res.redirect('/initial-meeting')
   } catch (error) {

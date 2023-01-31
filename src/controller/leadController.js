@@ -108,22 +108,6 @@ exports.update_status = async (req, res) => {
     status_log.created_by = req.session.AUTH._id;
     await status_log.save()
 
-    //this is wrong because it create another log
-    const lead = await Lead.findById(req.body._id);
-    lead.status = req.body.status_log;
-    
-    if (req.body.status_log == LEAD_STATUS.CLIENT) {
-      lead.client = new Date();
-      lead.hierarchy = HIERARCHY.CLIENT;
-      lead.status = LEAD_STATUS.CLIENT;
-    }
-    else {
-      lead.status = req.body.status_log;
-    }
-
-    lead.updated_at = new Date();
-    lead.updated_by = req.session.AUTH._id;
-    await lead.save()
 
     return res.redirect('/lead')
   } catch (error) {
@@ -142,23 +126,6 @@ exports.meeting_update = async (req, res) => {
     status_log.updated_at = new Date();
     status_log.updated_by = req.session.AUTH._id;
     await status_log.save()
-
-    const lead = await Lead.findById(req.body._id)
-    if(status_log.is_second_meeting == true) {
-      if(lead.hierarchy == HIERARCHY.FIRST_MEETING) {
-        lead.second_meeting = new Date()
-        lead.status = LEAD_STATUS.SECOND_MEETING
-        lead.hierarchy = HIERARCHY.SECOND_MEETING
-        await lead.save()
-      }
-      //what if second meeting?
-      if(lead.hierarchy == HIERARCHY.SECOND_MEETING) {
-        //set as 2nd meeting?
-        lead.second_meeting = new Date()
-        lead.status = LEAD_STATUS.SECOND_MEETING
-        await lead.save()
-      }
-    }
 
     return res.redirect('/lead')
   } catch (error) {

@@ -3,6 +3,7 @@ const { ObjectId } = require('mongodb')
 const mongoosePaginate = require('mongoose-paginate-v2')
 const { logDescriptionFormater } = require('../utils/helper');
 const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
+const { Lead, HIERARCHY, LEAD_STATUS } = require('../model/Lead');
 const { User } = require('../model/User');
 
 
@@ -32,6 +33,11 @@ const PROGRAMS = {
 }
 
 
+const LEAD_SCHEMA = [
+  'first_name',
+  'last_name',
+  'status',
+];
 
 const EXCLUDED_FIELDS = [
   '_id',
@@ -161,6 +167,9 @@ const statusLogSchema = new mongoose.Schema({
 
 
 statusLogSchema.pre('save', async function (next) {  
+  //used for initial meeting
+  const options = this.$__.saveOptions;
+  let manual = options.uploaded ? false : true;
   /**
    * logs
    */
@@ -168,6 +177,19 @@ statusLogSchema.pre('save', async function (next) {
   let current = {};
   let modified = [];
   const lead_update_log = new LeadUpdateLog();
+
+  
+  //add the lead to the lead update logs
+  const lead = await Lead.findById(this['lead_id']).lean();
+  LEAD_SCHEMA.forEach(property => {
+    previous[property] = lead[property] || '';
+    current[property] = lead[property] || '';
+    if (property == 'status' && manual) {
+      modified.push(property);
+      current[property] = this['status_log'] || '';
+    } 
+  });
+
   if (this.isNew) {
     for (const property in statusLogSchema.paths) {
       if (!EXCLUDED_FIELDS.includes(property)) {
@@ -190,12 +212,74 @@ statusLogSchema.pre('save', async function (next) {
     }
   }
   
+  if(manual) {
+    //update the lead
+    let tag_status = this['status_log'].toLowerCase()
+    let new_lead_status = this['status_log']
+
+    //Hierarchy First meeting
+    if(lead.hierarchy == HIERARCHY.NEW) {  
+      if(this.is_first_meeting == true && lead.first_meeting == undefined) {
+        tag_status = LEAD_STATUS.FIRST_MEETING.toLowerCase()
+        new_lead_status = LEAD_STATUS.FIRST_MEETING
+        
+        lead.first_meeting = new Date()
+        lead.hierarchy = HIERARCHY.FIRST_MEETING
+      }
+    }
+
+    //Hierarchy Second meeting
+    if(lead.hierarchy == HIERARCHY.FIRST_MEETING) { 
+      if(this.is_second_meeting == true && lead.second_meeting == undefined) {
+        tag_status = LEAD_STATUS.SECOND_MEETING.toLowerCase()
+        new_lead_status = LEAD_STATUS.SECOND_MEETING
+
+        lead.second_meeting = new Date()
+        lead.hierarchy = HIERARCHY.SECOND_MEETING
+      }
+      //shortcut to client?
+      if(this.status_log == LEAD_STATUS.CLIENT) {
+        tag_status = LEAD_STATUS.CLIENT.toLowerCase()
+        new_lead_status = LEAD_STATUS.CLIENT
+
+        lead.second_meeting = new Date()
+        lead.client = new Date()
+        lead.hierarchy = HIERARCHY.CLIENT
+      }
+    }
+
+    //Hierarchy Client
+    if(lead.hierarchy == HIERARCHY.SECOND_MEETING) {
+      if(this.status_log == LEAD_STATUS.CLIENT) {
+        tag_status = LEAD_STATUS.CLIENT.toLowerCase()
+        new_lead_status = LEAD_STATUS.CLIENT
+
+        lead.client = new Date()
+        lead.hierarchy = HIERARCHY.CLIENT
+      }
+    }
+
+
+    let new_tag = lead.tags.map(x => (x.tag.includes("[status]") ? {tag: `[status]${tag_status}`}  : x))
+    let lead_update = {
+      status: new_lead_status,
+      first_meeting: lead.first_meeting,
+      second_meeting: lead.second_meeting,
+      client: lead.client,
+      hierarchy: lead.hierarchy,
+      updated_at: new Date(),
+      updated_by: this.updated_by,
+      tags: new_tag
+    }
+
+    await Lead.findOneAndUpdate({_id: ObjectId(this['lead_id'])}, {$set: lead_update})
+  }
   // think of module
-  // also SMS is just update
   let user = await User.findById(this.updated_by).lean()
   var log_type = this.isNew? LOG_TYPE.CREATE : LOG_TYPE.UPDATE
   var description = logDescriptionFormater(user, log_type, this.status_log)
 
+  //create a log
   lead_update_log.lead_id = this['lead_id'],
   lead_update_log.status_log_id = this['_id'],
   lead_update_log.log_type = log_type;
