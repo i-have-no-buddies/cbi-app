@@ -360,7 +360,7 @@ leadSchema.post('insertMany', async function (docs, next) {
 
 leadSchema.index({ 'tags.tag': 1, _id: 1 });
 leadSchema.index({ lead_batch_id: 1, 'tags.tag': 1 });
-leadSchema.index({ allocated_to: 1, hrirarchy: 1, 'tags.tag': 1 });
+leadSchema.index({ allocated_to: 1, hierarchy: 1, 'tags.tag': 1 });
 
 leadSchema.plugin(mongoosePaginate);
 

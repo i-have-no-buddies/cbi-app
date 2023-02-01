@@ -8,7 +8,7 @@ const date_format = 'MM/DD/YYYY hh:mm A'
 const time_format = 'YYMMDDhhA'
 
 process.on('message', async ({ lead_batch }) => {
-  var leads = await Lead.find({lead_batch_id: ObjectId(lead_batch._id)}).select('_id uploaded_meeting tags').lean()
+  var leads = await Lead.find({lead_batch_id: ObjectId(lead_batch._id)}).select('_id uploaded_meeting').lean()
   
   for(let doc of leads) {
     let datetime = moment(`${doc.uploaded_meeting.meeting_date} ${doc.uploaded_meeting.meeting_time}`, date_format);
