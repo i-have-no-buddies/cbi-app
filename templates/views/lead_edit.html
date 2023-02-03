@@ -121,7 +121,10 @@
 </div>
 {{/block}}{{block 'javascript'}}
 <script>
-  let post_meeting = '{{lead.meeting_id}}'
+  let post_meeting = `{{lead.meeting_id}}`
+  let post_outcome = `{{lead.outcome}}`
+  let post_outcome_note = `{{lead.outcome_note}}`
+  
   function handleError(key, value) {
     if(post_meeting == '') {
       $(`[name="${key}"]`).addClass('is-invalid');
@@ -180,6 +183,14 @@
     document.getElementById(field).disabled = disabled
   }
 
+  function meeting_outcome(meeting_id) {
+    if($(`#${meeting_id} #outcome`).val() == 'MEETING_SAT') {
+      $(`#${meeting_id} #hierarchy_container`).attr("style", "display:block");
+    } else {
+      $(`#${meeting_id} #hierarchy_container`).attr("style", "display:none");
+    }
+  }
+
   $(function () {
     //$("#date").datetimepicker({format: 'YYYY-MM-DD'});
     //$('#time').datetimepicker({format: 'LT'});
@@ -201,6 +212,12 @@
     //bind on change
     document.getElementById("status_log").setAttribute("onchange", 'changeActions()');
     changeActions(true);
+    
+    if(post_meeting != '') {
+      $(`#${post_meeting} #outcome`).val(post_outcome);
+      $(`#${post_meeting} #outcome_note`).html(post_outcome_note);
+      meeting_outcome(post_meeting);
+    }
   });
   
   
