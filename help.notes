@@ -204,3 +204,21 @@ labelling
 
 # hierarchy
 first meeting -> second meeting -> client
+
+# todo
+- web socket implementation on inital meeting, leads and calendar
+- lead management -> upload
+// details of fields (proper format)
+- initial meeting filter
+// name, email, contact no, product, meeting date (current meeting)
+- leads filter
+// name, email, contact no, product, meeting date (current meeting), status (hierarchy), last update status
+- bdm leads filter
+// name, email, contact no, product, meeting date (current meeting), status (hierarchy), last update status
+- lead management filter
+// name, email, contact no, product, upload date, allocated, meeting date (current meeting), status (hierarchy), last update status
+- all delete and update
+*add a sweetalert confirmation
+- lead management
+*update lead
+*update status log 
