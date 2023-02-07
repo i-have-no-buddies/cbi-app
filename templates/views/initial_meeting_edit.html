@@ -149,7 +149,21 @@
       document.getElementById(`hidden_${status_fields[i]}`).value = document.getElementById(status_fields[i]).value;
     }
     document.getElementById("lead_form").action = `/initial-meeting/${action}`;
-    document.getElementById("lead_form").submit()
+    
+    Swal.fire({
+      title: 'Do you want to update this Lead?',
+      icon: 'question',
+      showCloseButton: true,
+      showCancelButton: true,
+      confirmButtonText: '<i class="fas fa-save"></i> Update',
+      confirmButtonColor: '#20c997',
+      cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+      cancelButtonColor: '#d81b60',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById("lead_form").submit()
+      }
+    });
   }
 
   var outcome_fields = ['meeting_id', 'outcome', 'outcome_note']
@@ -158,11 +172,25 @@
     for (let i = 0; i < status_fields.length; i++) {
       $(`#hidden_${outcome_fields[i]}`).val( $(`#${meeting_id} #${outcome_fields[i]}`).val())
     }
-    
+  
     $(`#hidden_is_first_meeting`).val($(`#${meeting_id} #is_first_meeting`).is(':checked'))
     $(`#hidden_is_second_meeting`).val($(`#${meeting_id} #is_second_meeting`).is(':checked'))
     document.getElementById("lead_form").action = `/initial-meeting/meeting-update`;
-    document.getElementById("lead_form").submit()
+    
+    Swal.fire({
+      title: 'Do you want to update this lead meeting?',
+      icon: 'question',
+      showCloseButton: true,
+      showCancelButton: true,
+      confirmButtonText: '<i class="fas fa-save"></i> Update',
+      confirmButtonColor: '#20c997',
+      cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+      cancelButtonColor: '#d81b60',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById("lead_form").submit()
+      }
+    });
   }
   
 
