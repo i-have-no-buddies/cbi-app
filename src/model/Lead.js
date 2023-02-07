@@ -5,10 +5,10 @@ const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
 const { User } = require('../model/User');
 
 const HIERARCHY = {
-  NEW: 0,
-  FIRST_MEETING: 1,
-  SECOND_MEETING: 2,
-  CLIENT: 3,
+  NEW: 'NEW',
+  FIRST_MEETING: 'FIRST_MEETING',
+  SECOND_MEETING: 'SECOND_MEETING',
+  CLIENT: 'CLIENT',
 }
 
 const LEAD_STATUS = {
@@ -207,8 +207,11 @@ const leadSchema = new mongoose.Schema({
     default: Date.now,
   },
   hierarchy: {
-    type: Number,
+    type: String,
     default: HIERARCHY.NEW
+  },
+  upload_date: {
+    type: Date,
   },
   allocated_to: {
     type: mongoose.Schema.Types.ObjectId,
@@ -253,6 +256,9 @@ leadSchema.pre('save', async function (next) {
   tags = schemaTagsFormater(tags, this.work_email, 'email')
   tags = schemaTagsFormater(tags, this.nationality, 'nationality')
   tags = schemaTagsFormater(tags, this.status, 'status')
+  tags = schemaTagsFormater(tags, this.hierarchy, 'hierarchy')
+  tags = schemaTagsFormater(tags, this.upload_date, 'upload_date')
+  tags = schemaTagsFormater(tags, this.allocated_to, 'allocated_to')
   this.tags = tags
   
   /**
@@ -315,6 +321,9 @@ leadSchema.pre('insertMany', async function (next, docs) {
     tags = schemaTagsFormater(tags, doc.work_email, 'email')
     tags = schemaTagsFormater(tags, doc.nationality, 'nationality')
     tags = schemaTagsFormater(tags, doc.status, 'status')
+    tags = schemaTagsFormater(tags, doc.hierarchy, 'hierarchy')
+    tags = schemaTagsFormater(tags, doc.upload_date, 'upload_date')
+    tags = schemaTagsFormater(tags, doc.allocated_to, 'allocated_to')
     doc.tags = tags
   }
   next();

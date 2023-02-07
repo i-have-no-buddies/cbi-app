@@ -206,20 +206,21 @@ labelling
 first meeting -> second meeting -> client
 
 # todo
-- web socket implementation on inital meeting, leads and calendar
-- lead management -> upload
-// details of fields (proper format)
-- initial meeting filter
-// name, email, contact no, product, meeting date (current meeting)
-*inital meeting data once meeting cancelled should be reallocated
-- leads filter
-// name, email, contact no, product, meeting date (current meeting), status (hierarchy), last update status
-- bdm leads filter
-// name, email, contact no, product, meeting date (current meeting), status (hierarchy), last update status
-- lead management filter
-// name, email, contact no, product, upload date, allocated, meeting date (current meeting), status (hierarchy), last update status
-- all delete and update
-*add a sweetalert confirmation
-- lead management
-*update lead
-*update status log 
+[x] - web socket implementation on inital meeting, leads and calendar
+[✓] - lead management -> upload -> details of fields (proper format) [for checking]
+*initial meeting filter
+  [✓] - name, email, contact no, 
+  [x] - product, meeting date (current meeting)
+[x] - inital meeting data once meeting cancelled should be reallocated
+*leads filter
+  [✓] - name, email, contact no, product, status (hierarchy), last update status
+  [x] - meeting date (current meeting)
+*bdm leads filter
+  [x] - name, email, contact no, product, meeting date (current meeting), status (hierarchy), last update status
+*lead management filter
+  [✓] - name, email, contact no, product, upload date, allocated, status (hierarchy), last update status
+  [x] - meeting date (current meeting)
+[x] - all delete and update -> add a sweetalert confirmation
+*lead management
+  [x] - update lead
+  [x] - update status log 

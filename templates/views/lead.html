@@ -10,8 +10,14 @@
       </div>
       <div class="card-body">
         {{include './components/search_box.html', { name: 'name'} }}
+        {{include './components/search_box.html', { name: 'email'} }}
+        {{include './components/search_box.html', { name: 'contact'} }}
         {{include './components/search_box.html', { name: 'job_title'} }}
         {{include './components/search_box.html', { name: 'company'} }}
+        {{include './components/search_select.html', { name: 'product', options: PRODUCTS} }}
+        {{include './components/search_select.html', { name: 'hierarchy', options: HIERARCHY} }}
+        {{include './components/search_select.html', { name: 'status', options: LEAD_STATUS} }}
+        {{include './components/search_datetime.html', { name: 'upload_date' } }}
       </div>
     </div>
     
@@ -94,29 +100,65 @@
   document.getElementById('name').value = decodeHTML(
     '{{search.name | escapeBackslash}}'
   );
+  document.getElementById('email').value = decodeHTML(
+    '{{search.email | escapeBackslash}}'
+  );
+  document.getElementById('contact').value = decodeHTML(
+    '{{search.contact | escapeBackslash}}'
+  );
   document.getElementById('job_title').value = decodeHTML(
     '{{search.job_title | escapeBackslash}}'
   );
   document.getElementById('company').value = decodeHTML(
     '{{search.company | escapeBackslash}}'
   );
-  
+  document.getElementById('product').value = decodeHTML(
+    '{{search.product | escapeBackslash}}'
+  );
+  document.getElementById('hierarchy').value = decodeHTML(
+    '{{search.hierarchy | escapeBackslash}}'
+  );
+  document.getElementById('status').value = decodeHTML(
+    '{{search.status | escapeBackslash}}'
+  );
+  document.getElementById('upload_date').value = decodeHTML(
+    '{{search.upload_date | escapeBackslash}}'
+  );
+
 
   function search(page = 1) {
     let url = window.location.href.split('?')[0];
     let name = $('#name').val();
+    let email = $('#email').val();
+    let contact = $('#contact').val();
     let job_title = $('#job_title').val();
     let company = $('#company').val();
+    let product = $('#product').val();
+    let hierarchy = $('#hierarchy').val();
+    let status = $('#status').val();
+    let upload_date = $('#upload_date').val();
+    
     url += `?page=${page}`;
     if (name) url += `&name=${name}`;
+    if (email) url += `&email=${email}`;
+    if (contact) url += `&contact=${contact}`;
     if (job_title) url += `&job_title=${job_title}`;
     if (company) url += `&company=${company}`;
+    if (product) url += `&product=${product}`;
+    if (hierarchy) url += `&hierarchy=${hierarchy}`;
+    if (status) url += `&status=${status}`;
+    if (upload_date) url += `&upload_date=${upload_date}`;
+    
     window.location.href = url;
   }
   
   
   $(function () {
     $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
+    $('.datetimev2').datetimepicker({
+      format:'Y-m-d',
+      timepicker:false,
+    });
   });
   
 </script>

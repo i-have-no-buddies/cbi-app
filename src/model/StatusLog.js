@@ -260,7 +260,9 @@ statusLogSchema.pre('save', async function (next) {
     }
 
 
+    let tag_hierarchy = lead.hierarchy.toLowerCase()
     let new_tag = lead.tags.map(x => (x.tag.includes("[status]") ? {tag: `[status]${tag_status}`}  : x))
+    new_tag = lead.tags.map(x => (x.tag.includes("[hierarchy]") ? {tag: `[hierarchy]${tag_hierarchy}`}  : x))
     let lead_update = {
       status: new_lead_status,
       first_meeting: lead.first_meeting,

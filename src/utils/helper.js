@@ -147,10 +147,17 @@ const getInactiveUsers = () => {
 
 const schemaTagsFormater = (tags, data, field) => {
   if (data) {
-    tags = [
-      ...tags,
-      ...ngramsAlgov2(data.toLowerCase(), field),
-    ];
+    if(field == 'upload_date') {
+      tags = [
+        ...tags,
+        ...ngramsAlgov2(data.format("YYYY-MM-DD"), field),
+      ];
+    } else {
+      tags = [
+        ...tags,
+        ...ngramsAlgov2(data.toLowerCase(), field),
+      ];
+    }
   }
   return tags
 }

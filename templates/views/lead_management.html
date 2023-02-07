@@ -23,9 +23,15 @@
             {{/if}}
           </div>
           {{include './components/search_box.html', { name: 'name'} }}
+          {{include './components/search_box.html', { name: 'email'} }}
+          {{include './components/search_box.html', { name: 'contact'} }}
           {{include './components/search_box.html', { name: 'job_title'} }}
           {{include './components/search_box.html', { name: 'company'} }}
+          {{include './components/search_select.html', { name: 'product', options: PRODUCTS} }}
+          {{include './components/search_select.html', { name: 'hierarchy', options: HIERARCHY} }}
           {{include './components/search_select.html', { name: 'status', options: LEAD_STATUS} }}
+          {{include './components/search_datetime.html', { name: 'upload_date' } }}
+          {{include './components/search_select_id.html', { name: 'allocated_to', options: IFA} }}
       
         {{else}}
           {{include './components/search_box.html', { name: 'name'} }} 
@@ -187,17 +193,36 @@
   );
   
   {{if type == 'lead'}}
+    document.getElementById('batch').value = decodeHTML(
+      '{{search.batch | escapeBackslash}}'
+    );
+    
+    document.getElementById('email').value = decodeHTML(
+      '{{search.email | escapeBackslash}}'
+    );
+    document.getElementById('contact').value = decodeHTML(
+      '{{search.contact | escapeBackslash}}'
+    );
     document.getElementById('job_title').value = decodeHTML(
       '{{search.job_title | escapeBackslash}}'
     );
-    document.getElementById('batch').value = decodeHTML(
-      '{{search.batch | escapeBackslash}}'
+    document.getElementById('company').value = decodeHTML(
+      '{{search.company | escapeBackslash}}'
+    );
+    document.getElementById('product').value = decodeHTML(
+      '{{search.product | escapeBackslash}}'
+    );
+    document.getElementById('hierarchy').value = decodeHTML(
+      '{{search.hierarchy | escapeBackslash}}'
     );
     document.getElementById('status').value = decodeHTML(
       '{{search.status | escapeBackslash}}'
     );
-    document.getElementById('company').value = decodeHTML(
-      '{{search.company | escapeBackslash}}'
+    document.getElementById('upload_date').value = decodeHTML(
+      '{{search.upload_date | escapeBackslash}}'
+    );
+    document.getElementById('allocated_to').value = decodeHTML(
+      '{{search.allocated_to | escapeBackslash}}'
     );
   {{/if}}
   
@@ -205,22 +230,39 @@
   function search(page = 1) {
     let url = window.location.href.split('?')[0];
     let name = $('#name').val();
+    let email = $('#email').val();
+    let contact = $('#contact').val();
     let job_title = $('#job_title').val();
-    let status = $('#status').val();
     let company = $('#company').val();
+    let product = $('#product').val();
+    let hierarchy = $('#hierarchy').val();
+    let status = $('#status').val();
+    let upload_date = $('#upload_date').val();
+    let allocated_to = $('#allocated_to').val();
+
     url += `?page=${page}&type={{type}}`;
     if (name) url += `&name=${name}`;
+    if (email) url += `&email=${email}`;
+    if (contact) url += `&contact=${contact}`;
     if (job_title) url += `&job_title=${job_title}`;
     if (company) url += `&company=${company}`;
+    if (product) url += `&product=${product}`;
+    if (hierarchy) url += `&hierarchy=${hierarchy}`;
     if (status) url += `&status=${status}`;
+    if (upload_date) url += `&upload_date=${upload_date}`;
+    if (allocated_to) url += `&allocated_to=${allocated_to}`;
     window.location.href = url;
   }
 
   $(function () {
+    $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
     $('.select2bs4').select2({
       theme: 'bootstrap4',
     });
-    $('#pagination').html(pagination(page, totalPages, totalDocs, 'search'));
+    $('.datetimev2').datetimepicker({
+      format:'Y-m-d',
+      timepicker:false,
+    });
   });
   
 </script>

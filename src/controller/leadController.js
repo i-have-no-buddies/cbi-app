@@ -13,12 +13,13 @@ const time_format = 'YYMMDDhhA'
 exports.index = async (req, res) => {
   try {
     const page = req.query.page || 1;
-    const search_tags = ['name', 'job_title', 'company', 'status'];
+    const search_tags = ['name', 'email', 'contact', 'company', 'job_title', 'product', 'hierarchy', 'status', 'upload_date'];
     const search = await tagsSearchFormater(search_tags, req.query);
     const query_params = await queryParamReturner(search_tags, req.query);
     search['hierarchy'] = {'$in': [HIERARCHY.FIRST_MEETING, HIERARCHY.SECOND_MEETING, HIERARCHY.CLIENT]};
     search['allocated_to'] = ObjectId(req.session.AUTH._id);
 
+    
     const list = await Lead.paginate(search, {
       lean: true,
       page,
@@ -27,7 +28,6 @@ exports.index = async (req, res) => {
     return res.render('lead', {
       list,
       search: query_params,
-      LEAD_STATUS,
     })
   } catch (error) {
     console.error(error)

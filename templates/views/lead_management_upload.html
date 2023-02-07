@@ -2,6 +2,9 @@
 <div class="card">
   <div class="card-body">
     <form action="/lead-management/new_upload" method="post" enctype="multipart/form-data">
+      
+      
+
       <div class="form-group">
         <label>Upload Name</label>
         <input
@@ -13,6 +16,9 @@
         />
         <small id="upload_name_error" class="form-text text-danger"></small>
       </div>
+      <button type="button" class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#modal-lg">
+        <i class="fas fa-info-circle"></i> View Upload field details
+      </button>
       <div class="form-group">
         <label for="file_input">File input</label>
         <div class="input-group">
@@ -41,8 +47,49 @@
     </form>
   </div>
 </div>
+
+<div class="modal fade" id="modal-lg">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Upload Details</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">         
+        <ul>																
+          <li>first_name - (Free text)</li>
+          <li>last_name - (Free text)</li>
+          <li>job_title - (Free text)</li>
+          <li>company - (Free text)</li>
+          <li>profile_link - (Proper URL)</li>
+          <li>gender - (Male or Female)</li>
+
+          <li>business_no - (Countrycode + Number) [sample: 971527*****9]</li>
+          <li>mobile - (Countrycode + Number) [sample: 971527*****9]</li>
+          <li>second_mobile - (Countrycode + Number) [sample: 971527*****9]</li>
+          
+          <li>personal_email - (Proper Email)</li>
+          <li>work_email - (Proper Email)</li>
+          <li>nationality - (Free text)</li>
+          <li>description - (Free text)</li>
+          <li>ifa_email - (Proper Email) [Note: Email must be from users to properly allocate the first meeting]</li>
+          <li>meeting_date - (MM/DD/YYYY) [sample: 7/10/2023]</li>
+          <li>meeting_time - (HH:mm A) [sample: 2:00 PM or 2:00:00 PM]</li>
+          <li>meeting_address - (Free text)</li>
+          <li>meeting_note - (Free text)</li></li>
+        </ul>  
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
 {{/block}}{{block 'javascript'}}
 <script src="/assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<script src="/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script>
   $(function () {
     bsCustomFileInput.init();
