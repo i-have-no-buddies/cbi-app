@@ -224,6 +224,12 @@ exports.update = async (req, res) => {
       }
     }
     await lead.save();
+    if (server.emitter) {
+      server.emitter.emit('reloadEvent', {
+        page: '/client-management',
+        _id: req.session.AUTH._id.toString(),
+      });
+    }
     return res.redirect('/lead-management');
   } catch (error) {
     console.error(error);

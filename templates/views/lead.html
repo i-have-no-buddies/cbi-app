@@ -91,6 +91,15 @@
   const page = parseInt('{{list.page}}');
   const totalPages = parseInt('{{list.totalPages}}');
   const totalDocs = parseInt('{{list.totalDocs}}');
+  
+  const _id = '{{AUTH._id.toString()}}';
+  const socket = io();
+  socket.on('page reload', (msg) => {
+    if (msg.page === '/lead' && msg._id === _id) {
+      window.location.reload();
+    }
+  });
+
   document.getElementById('name').value = decodeHTML(
     '{{search.name | escapeBackslash}}'
   );
@@ -101,7 +110,6 @@
     '{{search.company | escapeBackslash}}'
   );
   
-
   function search(page = 1) {
     let url = window.location.href.split('?')[0];
     let name = $('#name').val();

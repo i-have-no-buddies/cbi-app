@@ -89,6 +89,15 @@
   const page = parseInt('{{leads.page}}');
   const totalPages = parseInt('{{leads.totalPages}}');
   const totalDocs = parseInt('{{leads.totalDocs}}');
+  
+  const _id = '{{AUTH._id.toString()}}';
+  const socket = io();
+  socket.on('page reload', (msg) => {
+    if (msg.page === '/initial-meeting' && msg._id === _id) {
+      window.location.reload();
+    }
+  });
+
   document.getElementById('name').value = decodeHTML(
     '{{search.name | escapeBackslash}}'
   );

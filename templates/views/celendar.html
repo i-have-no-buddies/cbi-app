@@ -21,6 +21,14 @@
 <script src="/assets/plugins/fullcalendar/main.js"></script>
 <script src="/app/global.js"></script>
 <script>
+  const _id = '{{AUTH._id.toString()}}';
+  const socket = io();
+  socket.on('page reload', (msg) => {
+    if (msg.page === '/calendar' && msg._id === _id) {
+      window.location.reload();
+    }
+  });
+
   document.getElementById('view_type').value = decodeHTML(
     '{{search.view_type | escapeBackslash}}'
   );
