@@ -34,7 +34,7 @@
           {{include './select_meeting_outcome.html', { name: 'outcome', options: outcome, meeting_id: meeting._id.toString() } }}
           {{include './textarea.html', { name: 'outcome_note'} }}
           <div id='hierarchy_container' style='display: none'>
-            {{if hierarchy == 0 }} <!--HIERARCHY.NEW-->
+            {{if hierarchy == 'NEW' }} <!--HIERARCHY.NEW-->
               <div class="form-group">
                 <div class="form-check">
                   <input type="checkbox" class="form-check-input" id='is_first_meeting' name='is_first_meeting' />
@@ -48,7 +48,7 @@
                 </div>
               </div>
             {{/if}}
-            {{if hierarchy == 1 }} <!--HIERARCHY.FIRST_MEETING-->
+            {{if hierarchy == 'FIRST_MEETING' }} <!--HIERARCHY.FIRST_MEETING-->
               <div class="form-group">
                 <div class="form-check">
                   <input type="checkbox" class="form-check-input" id='is_first_meeting' name='is_first_meeting' disabled checked />

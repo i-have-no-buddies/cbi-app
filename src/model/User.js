@@ -189,6 +189,10 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.static('getAllUsers', function () {
+  return this.find({}).select('_id first_name last_name type');
+});
+
 userSchema.static('getActiveIfa', function () {
   return this.find({
     type: USER_TYPE.IFA,

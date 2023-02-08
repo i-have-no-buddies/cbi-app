@@ -16,7 +16,7 @@ const time_format = 'YYMMDDhhA';
 exports.index = async (req, res) => {
   try {
     const page = req.query.page || 1;
-    const search_tags = ['name', 'company', 'job_title'];
+    const search_tags = ['name', 'email', 'contact', 'company', 'job_title'];
     const search = await tagsSearchFormater(search_tags, req.query);
     const query_params = await queryParamReturner(search_tags, req.query);
     search['hierarchy'] = HIERARCHY.NEW;

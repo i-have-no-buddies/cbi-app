@@ -2,6 +2,7 @@ const { ObjectId } = require('mongodb');
 const fs = require('fs');
 const csv = require('@fast-csv/parse');
 const { fork } = require('child_process');
+const moment = require('moment-timezone');
 
 const { LeadBatch, UPLOAD_STATUS, FILE_HEADERS } = require('../model/LeadBatch');
 const { Lead, LEAD_STATUS, HIERARCHY } = require('../model/Lead');
@@ -22,13 +23,15 @@ exports.index = async (req, res) => {
     var list;
     const page = req.query.page || 1;
     const type = req.query.type || 'lead';
-    const search_tags = ['name', 'job_title', 'company', 'status'];
+    const search_tags = ['name', 'email', 'contact', 'company', 'job_title', 'product', 'hierarchy', 'status', 'upload_date', 'allocated_to'];
     const search = await tagsSearchFormater(search_tags, req.query);
-    const return_search = ['name', 'job_title', 'company', 'status', 'batch'];
+    const return_search = ['name', 'email', 'contact', 'company', 'job_title', 'product', 'hierarchy', 'status', 'upload_date', 'allocated_to', 'batch'];
     const query_params = await queryParamReturner(return_search, req.query);
     if (req.query.batch) {
       search['lead_batch_id'] = ObjectId(req.query.batch);
     }
+    
+    const ifas = await User.getAllUsers().lean();
     if (type == 'lead') {
       list = await Lead.paginate(search, {
         lean: true,
@@ -49,6 +52,7 @@ exports.index = async (req, res) => {
       list,
       type: type,
       search: query_params,
+      IFA: ifas,
       LEAD_STATUS,
     });
   } catch (error) {
@@ -94,6 +98,7 @@ exports.new_upload = async (req, res) => {
         row.lead_batch_id = lead_batch._id;
         row.created_by = req.session.AUTH._id;
         row.updated_by = req.session.AUTH._id;
+        row.upload_date = new moment();
         
         row.business_no = row.business_no.replace('`', '').replace('"', '').replace("'", '')
         row.mobile = row.mobile.replace('`', '').replace('"', '').replace("'", '')
@@ -116,7 +121,7 @@ exports.new_upload = async (req, res) => {
         let valid = errors.isEmpty()? true : false;
         
         if(valid && allocated_to != null) {
-          row.allocated_to = allocated_to._id;
+          row.allocated_to = allocated_to._id.toString();
           row.status = LEAD_STATUS.NEW;
           row.hierarchy = HIERARCHY.NEW;
           leads.push(row);
