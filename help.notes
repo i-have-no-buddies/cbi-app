@@ -225,7 +225,7 @@ first meeting -> second meeting -> client
 *sweetalert confirmation
   [✓] - all delete and update (inital meeting)
   [✓] - all delete and update (lead)
-  [x] - all delete and update (lead)
+  [x] - all delete and update
 *lead management
   [x] - update lead
   [x] - update status log 

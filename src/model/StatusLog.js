@@ -219,7 +219,10 @@ statusLogSchema.pre('save', async function (next) {
 
     //Hierarchy First meeting
     if(lead.hierarchy == HIERARCHY.NEW) {  
-      if(this.is_first_meeting == true && lead.first_meeting == undefined) {
+      if(this['outcome'] == OUTCOME.CANCELED) {
+        //what to do if canceled
+      }
+      else if(this.is_first_meeting == true && lead.first_meeting == undefined) {
         tag_status = LEAD_STATUS.FIRST_MEETING.toLowerCase()
         new_lead_status = LEAD_STATUS.FIRST_MEETING
         

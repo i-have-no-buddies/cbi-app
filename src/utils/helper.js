@@ -224,7 +224,35 @@ const validateUpload = async (data) => {
     }
   }).run(data);
 
-  await check('work_email').trim().isEmail().run(data);
+  await check('personal_email').trim().custom(value => {
+    if(data.body.personal_email == '' && data.body.work_email == '') {
+      throw new Error('Atleast 1 Email is required')
+    } else if (value == '') {
+      return true
+    }
+    try {
+      if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) return true
+      else throw new Error('Personal Email Invalid')
+    } catch (e) {
+      throw new Error('Personal Email Invalid')
+    }
+  }).run(data);
+
+  await check('work_email').trim().custom(value => {
+    if(data.body.personal_email == '' && data.body.work_email == '') {
+      //throw new Error('Atleast 1 Email is required')
+      return true
+    } else if (value == '') {
+      return true
+    }
+    try {
+      if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) return true
+      else throw new Error('Work Email Invalid')
+    } catch (e) {
+      throw new Error('Work Email Invalid')
+    }
+  }).run(data);
+
   await check('nationality').trim().notEmpty().withMessage('Data Empty').run(data);
   await check('description').trim().notEmpty().withMessage('Data Empty').run(data);
 

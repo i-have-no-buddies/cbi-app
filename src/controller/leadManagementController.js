@@ -130,6 +130,11 @@ exports.new_upload = async (req, res) => {
         else {
           //append the errors?
           row['invalid'] = await errorFormaterCSV(errors)
+          
+          row.business_no = row.business_no != '' ? '`' + row.business_no : ''
+          row.mobile = row.mobile != '' ? '`' + row.mobile : ''
+          row.second_mobile = row.second_mobile != '' ? '`' + row.second_mobile : ''
+          
           invalid_leads.push(row);
           invalid_count++;
         }
