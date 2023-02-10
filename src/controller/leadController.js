@@ -1,5 +1,6 @@
 const moment = require('moment-timezone')
 const { ObjectId } = require('mongodb')
+const server = require('../server')
 
 const { Lead, LEAD_STATUS, OUTCOME, HIERARCHY } = require('../model/Lead')
 const { StatusLog } = require('../model/StatusLog')
@@ -78,6 +79,14 @@ exports.update = async (req, res) => {
     lead.updated_at = new Date();
     lead.updated_by = req.session.AUTH._id;
     await lead.save()
+    
+    if (server.emitter) {
+      server.emitter.emit('reloadEvent', {
+        page: '/calendar',
+        _id: req.session.AUTH._id.toString(),
+      });
+    }
+
     return res.redirect('/lead')
   } catch (error) {
     console.error(error)
@@ -109,6 +118,13 @@ exports.update_status = async (req, res) => {
     await status_log.save()
 
 
+    if (server.emitter) {
+      server.emitter.emit('reloadEvent', {
+        page: '/calendar',
+        _id: req.session.AUTH._id.toString(),
+      });
+    }
+
     return res.redirect('/lead')
   } catch (error) {
     console.error(error)
@@ -127,6 +143,14 @@ exports.meeting_update = async (req, res) => {
     status_log.updated_by = req.session.AUTH._id;
     await status_log.save()
 
+    
+    if (server.emitter) {
+      server.emitter.emit('reloadEvent', {
+        page: '/calendar',
+        _id: req.session.AUTH._id.toString(),
+      });
+    }
+    
     return res.redirect('/lead')
   } catch (error) {
     console.error(error)

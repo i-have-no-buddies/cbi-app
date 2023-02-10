@@ -26,7 +26,8 @@
           {{include './components/input_text.html', {type: 'text', name: 'personal_email', value: lead} }}
           {{include './components/input_text.html', {type: 'text', name: 'work_email', value: lead} }}
           {{include './components/textarea.html', { name: 'description', value: lead} }}
-          {{include './components/select.html', { name: 'status', value: lead, options: LEAD_STATUS} }}
+          <input type="hidden" name="status" id='status' value="{{lead.status}}"/>
+          <input type="hidden" name="hierarchy" id='hierarchy' value="{{lead.hierarchy}}"/>
         </div>
 
         <div class="card-footer">
@@ -43,8 +44,14 @@
   
   <div class="col-md-8">
     <div class="card">
+      <div class="card-header">
+        <h3 class="card-title font-weight-bold">
+          <i class="fas fa-history"></i> Logs
+        </h3>
+      </div>
+      
       <div class="card-body">
-        LOGS
+        {{include './components/log_tabs.html', {update_logs: update_logs} }}
       </div>
     </div>
   </div>

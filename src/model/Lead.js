@@ -5,6 +5,7 @@ const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
 const { User } = require('../model/User');
 
 const HIERARCHY = {
+  CANCELED: 'CANCELED',
   NEW: 'NEW',
   FIRST_MEETING: 'FIRST_MEETING',
   SECOND_MEETING: 'SECOND_MEETING',
@@ -289,6 +290,7 @@ leadSchema.pre('save', async function (next) {
       }
     }
   }
+  console.log(req)
 
   // //think of module
   if(this.updated_by) {

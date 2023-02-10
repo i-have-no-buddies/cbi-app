@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongodb');
 const moment = require('moment-timezone');
+const server = require('../server');
 
 const { Lead, HIERARCHY, LEAD_STATUS } = require('../model/Lead');
 const { StatusLog } = require('../model/StatusLog');
@@ -71,7 +72,7 @@ exports.update = async (req, res) => {
     await lead.save();
     if (server.emitter) {
       server.emitter.emit('reloadEvent', {
-        page: '/client-management',
+        page: '/calendar',
         _id: req.session.AUTH._id.toString(),
       });
     }
@@ -101,6 +102,14 @@ exports.update_status = async (req, res) => {
     status_log.created_by = req.session.AUTH._id;
     await status_log.save();
 
+    console.log(server.emitter)
+    if (server.emitter) {
+      server.emitter.emit('reloadEvent', {
+        page: '/calendar',
+        _id: req.session.AUTH._id.toString(),
+      });
+    }
+
     return res.redirect('/initial-meeting');
   } catch (error) {
     console.error(error);
@@ -119,6 +128,14 @@ exports.meeting_update = async (req, res) => {
     status_log.updated_by = req.session.AUTH._id;
     await status_log.save();
 
+    
+    if (server.emitter) {
+      server.emitter.emit('reloadEvent', {
+        page: '/calendar',
+        _id: req.session.AUTH._id.toString(),
+      });
+    }
+    
     return res.redirect('/initial-meeting');
   } catch (error) {
     console.error(error);

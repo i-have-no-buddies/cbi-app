@@ -110,6 +110,9 @@ art.template.defaults.imports.strReplace = (str, replace = '_') => {
 };
 
 art.template.defaults.imports.leadHierarchyBadge = (hierarchy) => {
+  if (hierarchy == HIERARCHY.CANCELED) {
+    return `<span class="badge bg-danger">CANCELED</span>`;
+  }
   if (hierarchy == HIERARCHY.NEW) {
     return `<span class="badge bg-teal">NEW</span>`;
   }

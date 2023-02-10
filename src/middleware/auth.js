@@ -203,7 +203,10 @@ exports.authenticated = async (req, res, next) => {
       delete NEW_LEAD_STATUS.NEW;
       delete NEW_LEAD_STATUS.FIRST_MEETING;
       delete NEW_LEAD_STATUS.SECOND_MEETING;
+
+      delete HIERARCHY.CANCELED;
     }
+    
     
 
     /**

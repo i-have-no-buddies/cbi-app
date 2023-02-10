@@ -3,7 +3,7 @@ const { ObjectId } = require('mongodb')
 const mongoosePaginate = require('mongoose-paginate-v2')
 const { logDescriptionFormater } = require('../utils/helper');
 const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
-const { Lead, HIERARCHY, LEAD_STATUS } = require('../model/Lead');
+const { Lead, HIERARCHY, LEAD_STATUS, OUTCOME } = require('../model/Lead');
 const { User } = require('../model/User');
 
 
@@ -221,6 +221,7 @@ statusLogSchema.pre('save', async function (next) {
     if(lead.hierarchy == HIERARCHY.NEW) {  
       if(this['outcome'] == OUTCOME.CANCELED) {
         //what to do if canceled
+        lead.hierarchy = HIERARCHY.CANCELED
       }
       else if(this.is_first_meeting == true && lead.first_meeting == undefined) {
         tag_status = LEAD_STATUS.FIRST_MEETING.toLowerCase()

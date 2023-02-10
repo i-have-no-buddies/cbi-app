@@ -150,7 +150,12 @@ const schemaTagsFormater = (tags, data, field) => {
     if(field == 'upload_date') {
       tags = [
         ...tags,
-        ...ngramsAlgov2(data.format("YYYY-MM-DD"), field),
+        ...ngramsAlgov2(moment(data).format("YYYY-MM-DD"), field),
+      ];
+    } else if (field == 'allocated_to') {
+      tags = [
+        ...tags,
+        ...ngramsAlgov2(data.toString(), field),
       ];
     } else {
       tags = [

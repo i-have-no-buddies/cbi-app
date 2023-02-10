@@ -4,11 +4,14 @@ const csv = require('@fast-csv/parse');
 const { fork } = require('child_process');
 const moment = require('moment-timezone');
 
+const server = require('../server');
 const { LeadBatch, UPLOAD_STATUS, FILE_HEADERS } = require('../model/LeadBatch');
+const { LeadUpdateLog } = require('../model/LeadUpdateLog');
 const { Lead, LEAD_STATUS, HIERARCHY } = require('../model/Lead');
 const { User } = require('../model/User');
 const {
   ngramsAlgo,
+  arrayChunks,
   tagsSearchFormater,
   queryParamReturner,
   validateUpload,
@@ -53,7 +56,6 @@ exports.index = async (req, res) => {
       type: type,
       search: query_params,
       IFA: ifas,
-      LEAD_STATUS,
     });
   } catch (error) {
     console.error(error);
@@ -122,6 +124,8 @@ exports.new_upload = async (req, res) => {
         
         if(valid && allocated_to != null) {
           row.allocated_to = allocated_to._id.toString();
+          row.uploaded_meeting.created_by = allocated_to._id.toString();
+          
           row.status = LEAD_STATUS.NEW;
           row.hierarchy = HIERARCHY.NEW;
           leads.push(row);
@@ -215,9 +219,12 @@ exports.edit = async (req, res) => {
   try {
     const id = req.params.id;
     const lead = await Lead.findById(id).lean();
+    const lead_logs = await LeadUpdateLog.getUpdateLogs(id);
+    const update_logs = arrayChunks(lead_logs);
+
     return res.render('lead_management_edit', {
       lead,
-      LEAD_STATUS,
+      update_logs,
     });
   } catch (error) {
     console.error(error);

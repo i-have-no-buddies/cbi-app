@@ -100,6 +100,7 @@
                 <th><i class="fas fa-briefcase"></i> Job Title</th>
                 <th><i class="far fa-building"></i> Company</th>
                 <th><i class="fas fa-mobile-alt"></i> Mobile</th>
+                <th><i class="fas fa-stream"></i> Hierarchy</th>
                 <th><i class="far fa-id-badge"></i> Status</th>
               </tr>
             </thead>
@@ -133,6 +134,7 @@
                 <td><i class="fas fa-briefcase"></i> {{$value.job_title}}</td>
                 <td><i class="far fa-building"></i> {{$value.company}}</td>
                 <td><i class="fas fa-mobile-alt"></i> {{$value.mobile}}</td>
+                <td>{{@$value.hierarchy | leadHierarchyBadge}}</td>
                 <td>{{@$value.status | leadStatusBadge}}</td>
               </tr>
               {{/each}}
@@ -151,14 +153,17 @@
                 <div class="card-footer p-0">
                   <ul class="nav flex-column">
                     <li class="nav-item">
-                      <a href="/lead-management?page=1&type=lead&batch={{$value.id}}&status=ACTIVE" class="nav-link">
+                      <a href="/lead-management?page=1&type=lead&batch={{$value.id}}" class="nav-link">
                         UPLOADED <span class="float-right badge bg-teal">{{$value.uploaded}}</span>
                       </a>
                     </li>
                     <li class="nav-item">
-                      <a href="/lead-management?page=1&type=lead&batch={{$value.id}}&status=INACTIVE" class="nav-link">
+                      <!--a href="/lead-management?page=1&type=lead&batch={{$value.id}}&status=INACTIVE" class="nav-link">
                         INVALID <span class="float-right badge bg-maroon">{{$value.invalid}}</span>
-                      </a>
+                      </a-->
+                      <label class="nav-link">
+                        INVALID <span class="float-right badge bg-maroon">{{$value.invalid}}</span>
+                      </label>
                     </li>
                   </ul>
                 </div>

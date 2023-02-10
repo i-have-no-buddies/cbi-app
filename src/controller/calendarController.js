@@ -29,6 +29,7 @@ exports.index = async (req, res) => {
   let search_outcome = outcome == 'BOOKED' ? '' : outcome
   const outcome_list = {'BOOKED':'BOOKED', ...OUTCOME}
 
+  
   var meetings = await StatusLog.find({
     status_log: 'MEETING',
     outcome: search_outcome,
