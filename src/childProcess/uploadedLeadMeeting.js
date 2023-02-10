@@ -8,7 +8,7 @@ const date_format = 'MM/DD/YYYY hh:mm A'
 const time_format = 'YYMMDDhhA'
 
 process.on('message', async ({ lead_batch }) => {
-  var leads = await Lead.find({lead_batch_id: ObjectId(lead_batch._id)}).select('_id uploaded_meeting').lean()
+  var leads = await Lead.find({lead_batch_id: ObjectId(lead_batch._id)}).select('_id uploaded_meeting action_page').lean()
   
   for(let doc of leads) {
     let datetime = moment(`${doc.uploaded_meeting.meeting_date} ${doc.uploaded_meeting.meeting_time}`, date_format);
@@ -19,6 +19,7 @@ process.on('message', async ({ lead_batch }) => {
     new_status_log.status_log = doc.uploaded_meeting.status_log;
     new_status_log.note = doc.uploaded_meeting.note; 
     new_status_log.address = doc.uploaded_meeting.address;
+    new_status_log.action_page = doc.action_page;
     new_status_log.datetime = datetime;
     new_status_log.meeting_time = datetime.format(time_format);
     new_status_log.save({ uploaded: true });

@@ -69,6 +69,7 @@ exports.update = async (req, res) => {
 
     lead.updated_at = new Date();
     lead.updated_by = req.session.AUTH._id;
+    lead.action_page = req.route.path;
     await lead.save();
     if (server.emitter) {
       server.emitter.emit('reloadEvent', {
@@ -100,6 +101,7 @@ exports.update_status = async (req, res) => {
     status_log.updated_at = new Date();
     status_log.updated_by = req.session.AUTH._id;
     status_log.created_by = req.session.AUTH._id;
+    status_log.action_page = req.route.path;
     await status_log.save();
 
     console.log(server.emitter)
@@ -126,6 +128,7 @@ exports.meeting_update = async (req, res) => {
     status_log.outcome_date = new Date();
     status_log.updated_at = new Date();
     status_log.updated_by = req.session.AUTH._id;
+    status_log.action_page = req.route.path;
     await status_log.save();
 
     

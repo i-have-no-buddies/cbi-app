@@ -114,7 +114,7 @@ const logDescriptionFormater = (user, did, what, from = '') => {
   let description = getFullName(user) + ' ';
   description += did.toLowerCase() + ' ';
   description += what + ' ';
-  description += from + ' ';
+  description += 'using ' + from + ' ';
   return description.trim();
 };
 

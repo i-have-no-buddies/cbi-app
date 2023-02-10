@@ -3,7 +3,7 @@ const { ObjectId } = require('mongodb')
 const mongoosePaginate = require('mongoose-paginate-v2')
 const { logDescriptionFormater } = require('../utils/helper');
 const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
-const { Lead, HIERARCHY, LEAD_STATUS, OUTCOME } = require('../model/Lead');
+const { Lead, HIERARCHY, LEAD_STATUS, OUTCOME, MODULE_PAGES } = require('../model/Lead');
 const { User } = require('../model/User');
 
 
@@ -163,6 +163,15 @@ const statusLogSchema = new mongoose.Schema({
       return outcome_date;
     },
   },
+  action_page: {
+    type: String,
+    trim: true,
+    default: '',
+    set: function (action_page) {
+      this.old_action_page = this.action_page;
+      return action_page;
+    },
+  },
 })
 
 
@@ -284,9 +293,11 @@ statusLogSchema.pre('save', async function (next) {
   // think of module
   let user = await User.findById(this.updated_by).lean()
   var log_type = this.isNew? LOG_TYPE.CREATE : LOG_TYPE.UPDATE
-  var description = logDescriptionFormater(user, log_type, this.status_log)
+  var description = logDescriptionFormater(user, log_type, this.status_log, MODULE_PAGES[this['action_page']])
+  
 
   //create a log
+  lead_update_log.module = MODULE_PAGES[this['action_page']]
   lead_update_log.lead_id = this['lead_id'],
   lead_update_log.status_log_id = this['_id'],
   lead_update_log.log_type = log_type;

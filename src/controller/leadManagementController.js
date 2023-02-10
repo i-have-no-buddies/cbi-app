@@ -97,6 +97,7 @@ exports.new_upload = async (req, res) => {
       .on('error', (error) => console.error(error))
       .on('data', async (row) => {
         //append datas needed
+        row.action_page = req.route.path
         row.lead_batch_id = lead_batch._id;
         row.created_by = req.session.AUTH._id;
         row.updated_by = req.session.AUTH._id;
@@ -208,6 +209,7 @@ exports.create = async (req, res) => {
       created_by: req.session.AUTH._id,
       updated_at: new Date(),
       updated_by: req.session.AUTH._id,
+      action_page: req.route.path
     });
     await lead.save();
     return res.redirect('/lead-management');
@@ -242,6 +244,10 @@ exports.update = async (req, res) => {
         lead[property] = req.body[property];
       }
     }
+    
+    lead.updated_at = new Date();
+    lead.updated_by = req.session.AUTH._id;
+    lead.action_page = req.route.path;
     await lead.save();
     if (server.emitter) {
       server.emitter.emit('reloadEvent', {

@@ -4,6 +4,24 @@ const { schemaTagsFormater, logDescriptionFormater } = require('../utils/helper'
 const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
 const { User } = require('../model/User');
 
+const MODULE_PAGES = {
+  '/initial-meeting/edit/:id': 'Initial Meeting',
+  '/initial-meeting/update': 'Initial Meeting',
+  '/initial-meeting/update-status': 'Initial Meeting',
+  '/initial-meeting/meeting-update': 'Initial Meeting',
+  '/lead/edit/:id': 'Lead',
+  '/lead/update': 'Lead',
+  '/lead/edit-logs/:_id': 'Lead',
+  '/lead/update-status': 'Lead',
+  '/lead/meeting-update': 'Lead',
+  '/lead-management/upload': 'Lead Management',
+  '/lead-management/new_upload': 'Lead Management',
+  '/lead-management/edit/:id': 'Lead Management',
+  '/lead-management/update': 'Lead Management',
+  '/lead-management/add': 'Lead Management',
+  '/lead-management/create': 'Lead Management',
+};
+
 const HIERARCHY = {
   CANCELED: 'CANCELED',
   NEW: 'NEW',
@@ -191,6 +209,15 @@ const leadSchema = new mongoose.Schema({
       return status;
     },
   },
+  action_page: {
+    type: String,
+    trim: true,
+    default: '',
+    set: function (action_page) {
+      this.old_action_page = this.action_page;
+      return action_page;
+    },
+  },
   created_by: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -295,7 +322,8 @@ leadSchema.pre('save', async function (next) {
   if(this.updated_by) {
     let user = await User.findById(this.updated_by).lean()
     lead_update_log.log_type = this.isNew? LOG_TYPE.CREATE : LOG_TYPE.UPDATE
-    lead_update_log.description = logDescriptionFormater(user, lead_update_log.log_type, 'Lead Information')
+    lead_update_log.module = MODULE_PAGES[this.action_page]
+    lead_update_log.description = logDescriptionFormater(user, lead_update_log.log_type, 'LEAD', MODULE_PAGES[this.action_page])
     lead_update_log.created_by = this.updated_by;
   }
 
@@ -355,7 +383,8 @@ leadSchema.post('insertMany', async function (docs, next) {
     if(doc.updated_by) {
       let user = await User.findById(doc.updated_by).lean()
       lead_update_log.log_type = LOG_TYPE.CREATE
-      lead_update_log.description = logDescriptionFormater(user, LOG_TYPE.CREATE, 'Lead Information')
+      lead_update_log.module = MODULE_PAGES[doc.action_page]
+      lead_update_log.description = logDescriptionFormater(user, LOG_TYPE.CREATE, 'LEAD', MODULE_PAGES[doc.action_page])
       lead_update_log.created_by = doc.updated_by;
     }
 
@@ -376,6 +405,7 @@ leadSchema.plugin(mongoosePaginate);
 
 module.exports = {
   Lead: mongoose.model('Lead', leadSchema),
+  MODULE_PAGES,
   HIERARCHY,
   LEAD_STATUS,
   OUTCOME,
