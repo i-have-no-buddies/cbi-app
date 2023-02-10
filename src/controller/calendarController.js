@@ -41,7 +41,7 @@ exports.index = async (req, res) => {
   .lean()
 
   
-  return res.render('celendar', {
+  return res.render('calendar', {
     meetings,
     init_date,
     outcome_list,

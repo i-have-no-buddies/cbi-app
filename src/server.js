@@ -158,6 +158,6 @@ app.use((req, res) => {
 /**
  * start server
  */
-app.listen(APP_PORT, APP_HOST, () => {
-  console.log(`server is running on port ${APP_PORT}`);
-});
+http.listen(APP_PORT, APP_HOST, () =>
+  console.log(`server is running on port ${APP_PORT}`)
+);

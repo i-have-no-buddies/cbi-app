@@ -228,6 +228,10 @@ first meeting -> second meeting -> client
   [✓] - all delete and update (lead management)
 *lead management
   [x] - update lead
-  [x] - update status log 
+  [x] - update status log
+*meeting
+- remove no show and meeting sat
+- show (no show and meeting sat) during the scheduled meeting date and time
 
 // product add in tags?
+? required fields

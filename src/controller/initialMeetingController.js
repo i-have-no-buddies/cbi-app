@@ -73,6 +73,10 @@ exports.update = async (req, res) => {
     await lead.save();
     if (server.emitter) {
       server.emitter.emit('reloadEvent', {
+        page: '/initial-meeting',
+        _id: req.session.AUTH._id.toString(),
+      });
+      server.emitter.emit('reloadEvent', {
         page: '/calendar',
         _id: req.session.AUTH._id.toString(),
       });
@@ -104,8 +108,11 @@ exports.update_status = async (req, res) => {
     status_log.action_page = req.route.path;
     await status_log.save();
 
-    console.log(server.emitter)
     if (server.emitter) {
+      server.emitter.emit('reloadEvent', {
+        page: '/initial-meeting',
+        _id: req.session.AUTH._id.toString(),
+      });
       server.emitter.emit('reloadEvent', {
         page: '/calendar',
         _id: req.session.AUTH._id.toString(),
@@ -133,6 +140,10 @@ exports.meeting_update = async (req, res) => {
 
     
     if (server.emitter) {
+      server.emitter.emit('reloadEvent', {
+        page: '/initial-meeting',
+        _id: req.session.AUTH._id.toString(),
+      });
       server.emitter.emit('reloadEvent', {
         page: '/calendar',
         _id: req.session.AUTH._id.toString(),
