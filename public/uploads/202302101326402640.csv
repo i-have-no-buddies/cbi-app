@@ -1,0 +1,26 @@
+first_name,last_name,job_title,company,profile_link,gender,business_no,mobile,second_mobile,personal_email,work_email,nationality,description,ifa_email,meeting_date,meeting_time,meeting_address,meeting_note
+Percy,Casey,Marketing Coordinator,Advance Auto Parts,http://127.0.0.1:3000/lead-management/upload,male,,`639072712422,,test1@gmail.com,,British,sample desc,ejer@email.com,2/14/2023,2:00 PM,Mall,Test meeting Note
+Al,Kelly,Medical Assistant,State Farm Insurance,,female,,number,,test2@gmail.com,,British,sample desc,,2/14/2023,9:00 AM,Mall,Test meeting Note
+George,Brock,Web Designer,DISH Network,http://127.0.0.1:3000/lead-management/upload,male,,`639072712424,,,test3@gmail.com,British,sample desc,ejer@email.com,2/14/2023,3:00 PM,Mall,Test meeting Note
+Nicole,Warner,Dog Trainer,J.B. Hunt Transport Services,http://127.0.0.1:3000/lead-management/upload,female,`639072712423,,,,test4@gmail.com,British,sample desc,ejer@email.com,2/14/2023,4:00 PM,Mall,Test meeting Note
+Cecelia,Powers,President of Sales,Abbott Laboratories,,male,,,,test5@gmail.com,,British,sample desc,ejer@email.com,,10:00 AM,Mall,Test meeting Note
+Sheri,Castillo,Nursing Assistant,Beacon Roofing Supply,http://127.0.0.1:3000/lead-management/upload,female,,`971527810749,,test6@gmail.com,,British,sample desc,ejer@email.com,2/14/2023,11:00 AM,Mall,Test meeting Note
+Justin,Roberts,Project Manager,Regeneron Pharmaceuticals,http://127.0.0.1:3000/lead-management/upload,male,number,,,,,British,sample desc,ejer@email.com,2/14/2023,1:00 PM,Mall,Test meeting Note
+Jeannette,Floyd,Librarian,Cisco Systems,http://127.0.0.1:3000/lead-management/upload,female,,`971527810748,,,test7@gmail.com,British,sample desc,ejer@email.com,2/14/2023,5:00 PM,Mall,Test meeting Note
+Ida,Kelley,Project Manager,Dillard's,http://127.0.0.1:3000/lead-management/upload,male,`971527810747,,,test8@gmail.com,,British,sample desc,ejer@email.com,2/15/2023,9:00 AM,Mall,Test meeting Note
+Dora,Bass,Account Executive,Sanmina,http://127.0.0.1:3000/lead-management/upload,female,,`639072712488829,,test9@gmail.com,,British,sample desc,ejer@email.com,2/15/2023,10:00 AM,Mall,Test meeting Note
+Marlon,Norton,Marketing Coordinator,Hershey,http://127.0.0.1:3000/lead-management/upload,male,,`639072712428,`639072712427,test10@gmail.com,,British,sample desc,ejer@email.com,2/15/2023,11:00 AM,Mall,Test meeting Note
+Erica,French,Medical Assistant,NRG Energy,http://127.0.0.1:3000/lead-management/upload,female,`639072712428,,,,test11@gmail.com,British,sample desc,marvin@email.com,2/15/2023,1:00 PM,Mall,Test meeting Note
+Lynn,Medina,Web Designer,First American Financial,http://127.0.0.1:3000/lead-management/upload,male,,`639072712425,,,test12@gmail.com,British,sample desc,marvin@email.com,2/15/2023,2:00 PM,Mall,Test meeting Note
+Nicolas,Allison,Dog Trainer,Nationwide,http://127.0.0.1:3000/lead-management/upload,female,,,,,test13@gmail.com,British,sample desc,marvin@email.com,2/15/2023,3:00 PM,Mall,Test meeting Note
+Randal,Arnold,President of Sales,Pfizer,http://127.0.0.1:3000/lead-management/upload,male,`639072712424,,`639072712423,,test14@gmail.com,British,sample desc,marvin@email.com,2/15/2023,4:00 PM,Mall,Test meeting Note
+Margie,Banks,Nursing Assistant,AECOM,http://127.0.0.1:3000/lead-management/upload,female,,`639072712422,,,test15@gmail.com,British,sample desc,marvin@email.com,2/15/2023,5:00 PM,Mall,Test meeting Note
+Constance,Clarke,Project Manager,Aflac,http://127.0.0.1:3000/lead-management/upload,male,,`639072712421,,test16@gmail.com,,British,sample desc,marvin@email.com,2/16/2023,9:00 AM,Mall,Test meeting Note
+Ramiro,Frank,Librarian,United Parcel Service,http://127.0.0.1:3000/lead-management/upload,female,,`639072712438,,test17@gmail.com,,British,sample desc,marvin@email.com,2/16/2023,10:00 AM,Mall,Test meeting Note
+Jose,Phillips,Project Manager,Lithia Motors,http://127.0.0.1:3000/lead-management/upload,male,,`639072712448,,test18@gmail.com,,British,sample desc,marvin@email.com,2/16/2023,11:00 AM,Mall,Test meeting Note
+Harry,Sanchez,Account Executive,PVH,http://127.0.0.1:3000/lead-management/upload,female,,`971527810757,,,test19@gmail.com,British,sample desc,marvin@email.com,2/16/2023,1:00 PM,Mall,Test meeting Note
+Ernesto,Wilson,Marketing Coordinator,Blackstone Group,http://127.0.0.1:3000/lead-management/upload,male,,`971527810747,,,test20@gmail.com,British,sample desc,marvin@email.com,2/16/2023,2:00 PM,Mall,Test meeting Note
+Leslie,Marshall,Medical Assistant,UGI,http://127.0.0.1:3000/lead-management/upload,female,,`971527810747,,test21@gmail.com,,British,sample desc,ejer@email.com,2/16/2023,3:00 PM,Mall,Test meeting Note
+Sophia,Little,Web Designer,TreeHouse Foods,http://127.0.0.1:3000/lead-management/upload,male,`971527810747,,,test22@gmail.com,,British,sample desc,ejer@email.com,2/16/2023,4:00 PM,Mall,Test meeting Note
+Melody,Copeland,Dog Trainer,Facebook,http://127.0.0.1:3000/lead-management/upload,female,`971527810747,,,test23@gmail.com,,British,sample desc,ejer@email.com,2/16/2023,5:00 PM,Mall,Test meeting Note
+Jan,Stone,President of Sales,Public Service Enterprise Group,http://127.0.0.1:3000/lead-management/upload,male,`971527810747,,`971527810747,test24@gmail.com,,British,sample desc,ejer@email.com,2/16/2023,6:00 PM,Mall,Test meeting Note
