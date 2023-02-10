@@ -1,32 +1,36 @@
 {{extend './layout.html'}} {{block 'content'}}
 <div class="card ">
-  <form action="/lead-management/create" method="post">
-    <div class="card-body">
-      {{include './components/input_text.html', {type: 'text', name: 'first_name', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'last_name', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'nationality', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'country', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'city', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'job_title', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'company', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'profile_link', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'gender', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'business_no', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'mobile', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'second_mobile', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'personal_email', value: lead} }}
-      {{include './components/input_text.html', {type: 'text', name: 'work_email', value: lead} }}
-      {{include './components/textarea.html', { name: 'description', value: lead} }}
-    </div>
-    <div class="card-footer">
-      <div class="form-group">
-        <button 
-          type="submit" 
-          class="btn bg-teal btn-block font-weight-bold"
-        ><i class="fas fa-save"></i> Create Lead</button>
+  <form id='lead_form' action="/lead-management/create" method="post">
+    <div class="card-body row">
+      <div class='col-md-6'>
+        {{include './components/input_text.html', {type: 'text', name: 'first_name', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'nationality', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'country', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'city', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'gender', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'business_no', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'mobile', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'second_mobile', value: lead} }}
+      </div>
+      <div class='col-md-6'>
+        {{include './components/input_text.html', {type: 'text', name: 'last_name', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'job_title', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'company', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'profile_link', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'personal_email', value: lead} }}
+        {{include './components/input_text.html', {type: 'text', name: 'work_email', value: lead} }}
+        {{include './components/textarea.html', { name: 'description', value: lead} }}
       </div>
     </div>
   </form>
+  <div class="card-footer">
+    <div class="form-group">
+      <button 
+      onclick='submitAdd()'
+        class="btn bg-teal btn-block font-weight-bold"
+      ><i class="fas fa-save"></i> Create Lead</button>
+    </div>
+  </div>
 </div>
 {{/block}}{{block 'javascript'}}
 <script>
@@ -38,6 +42,23 @@
   {{each errors}}
     handleError(`{{$index}}`,`{{$value}}`)
   {{/each}}
+
+  function submitAdd() {
+    Swal.fire({
+      title: 'Do you want to Create this Lead?',
+      icon: 'question',
+      showCloseButton: true,
+      showCancelButton: true,
+      confirmButtonText: '<i class="fas fa-save"></i> Create',
+      confirmButtonColor: '#20c997',
+      cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+      cancelButtonColor: '#d81b60',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById("lead_form").submit();
+      }
+    });
+  }
   
 </script>
 {{/block}}

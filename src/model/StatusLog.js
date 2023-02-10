@@ -212,6 +212,7 @@ statusLogSchema.pre('save', async function (next) {
     }
   }
   
+  //triggered when user namunaly updates not using uploader
   if(manual) {
     //update the lead
     let tag_status = this['status_log'].toLowerCase()
@@ -277,7 +278,7 @@ statusLogSchema.pre('save', async function (next) {
       updated_by: this.updated_by,
       tags: new_tag
     }
-
+    // use update to not trigger the pre/post save
     await Lead.findOneAndUpdate({_id: ObjectId(this['lead_id'])}, {$set: lead_update})
   }
   // think of module

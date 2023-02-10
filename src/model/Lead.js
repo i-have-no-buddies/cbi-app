@@ -290,7 +290,6 @@ leadSchema.pre('save', async function (next) {
       }
     }
   }
-  console.log(req)
 
   // //think of module
   if(this.updated_by) {
