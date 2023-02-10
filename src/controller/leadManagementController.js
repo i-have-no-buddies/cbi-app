@@ -206,6 +206,8 @@ exports.create = async (req, res) => {
     const lead = new Lead({
       ...req.body,
       created_by: req.session.AUTH._id,
+      updated_at: new Date(),
+      updated_by: req.session.AUTH._id,
     });
     await lead.save();
     return res.redirect('/lead-management');

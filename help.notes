@@ -215,17 +215,17 @@ first meeting -> second meeting -> client
   [x] - product, meeting date (current meeting)
   [✓] - inital meeting data once meeting cancelled should be reallocated
 *leads filter
-  [✓] - name, email, contact no, product, status (hierarchy), last update status
-  [x] - meeting date (current meeting)
+  [✓] - name, email, contact no,  status (hierarchy), last update status
+  [x] - product, meeting date (current meeting)
 *bdm leads filter
   [x] - name, email, contact no, product, meeting date (current meeting), status (hierarchy), last update status
 *lead management filter
-  [✓] - name, email, contact no, product, upload date, allocated, status (hierarchy), last update status
-  [x] - meeting date (current meeting)
+  [✓] - name, email, contact no, upload date, allocated, status (hierarchy), last update status
+  [x] - product, meeting date (current meeting)
 *sweetalert confirmation
   [✓] - all delete and update (inital meeting)
   [✓] - all delete and update (lead)
-  [x] - all delete and update
+  [✓] - all delete and update (lead management)
 *lead management
   [x] - update lead
   [x] - update status log
