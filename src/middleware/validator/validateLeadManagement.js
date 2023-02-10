@@ -1,9 +1,10 @@
 const { LEAD_STATUS } = require('../../model/Lead')
+const { User } = require('../../model/User')
 const { check, validationResult } = require('express-validator')
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance()
 const { errorFormater } = require('../../utils/helper.js')
 
-exports.validateLeadAdd = [
+exports.validateLeadAddwithMeeting = [
   check('first_name')
     .trim()
     .notEmpty()
@@ -127,13 +128,37 @@ exports.validateLeadAdd = [
     .notEmpty()
     .withMessage('Description is required.')
     .bail(),
-  function (req, res, next) {
+  check('note')
+    .trim()
+    .notEmpty()
+    .withMessage('Note is required.')
+    .bail(),
+  check('datetime')
+    .trim()
+    .notEmpty()
+    .withMessage('Datetime is required.')
+    .bail(),
+  check('address')
+    .trim()
+    .notEmpty()
+    .withMessage('Address is required.')
+    .bail(),
+  check('allocated_to')
+    .custom(async (value) => {
+      if(!value) throw new Error('Allocated To is required.')
+      let data = await User.findById(value)
+      if(!data) throw new Error('Allocated To Invalid.')
+    })
+    .bail(),
+    async function  (req, res, next) {
     const errors = validationResult(req)
+    const ifas = await User.getAllUsers().lean();
     let error_results
     if (!errors.isEmpty()) {
       error_results = errorFormater(errors)
       return res.render('lead_management_add', {
         lead: req.body,
+        IFA: ifas,
         errors: error_results,
       })
     }

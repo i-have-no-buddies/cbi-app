@@ -8,6 +8,7 @@ const server = require('../server');
 const { LeadBatch, UPLOAD_STATUS, FILE_HEADERS } = require('../model/LeadBatch');
 const { LeadUpdateLog } = require('../model/LeadUpdateLog');
 const { Lead, LEAD_STATUS, HIERARCHY } = require('../model/Lead');
+const { StatusLog } = require('../model/StatusLog');
 const { User } = require('../model/User');
 const {
   ngramsAlgo,
@@ -193,9 +194,10 @@ exports.new_upload = async (req, res) => {
   }
 };
 
-exports.add = (req, res) => {
+exports.add = async (req, res) => {
   try {
-    return res.render('lead_management_add');
+    const ifas = await User.getAllUsers().lean();
+    return res.render('lead_management_add', {IFA: ifas});
   } catch (error) {
     console.error(error);
     return res.render('500');
@@ -212,6 +214,23 @@ exports.create = async (req, res) => {
       action_page: req.route.path
     });
     await lead.save();
+        
+    const date_format = 'YYYY-MM-DD hh:mm A'
+    const time_format = 'YYMMDDhhA'
+    let datetime = moment(`${req.body.datetime}`, date_format);
+
+    const new_status_log = new StatusLog();
+    new_status_log.created_by = req.session.AUTH._id;
+    new_status_log.updated_by = req.session.AUTH._id;
+    new_status_log.lead_id = lead.id;
+    new_status_log.status_log = req.body.status_log;
+    new_status_log.note = req.body.note; 
+    new_status_log.address = req.body.address;
+    new_status_log.action_page = req.route.path;
+    new_status_log.datetime = datetime;
+    new_status_log.meeting_time = datetime.format(time_format);
+    new_status_log.save({ uploaded: true });
+
     return res.redirect('/lead-management');
   } catch (error) {
     console.error(error);

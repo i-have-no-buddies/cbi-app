@@ -4,7 +4,7 @@ const {
 } = require('../middleware/validator/validateUploadLead');
 const {
   validateLeadEdit,
-  validateLeadAdd,
+  validateLeadAddwithMeeting,
 } = require('../middleware/validator/validateLeadManagement');
 
 const auth = require('../middleware/auth');
@@ -39,7 +39,7 @@ module.exports = (app, setOnlineUser) => {
     '/lead-management/create',
     auth.authenticated,
     setOnlineUser,
-    validateLeadAdd,
+    validateLeadAddwithMeeting,
     leadManagementController.create
   );
   app.get(

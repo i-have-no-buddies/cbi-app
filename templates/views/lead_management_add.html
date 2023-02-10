@@ -1,25 +1,57 @@
 {{extend './layout.html'}} {{block 'content'}}
 <div class="card ">
   <form id='lead_form' action="/lead-management/create" method="post">
-    <div class="card-body row">
-      <div class='col-md-6'>
-        {{include './components/input_text.html', {type: 'text', name: 'first_name', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'nationality', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'country', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'city', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'gender', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'business_no', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'mobile', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'second_mobile', value: lead} }}
+    <div class="card-body">
+      <h6>Lead Info</h6>
+      <div class='row'>
+        <div class='col-md-6'>
+          {{include './components/input_text.html', {type: 'text', name: 'first_name', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'nationality', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'country', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'city', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'gender', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'business_no', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'mobile', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'second_mobile', value: lead} }}
+        </div>
+        <div class='col-md-6'>
+          {{include './components/input_text.html', {type: 'text', name: 'last_name', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'job_title', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'company', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'profile_link', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'personal_email', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'work_email', value: lead} }}
+          {{include './components/textarea.html', { name: 'description', value: lead} }}
+        </div>
       </div>
-      <div class='col-md-6'>
-        {{include './components/input_text.html', {type: 'text', name: 'last_name', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'job_title', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'company', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'profile_link', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'personal_email', value: lead} }}
-        {{include './components/input_text.html', {type: 'text', name: 'work_email', value: lead} }}
-        {{include './components/textarea.html', { name: 'description', value: lead} }}
+      <hr>
+      <h6>Initial Meeting Info</h6>
+      <div class='row'>
+        <div class='col-md-6'>
+          {{include './components/select_id.html', { name: 'allocated_to', options: IFA, value: lead } }}
+          {{include './components/input_datetimev2.html', { name: 'datetime', value: lead} }}
+          {{include './components/input_text.html', {type: 'text', name: 'address', value: lead} }}
+        </div>
+        <div class='col-md-6'>
+          <input type='hidden' id='status_log' name='status_log' value='MEETING'>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-append">
+                <span class="input-group-text text-sm"
+                  >{{'status log' | strReplace | strLimit 14}}</span
+                >
+              </div>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                value="MEETING"
+                disabled
+              />
+            </div>
+          </div>
+          
+          {{include './components/textarea.html', { name: 'note', value: lead} }}
+        </div>
       </div>
     </div>
   </form>
@@ -59,6 +91,23 @@
       }
     });
   }
+  
+  $(function () {
+    $('.datetimev2').datetimepicker({
+      formatTime:'h:i A',
+      allowTimes:
+      [
+        '08:00', '09:00', '10:00', '11:00', '12:00', '13:00',
+        '14:00', '15:00', '16:00', '17:00', '18:00', '19:00',
+      ],
+      format:'Y-m-d h:i A',
+      onSelectTime:function(current_time,$input) { 
+        let original = $input.val()
+        $input.blur() 
+        $input.val(original)
+      },
+    });
+  })
   
 </script>
 {{/block}}
