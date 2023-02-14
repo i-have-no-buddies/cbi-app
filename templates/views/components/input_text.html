@@ -12,6 +12,108 @@
       name="{{name}}"
       value="{{if value}}{{value[name]}}{{/if}}"
     />
+    
+    <!-- if business_no -->
+    {{if name == 'business_no'}}
+    <!-- if business has value -->
+    {{if value[name]}}
+    <div class="input-group-append">
+      <span class="input-group-text text-sm" style="width: 40px;">
+        <a href="tel:{{value[name]}}">
+          <i class="fas fa-phone text-teal"></i>
+        </a>
+      </span>
+    </div>
+    <div class="input-group-append">
+      <span class="input-group-text text-sm" style="width: 40px;">
+        <a href="https://api.whatsapp.com/send?phone={{value[name]}}&text=">
+          <i class="fab fa-whatsapp text-teal"></i>
+        </a>
+      </span>
+    </div>
+    {{/if}}
+    <!-- end if business has value -->
+    {{/if}}
+    <!-- end if business_no -->
+
+    <!-- if mobile -->
+    {{if name == 'mobile'}}
+    <!-- if mobile has value -->
+    {{if value[name]}}
+    <div class="input-group-append">
+      <span class="input-group-text text-sm" style="width: 40px;">
+        <a href="tel:{{value[name]}}">
+          <i class="fas fa-phone text-teal"></i>
+        </a>
+      </span>
+    </div>
+    <div class="input-group-append">
+      <span class="input-group-text text-sm" style="width: 40px;">
+        <a href="https://api.whatsapp.com/send?phone={{value[name]}}&text=">
+          <i class="fab fa-whatsapp text-teal"></i>
+        </a>
+      </span>
+    </div>
+    <!-- end if mobile has value -->
+    {{/if}}
+    <!-- end if mobile -->
+    {{/if}}
+
+    <!-- if second_mobile -->
+    {{if name == 'second_mobile'}}
+    <!-- if second_mobile has value -->
+    {{if value[name]}}
+    <div class="input-group-append text-center">
+      <span class="input-group-text text-sm" style="width: 40px;">
+        <a href="tel:{{value[name]}}">
+          <i class="fas fa-phone text-teal"></i>
+        </a>
+      </span>
+    </div>
+    <div class="input-group-append">
+      <span class="input-group-text text-sm" style="width: 40px;">
+        <a href="https://api.whatsapp.com/send?phone={{value[name]}}&text=">
+          <i class="fab fa-whatsapp text-teal"></i>
+        </a>
+      </span>
+    </div>
+    <!-- end if second_mobile has value -->
+    {{/if}}
+    <!-- end if second_mobile -->
+    {{/if}}
+
+    <!-- if personal_email -->
+    {{if name == 'personal_email'}}
+    <!-- if personal_email has value -->
+    {{if value[name]}}
+    <div class="input-group-append">
+      <span class="input-group-text text-sm" style="width: 40px;">
+        <a href="mailto:{{value[name]}}">
+          <i class="fas fa-envelope text-teal"></i>
+        </a>
+      </span>
+    </div>
+    <!-- end if personal_email has value -->
+    {{/if}}
+    <!-- end if personal_email -->
+    {{/if}}
+
+    <!-- if work_email -->
+    {{if name == 'work_email'}}
+    <!-- if work_email has value -->
+    {{if value[name]}}
+    <div class="input-group-append">
+      <span class="input-group-text text-sm" style="width: 40px;">
+        <a href="mailto:{{value[name]}}">
+          <i class="fas fa-envelope text-teal"></i>
+        </a>
+      </span>
+    </div>
+    <!-- end if work_email has value -->
+    {{/if}}
+    <!-- end if work_email -->
+    {{/if}}
+
   </div>
   <small class="form-text text-danger" id="{{name}}_error"></small>
 </div>
