@@ -1,16 +1,21 @@
-const mongoose = require('mongoose')
-const { ObjectId } = require('mongodb')
-const mongoosePaginate = require('mongoose-paginate-v2')
+const mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const { logDescriptionFormater } = require('../utils/helper');
 const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
-const { Lead, HIERARCHY, LEAD_STATUS, OUTCOME, MODULE_PAGES } = require('../model/Lead');
+const {
+  Lead,
+  HIERARCHY,
+  LEAD_STATUS,
+  OUTCOME,
+  MODULE_PAGES,
+} = require('../model/Lead');
 const { User } = require('../model/User');
-
 
 const PRODUCTS = {
   CBI: 'CBI',
   PROPERTY: 'PROPERTY',
-}
+};
 const PROGRAMS = {
   UK_PROPERTY: 'UK Property',
   GERMANY_PROPERTY: 'Germany property',
@@ -29,15 +34,10 @@ const PROGRAMS = {
   ANTIGUA: 'Antigua',
   US_EB5: 'US EB5',
   US_E2: 'US E2',
-  US_EB3: 'US EB3'
-}
+  US_EB3: 'US EB3',
+};
 
-
-const LEAD_SCHEMA = [
-  'first_name',
-  'last_name',
-  'status',
-];
+const LEAD_SCHEMA = ['first_name', 'last_name', 'status'];
 
 const EXCLUDED_FIELDS = [
   '_id',
@@ -172,10 +172,9 @@ const statusLogSchema = new mongoose.Schema({
       return action_page;
     },
   },
-})
+});
 
-
-statusLogSchema.pre('save', async function (next) {  
+statusLogSchema.pre('save', async function (next) {
   //used for initial meeting
   const options = this.$__.saveOptions;
   let manual = options.uploaded ? false : true;
@@ -187,16 +186,15 @@ statusLogSchema.pre('save', async function (next) {
   let modified = [];
   const lead_update_log = new LeadUpdateLog();
 
-  
   //add the lead to the lead update logs
   const lead = await Lead.findById(this['lead_id']).lean();
-  LEAD_SCHEMA.forEach(property => {
+  LEAD_SCHEMA.forEach((property) => {
     previous[property] = lead[property] || '';
     current[property] = lead[property] || '';
     if (property == 'status' && manual) {
       modified.push(property);
       current[property] = this['status_log'] || '';
-    } 
+    }
   });
 
   if (this.isNew) {
@@ -220,63 +218,68 @@ statusLogSchema.pre('save', async function (next) {
       }
     }
   }
-  
+
   //triggered when user namunaly updates not using uploader
-  if(manual) {
+  if (manual) {
     //update the lead
-    let tag_status = this['status_log'].toLowerCase()
-    let new_lead_status = this['status_log']
+    let tag_status = this['status_log'].toLowerCase();
+    let new_lead_status = this['status_log'];
 
     //Hierarchy First meeting
-    if(lead.hierarchy == HIERARCHY.NEW) {  
-      if(this['outcome'] == OUTCOME.CANCELED) {
+    if (lead.hierarchy == HIERARCHY.NEW) {
+      if (this['outcome'] == OUTCOME.CANCELED) {
         //what to do if canceled
-        lead.hierarchy = HIERARCHY.CANCELED
-      }
-      else if(this.is_first_meeting == true && lead.first_meeting == undefined) {
-        tag_status = LEAD_STATUS.FIRST_MEETING.toLowerCase()
-        new_lead_status = LEAD_STATUS.FIRST_MEETING
-        
-        lead.first_meeting = new Date()
-        lead.hierarchy = HIERARCHY.FIRST_MEETING
+        lead.hierarchy = HIERARCHY.CANCELED;
+      } else if (
+        this.is_first_meeting == true &&
+        lead.first_meeting == undefined
+      ) {
+        tag_status = LEAD_STATUS.FIRST_MEETING.toLowerCase();
+        new_lead_status = LEAD_STATUS.FIRST_MEETING;
+
+        lead.first_meeting = new Date();
+        lead.hierarchy = HIERARCHY.FIRST_MEETING;
       }
     }
 
     //Hierarchy Second meeting
-    if(lead.hierarchy == HIERARCHY.FIRST_MEETING) { 
-      if(this.is_second_meeting == true && lead.second_meeting == undefined) {
-        tag_status = LEAD_STATUS.SECOND_MEETING.toLowerCase()
-        new_lead_status = LEAD_STATUS.SECOND_MEETING
+    if (lead.hierarchy == HIERARCHY.FIRST_MEETING) {
+      if (this.is_second_meeting == true && lead.second_meeting == undefined) {
+        tag_status = LEAD_STATUS.SECOND_MEETING.toLowerCase();
+        new_lead_status = LEAD_STATUS.SECOND_MEETING;
 
-        lead.second_meeting = new Date()
-        lead.hierarchy = HIERARCHY.SECOND_MEETING
+        lead.second_meeting = new Date();
+        lead.hierarchy = HIERARCHY.SECOND_MEETING;
       }
       //shortcut to client?
-      if(this.status_log == LEAD_STATUS.CLIENT) {
-        tag_status = LEAD_STATUS.CLIENT.toLowerCase()
-        new_lead_status = LEAD_STATUS.CLIENT
+      if (this.status_log == LEAD_STATUS.CLIENT) {
+        tag_status = LEAD_STATUS.CLIENT.toLowerCase();
+        new_lead_status = LEAD_STATUS.CLIENT;
 
-        lead.second_meeting = new Date()
-        lead.client = new Date()
-        lead.hierarchy = HIERARCHY.CLIENT
+        lead.second_meeting = new Date();
+        lead.client = new Date();
+        lead.hierarchy = HIERARCHY.CLIENT;
       }
     }
 
     //Hierarchy Client
-    if(lead.hierarchy == HIERARCHY.SECOND_MEETING) {
-      if(this.status_log == LEAD_STATUS.CLIENT) {
-        tag_status = LEAD_STATUS.CLIENT.toLowerCase()
-        new_lead_status = LEAD_STATUS.CLIENT
+    if (lead.hierarchy == HIERARCHY.SECOND_MEETING) {
+      if (this.status_log == LEAD_STATUS.CLIENT) {
+        tag_status = LEAD_STATUS.CLIENT.toLowerCase();
+        new_lead_status = LEAD_STATUS.CLIENT;
 
-        lead.client = new Date()
-        lead.hierarchy = HIERARCHY.CLIENT
+        lead.client = new Date();
+        lead.hierarchy = HIERARCHY.CLIENT;
       }
     }
 
-
-    let tag_hierarchy = lead.hierarchy.toLowerCase()
-    let new_tag = lead.tags.map(x => (x.tag.includes("[status]") ? {tag: `[status]${tag_status}`}  : x))
-    new_tag = lead.tags.map(x => (x.tag.includes("[hierarchy]") ? {tag: `[hierarchy]${tag_hierarchy}`}  : x))
+    let tag_hierarchy = lead.hierarchy.toLowerCase();
+    let new_tag = lead.tags.map((x) =>
+      x.tag.includes('[status]') ? { tag: `[status]${tag_status}` } : x
+    );
+    new_tag = lead.tags.map((x) =>
+      x.tag.includes('[hierarchy]') ? { tag: `[hierarchy]${tag_hierarchy}` } : x
+    );
     let lead_update = {
       status: new_lead_status,
       first_meeting: lead.first_meeting,
@@ -285,22 +288,29 @@ statusLogSchema.pre('save', async function (next) {
       hierarchy: lead.hierarchy,
       updated_at: new Date(),
       updated_by: this.updated_by,
-      tags: new_tag
-    }
+      tags: new_tag,
+    };
     // use update to not trigger the pre/post save
-    await Lead.findOneAndUpdate({_id: ObjectId(this['lead_id'])}, {$set: lead_update})
+    await Lead.findOneAndUpdate(
+      { _id: ObjectId(this['lead_id']) },
+      { $set: lead_update }
+    );
   }
   // think of module
-  let user = await User.findById(this.updated_by).lean()
-  var log_type = this.isNew? LOG_TYPE.CREATE : LOG_TYPE.UPDATE
-  var description = logDescriptionFormater(user, log_type, this.status_log, MODULE_PAGES[this['action_page']])
-  
+  let user = await User.findById(this.updated_by).lean();
+  var log_type = this.isNew ? LOG_TYPE.CREATE : LOG_TYPE.UPDATE;
+  var description = logDescriptionFormater(
+    user,
+    log_type,
+    this.status_log,
+    MODULE_PAGES[this['action_page']]
+  );
 
   //create a log
-  lead_update_log.module = MODULE_PAGES[this['action_page']]
-  lead_update_log.lead_id = this['lead_id'],
-  lead_update_log.status_log_id = this['_id'],
-  lead_update_log.log_type = log_type;
+  lead_update_log.module = MODULE_PAGES[this['action_page']];
+  (lead_update_log.lead_id = this['lead_id']),
+    (lead_update_log.status_log_id = this['_id']),
+    (lead_update_log.log_type = log_type);
   lead_update_log.description = description;
   lead_update_log.current = current;
   lead_update_log.previous = previous;
@@ -310,22 +320,26 @@ statusLogSchema.pre('save', async function (next) {
   next();
 });
 
-statusLogSchema.index({ status_log: 1, outcome: 1, lead_id: 1 })
-statusLogSchema.index({ status_log: 1, outcome: 1, created_by: 1, datetime: 1 })
+statusLogSchema.index({ status_log: 1, outcome: 1, lead_id: 1 });
+statusLogSchema.index({
+  status_log: 1,
+  outcome: 1,
+  created_by: 1,
+  datetime: 1,
+});
 
 statusLogSchema.static('getLeadMeetings', function (lead_id) {
   return this.find({
     status_log: 'MEETING',
     outcome: '',
     lead_id: ObjectId(lead_id),
-  }).select('_id note datetime address')
-})
+  }).select('_id note datetime address');
+});
 
-
-statusLogSchema.plugin(mongoosePaginate)
+statusLogSchema.plugin(mongoosePaginate);
 
 module.exports = {
   PRODUCTS,
   PROGRAMS,
   StatusLog: mongoose.model('StatusLog', statusLogSchema),
-}
+};

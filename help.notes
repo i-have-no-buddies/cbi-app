@@ -232,6 +232,10 @@ first meeting -> second meeting -> client
 *meeting
 - remove no show and meeting sat
 - show (no show and meeting sat) during the scheduled meeting date and time
+*button
+- whatsapp button
+- email button
+- click to call button
 
 // product add in tags?
 ? required fields
