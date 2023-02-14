@@ -19,9 +19,24 @@ exports.index = async (req, res) => {
     const page = req.query.page || 1;
     const search_tags = ['name', 'email', 'contact', 'company', 'job_title'];
     const search = await tagsSearchFormater(search_tags, req.query);
-    const query_params = await queryParamReturner(search_tags, req.query);
+    
+    const return_search_tags = ['name', 'email', 'contact', 'company', 'job_title', 'meeting_date'];
+    const query_params = await queryParamReturner(return_search_tags, req.query);
     search['hierarchy'] = HIERARCHY.NEW;
     search['allocated_to'] = ObjectId(req.session.AUTH._id);
+
+    //get all meeting booked
+    if(req.query.meeting_date) {
+      let start_date = new moment(req.query.meeting_date + ' 00:00 AM', date_format);
+      let end_date =  new moment(req.query.meeting_date + ' 11:59 PM', date_format);
+      var meetings = await StatusLog.getCurrentMeetings(req.session.AUTH._id, start_date, end_date);
+      if(meetings.length != 0) {
+        let meeting_tag = meetings.map(x => ({'tags.tag': `[_id]${x.lead_id.toString()}`}))
+        search['$or'] = meeting_tag;
+      } else {
+        search['$and'] = [{'tags.tag': 'empty'}];
+      }
+    }
 
     const leads = await Lead.paginate(search, {
       lean: true,
@@ -81,7 +96,8 @@ exports.update = async (req, res) => {
         _id: req.session.AUTH._id.toString(),
       });
     }
-    return res.redirect('/initial-meeting');
+    
+    return res.redirect(`/initial-meeting/edit/${req.body._id}`);
   } catch (error) {
     console.error(error);
     return res.render('500');
@@ -97,6 +113,7 @@ exports.update_status = async (req, res) => {
 
     if (req.body.status_log == LEAD_STATUS.MEETING) {
       let datetime = moment(`${req.body.datetime}`, date_format);
+      status_log.outcome = 'NEW';
       status_log.datetime = datetime;
       status_log.meeting_time = datetime.format(time_format);
       status_log.address = req.body.address;
@@ -119,7 +136,7 @@ exports.update_status = async (req, res) => {
       });
     }
 
-    return res.redirect('/initial-meeting');
+    return res.redirect(`/initial-meeting/edit/${req.body._id}`);
   } catch (error) {
     console.error(error);
     return res.render('500');
@@ -150,7 +167,8 @@ exports.meeting_update = async (req, res) => {
       });
     }
     
-    return res.redirect('/initial-meeting');
+    return res.redirect(`/initial-meeting/edit/${req.body._id}`);
+    //return res.redirect('/initial-meeting');
   } catch (error) {
     console.error(error);
     return res.render('500');

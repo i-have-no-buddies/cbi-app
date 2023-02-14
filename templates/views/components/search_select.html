@@ -9,11 +9,8 @@
       name="{{name}}"
       onchange="search();"
     >
-      {{if remove_empty}}
-        
-      {{else}}
-        <option value="">Select {{name | strReplace}}</option>
-      {{/if}}
+    
+      <option value="">Select {{name | strReplace}}</option>
       {{each options}}
       <option 
         value="{{$value}}"

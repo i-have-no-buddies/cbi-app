@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const { ObjectId } = require('mongodb')
 const mongoosePaginate = require('mongoose-paginate-v2')
-const { logDescriptionFormater } = require('../utils/helper');
+const { schemaTagsFormater, logDescriptionFormater } = require('../utils/helper');
 const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
 const { Lead, HIERARCHY, LEAD_STATUS, OUTCOME, MODULE_PAGES } = require('../model/Lead');
 const { User } = require('../model/User');
@@ -231,7 +231,7 @@ statusLogSchema.pre('save', async function (next) {
     if(lead.hierarchy == HIERARCHY.NEW) {  
       if(this['outcome'] == OUTCOME.CANCELED) {
         //what to do if canceled
-        lead.hierarchy = HIERARCHY.CANCELED
+        lead.hierarchy = 'CANCELED'
       }
       else if(this.is_first_meeting == true && lead.first_meeting == undefined) {
         tag_status = LEAD_STATUS.FIRST_MEETING.toLowerCase()
@@ -273,7 +273,6 @@ statusLogSchema.pre('save', async function (next) {
       }
     }
 
-
     let tag_hierarchy = lead.hierarchy.toLowerCase()
     let new_tag = lead.tags.map(x => (x.tag.includes("[status]") ? {tag: `[status]${tag_status}`}  : x))
     new_tag = lead.tags.map(x => (x.tag.includes("[hierarchy]") ? {tag: `[hierarchy]${tag_hierarchy}`}  : x))
@@ -290,6 +289,13 @@ statusLogSchema.pre('save', async function (next) {
     // use update to not trigger the pre/post save
     await Lead.findOneAndUpdate({_id: ObjectId(this['lead_id'])}, {$set: lead_update})
   }
+  // only uploaded and manual add will go here
+  else {
+    let new_tag = schemaTagsFormater(lead.tags, this['lead_id'], '_id')
+    let lead_update = { tags: new_tag }
+    await Lead.findOneAndUpdate({_id: ObjectId(this['lead_id'])}, {$set: lead_update})
+  }
+
   // think of module
   let user = await User.findById(this.updated_by).lean()
   var log_type = this.isNew? LOG_TYPE.CREATE : LOG_TYPE.UPDATE
@@ -312,15 +318,24 @@ statusLogSchema.pre('save', async function (next) {
 
 statusLogSchema.index({ status_log: 1, outcome: 1, lead_id: 1 })
 statusLogSchema.index({ status_log: 1, outcome: 1, created_by: 1, datetime: 1 })
+statusLogSchema.index({ status_log: 1, created_by: 1, datetime: 1 })
 
 statusLogSchema.static('getLeadMeetings', function (lead_id) {
   return this.find({
     status_log: 'MEETING',
-    outcome: '',
+    outcome: 'NEW',
     lead_id: ObjectId(lead_id),
   }).select('_id note datetime address')
 })
 
+statusLogSchema.static('getCurrentMeetings', function (user_id, start_date, end_date) {
+  return this.find({
+    status_log: 'MEETING',
+    outcome: 'NEW',
+    created_by: ObjectId(user_id),
+    datetime: {$gte: start_date, $lte: end_date},
+  }).select('_id lead_id').lean()
+})
 
 statusLogSchema.plugin(mongoosePaginate)
 

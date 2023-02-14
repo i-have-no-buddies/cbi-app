@@ -17,6 +17,7 @@ process.on('message', async ({ lead_batch }) => {
     new_status_log.updated_by = doc.uploaded_meeting.updated_by;
     new_status_log.lead_id = ObjectId(doc._id);
     new_status_log.status_log = doc.uploaded_meeting.status_log;
+    new_status_log.outcome = doc.uploaded_meeting.outcome;
     new_status_log.note = doc.uploaded_meeting.note; 
     new_status_log.address = doc.uploaded_meeting.address;
     new_status_log.action_page = doc.action_page;

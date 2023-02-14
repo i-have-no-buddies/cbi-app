@@ -113,6 +113,7 @@ exports.new_upload = async (req, res) => {
           created_by: req.session.AUTH._id,
           updated_by: req.session.AUTH._id,
           status_log: LEAD_STATUS.MEETING,
+          outcome: 'NEW',
           note: row.meeting_note,
           meeting_date: row.meeting_date,
           meeting_time: row.meeting_time,
@@ -224,6 +225,7 @@ exports.create = async (req, res) => {
     new_status_log.updated_by = req.session.AUTH._id;
     new_status_log.lead_id = lead.id;
     new_status_log.status_log = req.body.status_log;
+    new_status_log.outcome = 'NEW';
     new_status_log.note = req.body.note; 
     new_status_log.address = req.body.address;
     new_status_log.action_page = req.route.path;
@@ -274,7 +276,7 @@ exports.update = async (req, res) => {
         _id: req.session.AUTH._id.toString(),
       });
     }
-    return res.redirect('/lead-management');
+    return res.redirect(`/lead-management/edit/${req.body._id}`);
   } catch (error) {
     console.error(error);
     return res.render('500');

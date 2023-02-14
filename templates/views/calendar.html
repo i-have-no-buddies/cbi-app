@@ -40,30 +40,56 @@
   );
   
   var colors = {
-    'BOOKED': '#6610f2',
-    'MEETING_SAT': '#3d9970',
-    'NO_SHOW': '#d81b60' ,
-    'CANCELED': '#dc3545',
+    'NEW': '#007bff',
+    'MEETING_SAT': '#38cccc',
+    'NO_SHOW': '#dc3848' ,
+    'CANCELED': '#ffc107',
+  }
+  var disabled_color = {
+    'NEW': 'rgba(0, 123, 255, 0.5)',
+    'MEETING_SAT': 'rgba(56, 204, 204, 0.5)',
+    'NO_SHOW': 'rgba(220, 56, 72, 0.5)' ,
+    'CANCELED': 'rgba(255, 193, 5, 0.5)',
   }
 
   //title must be name
   var meeting_events = [
     {{each meetings}}
-      { 
-        title : `{{$value.lead_id.first_name}} {{$value.lead_id.last_name}}`,
-        start : new Date(`{{@$value.datetime | formatDateRaw}}`),
-        url : `{{$value.lead_id._id.toString()}}`,
-        extendedProps: {
-          note: `{{$value.note}}`,
-          address: `{{$value.address}}`,
-        }, //if you to add any
-        color : colors[`{{$value.outcome}}`],
-        eventTimeFormat: {
-          hour: 'numeric',
-          minute: '2-digit',
-          meridiem: 'short'
-        }
-      },
+      {{if($value.outcome == search.outcome) }}
+        { 
+          title : `{{$value.lead_id.first_name}} {{$value.lead_id.last_name}}`,
+          start : new Date(`{{@$value.datetime | formatDateRaw}}`),
+          url : `{{$value.lead_id._id.toString()}}`,
+          extendedProps: {
+            note: `{{$value.note}}`,
+            address: `{{$value.address}}`,
+            hierarchy: `{{$value.lead_id.hierarchy}}`,
+          }, //if you to add any
+          color : colors[`{{$value.outcome }}`],
+          eventTimeFormat: {
+            hour: 'numeric',
+            minute: '2-digit',
+            meridiem: 'short'
+          }
+        },
+      {{else}}
+        { 
+          title : `{{$value.lead_id.first_name}} {{$value.lead_id.last_name}}`,
+          start : new Date(`{{@$value.datetime | formatDateRaw}}`),
+          //url : `{{$value.lead_id._id.toString()}}`,
+          extendedProps: {
+            note: `{{$value.note}}`,
+            address: `{{$value.address}}`,
+            hierarchy: `{{$value.lead_id.hierarchy}}`,
+          }, //if you to add any
+          color : disabled_color[`{{$value.outcome }}`],
+          eventTimeFormat: {
+            hour: 'numeric',
+            minute: '2-digit',
+            meridiem: 'short'
+          }
+        },
+      {{/if}}
       
     {{/each}}
   ]
@@ -81,9 +107,6 @@
   var open_meeting = function(info) {
     info.jsEvent.preventDefault(); 
     
-    // to manage if by timeGridWeek or dayGridMonth  
-    console.log(info.view.type);
-    console.log(info.event.extendedProps);
     //check if url exist
     if (info.event.url) {
       let lead_info = `/lead/edit/${info.event.url}`
@@ -92,7 +115,9 @@
   }
 
   var hover_meeting = function(info) {
-    let note = `[address]: ${info.event.extendedProps.address}`
+    let meeting = info.event.extendedProps.hierarchy == 'NEW' ? 'Initial Meeting' : 'Second Meeting'
+    let note = `[meeting_type]: ${meeting}`
+    note += `<br>[address]: ${info.event.extendedProps.address}`
     note += `<br>[note]: ${info.event.extendedProps.note}`
     new Opentip(info.el, note, {
       tipJoint: 'top',

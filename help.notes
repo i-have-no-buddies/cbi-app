@@ -207,7 +207,7 @@ first meeting -> second meeting -> client
 
 # todo
 *web socket
-  [x] - implementation on inital meeting, leads and calendar
+  [✓] - implementation on inital meeting, leads and calendar
 *lead management 
   [✓] - upload -> details of fields (proper format) [for checking]
 *initial meeting filter

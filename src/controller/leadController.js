@@ -92,7 +92,7 @@ exports.update = async (req, res) => {
       });
     }
 
-    return res.redirect('/lead')
+    return res.redirect(`/lead/edit/${req.body._id}`)
   } catch (error) {
     console.error(error)
     return res.render('500')
@@ -108,6 +108,7 @@ exports.update_status = async (req, res) => {
 
     if (req.body.status_log == LEAD_STATUS.MEETING) {
       let datetime = moment(`${req.body.datetime}`, date_format);
+      status_log.outcome = 'NEW';
       status_log.datetime = datetime;
       status_log.meeting_time = datetime.format(time_format);
       status_log.address = req.body.address;
@@ -135,7 +136,7 @@ exports.update_status = async (req, res) => {
       });
     }
 
-    return res.redirect('/lead')
+    return res.redirect(`/lead/edit/${req.body._id}`)
   } catch (error) {
     console.error(error)
     return res.render('500')
@@ -165,7 +166,8 @@ exports.meeting_update = async (req, res) => {
       });
     }
     
-    return res.redirect('/lead')
+    //return res.redirect('/lead')
+    return res.redirect(`/lead/edit/${req.body._id}`)
   } catch (error) {
     console.error(error)
     return res.render('500')

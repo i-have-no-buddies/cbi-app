@@ -42,6 +42,7 @@ const LEAD_STATUS = {
 }
 
 const OUTCOME = {
+  NEW: 'NEW',
   MEETING_SAT: 'MEETING_SAT',
   NO_SHOW: 'NO_SHOW',
   CANCELED: 'CANCELED',
@@ -287,6 +288,7 @@ leadSchema.pre('save', async function (next) {
   tags = schemaTagsFormater(tags, this.hierarchy, 'hierarchy')
   tags = schemaTagsFormater(tags, this.upload_date, 'upload_date')
   tags = schemaTagsFormater(tags, this.allocated_to, 'allocated_to')
+  tags = schemaTagsFormater(tags, this._id, '_id')
   this.tags = tags
   
   /**

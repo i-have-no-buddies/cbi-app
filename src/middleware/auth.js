@@ -193,6 +193,7 @@ exports.authenticated = async (req, res, next) => {
      */
     let NEW_LEAD_STATUS = { ...LEAD_STATUS };
     if (INITIAL_ROUTES.includes(req.route.path)) {
+      delete OUTCOME.NEW;
       delete NEW_LEAD_STATUS.NEW;
       delete NEW_LEAD_STATUS.FIRST_MEETING;
       delete NEW_LEAD_STATUS.SECOND_MEETING;
@@ -200,6 +201,7 @@ exports.authenticated = async (req, res, next) => {
     }
 
     if (LEAD_ROUTES.includes(req.route.path)) {
+      delete OUTCOME.NEW;
       delete NEW_LEAD_STATUS.NEW;
       delete NEW_LEAD_STATUS.FIRST_MEETING;
       delete NEW_LEAD_STATUS.SECOND_MEETING;

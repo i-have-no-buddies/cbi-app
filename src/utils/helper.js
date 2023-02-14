@@ -152,15 +152,11 @@ const schemaTagsFormater = (tags, data, field) => {
         ...tags,
         ...ngramsAlgov2(moment(data).format("YYYY-MM-DD"), field),
       ];
-    } else if (field == 'allocated_to') {
-      tags = [
-        ...tags,
-        ...ngramsAlgov2(data.toString(), field),
-      ];
+    
     } else {
       tags = [
         ...tags,
-        ...ngramsAlgov2(data.toLowerCase(), field),
+        ...ngramsAlgov2(data.toString().toLowerCase(), field),
       ];
     }
   }
