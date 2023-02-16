@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongodb');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const { logDescriptionFormater } = require('../utils/helper');
+const { logDescriptionFormater, schemaTagsFormater } = require('../utils/helper');
 const { LeadUpdateLog, LOG_TYPE } = require('../model/LeadUpdateLog');
 const {
   Lead,
@@ -46,6 +46,7 @@ const EXCLUDED_FIELDS = [
   'created_by',
   'updated_at',
   'updated_by',
+  'lead',
 ];
 
 const statusLogSchema = new mongoose.Schema({
@@ -68,6 +69,9 @@ const statusLogSchema = new mongoose.Schema({
   lead_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lead',
+  },
+  lead: {
+    type: Object,
   },
   status_log: {
     type: String,

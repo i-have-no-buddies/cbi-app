@@ -224,6 +224,7 @@ exports.create = async (req, res) => {
     new_status_log.created_by = req.session.AUTH._id;
     new_status_log.updated_by = req.session.AUTH._id;
     new_status_log.lead_id = lead.id;
+    new_status_log.lead = lead;
     new_status_log.status_log = req.body.status_log;
     new_status_log.outcome = 'NEW';
     new_status_log.note = req.body.note; 

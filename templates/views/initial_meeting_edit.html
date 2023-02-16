@@ -233,11 +233,18 @@
         '14:00', '15:00', '16:00', '17:00', '18:00', '19:00',
       ],
       format:'Y-m-d h:i A',
-      onSelectTime:function(current_time,$input) { 
-        let original = $input.val()
-        $input.blur() 
-        $input.val(original)
-      },
+      //onSelectTime:function(current_time,$input) { 
+      //  let original = $input.val()
+      //  $input.blur() 
+      //  $input.val(original)
+      //},
+    });
+    //better formater
+    $(".datetimev2").blur(function() {
+      let time = parseInt(this.value.slice(11, 13)) + 1
+      time = time == 13 ? '01:00' : time + ':00'
+      time = time.length == 5 ? time : '0' + time
+      this.value = this.value.slice(0, 11) + time + this.value.slice(-3)
     });
     
     //bind on change

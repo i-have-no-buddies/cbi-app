@@ -106,8 +106,10 @@ exports.update = async (req, res) => {
 
 exports.update_status = async (req, res) => {
   try {
+    const lead = await Lead.findById(req.body._id).lean();
     const status_log = new StatusLog();
     status_log.lead_id = req.body._id;
+    status_log.lead = lead;
     status_log.note = req.body.note;
     status_log.status_log = req.body.status_log;
 
